@@ -1,0 +1,40 @@
+# Install python3.10
+# https://gist.github.com/rutcreate/c0041e842f858ceb455b748809763ddb
+
+apt update
+apt install software-properties-common -y
+add-apt-repository ppa:deadsnakes/ppa
+apt update
+apt install python3.10 python3.10-venv python3.10-dev
+
+apt-get remove python3-pip
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3.10 get-pip.py
+
+python3.10 -m pip install pybind11
+
+apt install cmake
+
+python3.10 -m pip install opencv-python
+
+pip install tqdm
+
+python3.10 -m pip install torch torchvision torchaudio
+
+python3.10 -m pip install Pillow
+
+python3.10 -m pip install matplotlib
+
+python3.10 -m pip install Flask --ignore-installed blinker
+
+python3.10 -m pip install pgi
+
+python3.10 -m pip install paho-mqtt
+
+apt install mosquitto mosquitto-clients
+
+systemctl enable mosquitto
+
+systemctl status mosquitto
+
+mosquitto_sub -h localhost -t yolov8/detections -v

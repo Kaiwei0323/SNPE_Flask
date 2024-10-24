@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Video Streaming</title>
+    <style>
+        body {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping of items */
+            justify-content: center; /* Center the content */
+        }
+        .camera-container {
+            margin: 10px; /* Spacing between cameras */
+            text-align: center; /* Center text under images */
+        }
+        img {
+            width: 640px;  /* Set a fixed width */
+            height: 480px; /* Set a fixed height */
+        }
+    </style>
+</head>
+<body>
+    {% for name, source in camera_sources.items() %}
+        <div class="camera-container">
+            <h1>{{ name.capitalize() }} Stream</h1>
+            <img src="{{ url_for('video_feed', camera_name=name) }}" alt="{{ name }} Stream">
+        </div>
+    {% endfor %}
+</body>
+</html>
+
