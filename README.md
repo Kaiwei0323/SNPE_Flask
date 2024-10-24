@@ -1,4 +1,4 @@
-# SNPE YOLO Setup Guide
+# SNPE FLASK Setup Guide
 
 ## Prerequisites
 
