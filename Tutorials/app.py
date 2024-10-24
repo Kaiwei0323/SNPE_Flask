@@ -12,17 +12,13 @@ else:
     from camera_v4l2 import Camera  # Change to your specific camera module if needed
 
 # Set the video sources here
+# Model Choice: YOLOV8S_DSP, YOLOV8S_GPU, YOLOV8S_FALL_DSP, YOLOV8L_FALL_DSP, DETR
+# Prerecord Video: test_video/fall.mp4, test_video/traffic.mp4, test_video/ppe.mp4
+# Webcam: /dev/video0
+# RTSP Stream (1 ~ 4): rtsp://99.64.152.69:8554/mystream1
 CAMERA_SOURCES = {
-    # 'webcam1': {"source": "/dev/video0", "runtime": 30, "model": "DETR"},  # First webcam
-    # Uncomment the next line for a second webcam
-    # 'webcam2': {"source": "/dev/video2", "runtime": 30, "model": "DETR"},
-    # Uncomment the next line for an RTSP stream
-    # 'rtsp1': {"source": "rtsp://192.168.8.243:8554/mystream", "runtime": 30, "model": "DETR"},
-    # 'video1-DSP': {"source": "test_video/traffic.mp4", "model": "YOLOV8", "runtime": "DSP"},
-    'video1-DSP': {"source": "test_video/freeway.mp4", "model": "YOLOV8_DSP", "runtime": "DSP"},
-    # 'video2-DSP': {"source": "test_video/fall.mp4", "model": "YOLOV8_FALL_DSP", "runtime": "DSP"},
-    #'video2-GPU': {"source": "test_video/fall.mp4", "model": "YOLOV8_GPU", "runtime": "GPU"},
-    # 'video2-GPU': {"source": "rtsp://99.64.152.69:8554/mystream4", "model": "YOLOV8", "runtime": "GPU"},
+    'FALL-YOLOV8S-DSP': {"source": "test_video/fall.mp4", "model": "YOLOV8S_FALL_DSP", "runtime": "DSP"},
+    # 'FALL-YOLOV8L-DSP': {"source": "test_video/fall.mp4", "model": "YOLOV8L_FALL_DSP", "runtime": "DSP"},
 }
 
 app = Flask(__name__)

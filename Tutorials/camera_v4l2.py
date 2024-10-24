@@ -45,12 +45,14 @@ class Camera(BaseCamera):
             "DETR": ("models/detr_resnet101_int8.dlc", ["image"],
                      ["/model/class_labels_classifier/MatMul_post_reshape", "/model/Sigmoid"],
                      ["logits", "boxes"]),
-            "YOLOV8_DSP": ("models/yolov8s_encode_int8.dlc", ["images"],
+            "YOLOV8S_DSP": ("models/yolov8s_encode_int8.dlc", ["images"],
                            ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
-            "YOLOV8_GPU": ("models/yolov8s_quantized.dlc", ["images"],
+            "YOLOV8S_GPU": ("models/yolov8s_quantized.dlc", ["images"],
                            ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
-            "YOLOV8_FALL_DSP": ("models/fall_encode_int8.dlc", ["images"],
-                                ["/model.22/Concat_5"], ["output0"], FALL_CLASSES)
+            "YOLOV8S_FALL_DSP": ("models/yolov8s_fall_encode_int8.dlc", ["images"],
+                                ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),
+            "YOLOV8L_FALL_DSP": ("models/yolov8l_fall_encode_int8.dlc", ["images"],
+                                ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),
         }
         
         if self.model in model_map:
