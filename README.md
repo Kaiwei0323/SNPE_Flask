@@ -25,6 +25,8 @@
 - Pillow
 - matplotlib
 - Flask
+- paho-mqtt
+- mosquitto mosquitto-clients
 ---
 
 ## SNPE SDK Installation
@@ -66,14 +68,24 @@ python3.10 -m pip install torch torchvision torchaudio
 python3.10 -m pip install Pillow
 python3.10 -m pip install matplotlib
 python3.10 -m pip install Flask --ignore-installed blinker
+python3.10 -m pip install paho-mqtt
+apt install mosquitto mosquitto-clients
 ```
 
-4. Run Application
+4. MQTT Setup
+```
+systemctl enable mosquitto
+systemctl status mosquitto
+mosquitto_sub -h localhost -t yolov8/detections -v
+```
+
+5. Run Application
 ```
 python3.10 app.py
 ```
 
-5. Demo Output
+6. Demo Output
 
-![Screenshot 2024-10-20 at 05-04-20 Camera Stream](https://github.com/user-attachments/assets/2b8bd0a0-d292-4647-bd96-c97caa0bb825)
+![Screenshot from 2024-10-24 18-49-21](https://github.com/user-attachments/assets/1ad7094f-aebc-4a5f-bf00-0ca778da34f8)
+
 
