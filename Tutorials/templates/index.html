@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Video Streaming</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .form-container {
+            width: 300px;
+            flex-shrink: 0;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+        }
+
+        input[type="text"], select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .streams-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .camera-container {
+            position: relative; /* Allow absolute positioning of children */
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .delete-button {
+            position: absolute; /* Position relative to the container */
+            top: 10px; /* Distance from the top */
+            right: 10px; /* Distance from the right */
+            background-color: red; /* Red background */
+            border: none; /* No border */
+            border-radius: 50%; /* Circular shape */
+            width: 30px; /* Width of the button */
+            height: 30px; /* Height of the button */
+            cursor: pointer; /* Pointer cursor */
+            color: white; /* White cross */
+            font-size: 18px; /* Larger font for visibility */
+            display: flex; /* Flexbox for centering the cross */
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+        }
+
+        .delete-button:hover {
+            background-color: darkred; /* Darker red on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Add Camera</h1>
+        <form action="/add_camera" method="post">
+            <label for="camera_name">Camera Name:</label>
+            <input type="text" id="camera_name" name="camera_name" required>
+            
+            <label for="video_source">Video Source:</label>
+            <select id="video_source" name="video_source" required>
+                <option value="test_video/fall.mp4">FALL</option>
+                <option value="test_video/ppe.mp4">PPE</option>
+                <option value="test_video/freeway.mp4">FREEWAY</option>
+                <option value='/dev/video0'>WEBCAM</option>
+            </select>
+            
+            <label for="model">Model:</label>
+            <select id="model" name="model" required>
+                <option value="YOLOV8S_DSP">YOLOV8S_DSP</option>
+                <option value="YOLOV8S_GPU">YOLOV8S_GPU</option>
+                <option value="YOLOV8S_FALL_DSP">YOLOV8S_FALL_DSP</option>
+                <option value="YOLOV8L_FALL_DSP">YOLOV8L_FALL_DSP</option>
+                <option value="DETR">DETR</option>
+            </select>
+            
+            <label for="runtime">Runtime:</label>
+            <select id="runtime" name="runtime" required>
+                <option value="CPU">CPU</option>
+                <option value="GPU">GPU</option>
+                <option value="DSP">DSP</option>
+            </select>
+            
+            <button type="submit">Add Camera</button>
+        </form>
+    </div>
+
+    <div class="streams-container">
+        {% for name, source in camera_sources.items() %}
+            <div class="camera-container">
+                <h2>{{ name.capitalize() }} Stream</h2>
+                <img src="{{ url_for('video_feed', camera_name=name) }}" alt="{{ name }} Stream">
+                <form action="/delete_camera" method="post" class="delete-form">
+                    <input type="hidden" name="camera_name" value="{{ name }}">
+                    <button type="submit" class="delete-button">✖</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
+
