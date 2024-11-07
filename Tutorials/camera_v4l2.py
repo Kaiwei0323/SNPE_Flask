@@ -7,6 +7,7 @@ from base_camera import BaseCamera
 from snpehelper_manager import PerfProfile, Runtime
 from coco80_class import COCO80_CLASSES
 from fall_class import FALL_CLASSES
+from ppe_class import PPE_CLASSES
 
 class Camera(BaseCamera):
     """Using OpenCV to capture video frames with threading for inference."""
@@ -59,6 +60,7 @@ class Camera(BaseCamera):
                 "YOLOV8S_GPU": ("models/yolov8s_quantized.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
                 "YOLOV8S_FALL_DSP": ("models/yolov8s_fall_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),
                 "YOLOV8L_FALL_DSP": ("models/yolov8l_fall_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),
+                "YOLOV8S_PPE_DSP": ("models/ppe_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], PPE_CLASSES),
             }
 
             if self.model in model_map:

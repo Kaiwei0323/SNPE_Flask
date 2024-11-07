@@ -17,6 +17,7 @@ from snpehelper_manager import PerfProfile, Runtime, SnpeContext
 import time
 from coco80_class import COCO80_CLASSES
 from fall_class import FALL_CLASSES
+from ppe_class import PPE_CLASSES
 import paho.mqtt.client as mqtt
 from mqtt import MQTTClient
 import json
@@ -56,7 +57,7 @@ class YOLOV8(SnpeContext):
             T.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0])  # Normalize
         ])
         img = transform(image).unsqueeze(0).numpy().transpose(0, 2, 3, 1).astype(np.float32).flatten()
-        self.SetInputBuffer(img, "images")
+        self.SetInputBuffer(img, self.m_input_layers[0])
 
     def calcIoU(self, ObjectDataA, ObjectDataB):
         """Calculate Intersection over Union (IoU) between two bounding boxes."""
@@ -93,7 +94,7 @@ class YOLOV8(SnpeContext):
         if frame is None or frame.size == 0:
             print("Received an empty frame for preprocessing.")
             return
-        output = self.GetOutputBuffer("output0")
+        output = self.GetOutputBuffer(self.m_output_tensors[0])
         if output is None:
             print("Failed to retrieve output buffer!")
             return frame
