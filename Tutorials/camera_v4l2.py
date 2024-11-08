@@ -45,7 +45,7 @@ class Camera(BaseCamera):
         """Initialize the video capture object."""
         video = cv2.VideoCapture(self.video_source)
         if not video.isOpened():
-            raise Exception(f"Cannot open video source: {self.video_source}")
+            print(f"Cannot open video source: {self.video_source}")
         video.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         video.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         video.set(cv2.CAP_PROP_FPS, 30)
