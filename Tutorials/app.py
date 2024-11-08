@@ -26,14 +26,6 @@ def add_camera():
     video_source = request.form['video_source']
     model = request.form['model']
     runtime = request.form['runtime']
-
-    # If RTSP is selected, use the RTSP URL from the form
-    if video_source == "RTSP":
-        rtsp_url = request.form.get('rtsp_url')
-        if rtsp_url:
-            video_source = rtsp_url  # Set the video source to the RTSP URL
-        else:
-            return render_template('index.html', camera_sources=CAMERA_SOURCES, error="RTSP URL is required.")
     
     # Update CAMERA_SOURCES with new camera information
     CAMERA_SOURCES[camera_name] = {
@@ -80,5 +72,5 @@ def video_feed(camera_name):
     )
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, threaded=True)
+    app.run(host='0.0.0.0', port=5005, threaded=True)
 
