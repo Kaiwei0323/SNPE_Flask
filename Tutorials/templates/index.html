@@ -66,7 +66,7 @@
         }
 
         .camera-container {
-            position: relative; /* Allow absolute positioning of children */
+            position: relative;
             background: #fff;
             padding: 10px;
             border-radius: 8px;
@@ -81,27 +81,50 @@
         }
 
         .delete-button {
-            position: absolute; /* Position relative to the container */
-            top: 10px; /* Distance from the top */
-            right: 10px; /* Distance from the right */
-            background-color: red; /* Red background */
-            border: none; /* No border */
-            border-radius: 50%; /* Circular shape */
-            width: 30px; /* Width of the button */
-            height: 30px; /* Height of the button */
-            cursor: pointer; /* Pointer cursor */
-            color: white; /* White cross */
-            font-size: 18px; /* Larger font for visibility */
-            display: flex; /* Flexbox for centering the cross */
-            align-items: center; /* Center vertically */
-            justify-content: center; /* Center horizontally */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .delete-button:hover {
-            background-color: darkred; /* Darker red on hover */
+            background-color: darkred;
         }
+
+        /* Hide the RTSP input by default */
+        #rtsp-url {
+            display: none;
+        }
+
     </style>
+
+    <script>
+        // JavaScript to toggle RTSP input visibility
+        function toggleRTSPInput() {
+            var videoSource = document.getElementById("video_source").value;
+            var rtspInput = document.getElementById("rtsp-url");
+            
+            if (videoSource === "RTSP") {
+                rtspInput.style.display = "block"; // Show RTSP URL input
+            } else {
+                rtspInput.style.display = "none"; // Hide RTSP URL input
+            }
+        }
+
+        // Trigger the function on page load to check the default value
+        window.onload = toggleRTSPInput;
+    </script>
 </head>
 <body>
     <div class="form-container">
@@ -111,13 +134,20 @@
             <input type="text" id="camera_name" name="camera_name" required>
             
             <label for="video_source">Video Source:</label>
-            <select id="video_source" name="video_source" required>
+            <select id="video_source" name="video_source" onchange="toggleRTSPInput()" required>
                 <option value="/home/aim/Videos/fall.mp4">FALL</option>
                 <option value="/home/aim/Videos/ppe.mp4">PPE</option>
                 <option value="/home/aim/Videos/freeway.mp4">FREEWAY</option>
                 <option value='/dev/video0'>WEBCAM</option>
+                <option value="RTSP">RTSP</option>
             </select>
-            
+
+            <!-- RTSP URL input, shown only when RTSP is selected -->
+            <div id="rtsp-url">
+                <label for="rtsp_url">RTSP URL:</label>
+                <input type="text" id="rtsp_url" name="rtsp_url" placeholder="Enter RTSP URL">
+            </div>
+
             <label for="model">Model:</label>
             <select id="model" name="model" required>
                 <option value="YOLOV8S_DSP">YOLOV8S_DSP</option>
