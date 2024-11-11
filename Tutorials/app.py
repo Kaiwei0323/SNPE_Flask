@@ -75,5 +75,5 @@ def video_feed(camera_name):
     )
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5003, threaded=True)
+    app.run(host='0.0.0.0', port=5006, threaded=True)
 
