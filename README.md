@@ -29,7 +29,16 @@
 
 Download the Neural Processing SDK from [Qualcomm SNPE SDK](https://www.qualcomm.com/developer/software/neural-processing-sdk-for-ai).
 
-### Directory Structure
+## Download Pre-recorded Videos
+1. Access the SFTP server
+    - Use the credentials for the **qcs6490** user to access the server
+2. Navigate to the video directory
+    - The videos are located in: 
+```
+/Files/QC01U/Demo_Video
+```
+
+## Directory Structure
 ```
 Documents
 └── SNPE_Flask
