@@ -8,6 +8,8 @@ from snpehelper_manager import PerfProfile, Runtime
 from coco80_class import COCO80_CLASSES
 from fall_class import FALL_CLASSES
 from ppe_class import PPE_CLASSES
+from detr_coco80_class import DETR_COCO80_CLASSES
+from detr_fall_class import DETR_FALL_CLASSES
 
 class Camera(BaseCamera):
     """Using OpenCV to capture video frames with threading for inference."""
@@ -55,7 +57,8 @@ class Camera(BaseCamera):
         """Initialize the specified model."""
         try:
             model_map = {
-                "DETR": ("models/detr_resnet101_int8.dlc", ["image"], ["/model/class_labels_classifier/MatMul_post_reshape", "/model/Sigmoid"], ["logits", "boxes"]),
+                "DETR": ("models/detr_resnet101_int8.dlc", ["image"], ["/model/class_labels_classifier/MatMul_post_reshape", "/model/Sigmoid"], ["logits", "boxes"], DETR_COCO80_CLASSES),
+                "DETR_FALL": ("models/fall_detr_int8.dlc", ["pixel_values"], ["/class_labels_classifier/MatMul_post_reshape", "/Sigmoid"], ["logits", "pred_boxes"], DETR_FALL_CLASSES),
                 "YOLOV8S_DSP": ("models/yolov8s_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
                 "YOLOV8S_GPU": ("models/yolov8s_quantized.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
                 "YOLOV8S_FALL_DSP": ("models/yolov8s_fall_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),
@@ -79,13 +82,14 @@ class Camera(BaseCamera):
         from Detr_Object_Detection import DETR
         from Yolov8 import YOLOV8
 
-        if self.model == "DETR":
+        if self.model.startswith("DETR"):
             model = DETR(
                 dlc_path=dlc_path,
                 input_layers=input_layers,
                 output_layers=output_layers,
                 output_tensors=output_tensors,
                 runtime=self.runtime,
+                classes=classes,
                 profile_level=PerfProfile.BURST,
                 enable_cache=False
             )

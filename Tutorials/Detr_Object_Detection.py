@@ -15,41 +15,34 @@ import torchvision.transforms as T
 from PIL import Image
 from snpehelper_manager import PerfProfile, Runtime, SnpeContext
 import time
+from detr_coco80_class import DETR_COCO80_CLASSES
+from detr_fall_class import DETR_FALL_CLASSES
+import paho.mqtt.client as mqtt
+from mqtt import MQTTClient
+import json
+
+mqtt_client = MQTTClient()
 
 torch.set_grad_enabled(False)
 
+class ObjectData:
+    def __init__(self, x, y, width, height, label, conf):
+        self.bbox = {'x': x, 'y': y, 'width': width, 'height': height}
+        self.label = label
+        self.conf = conf   
+        self.inference_time = 0.0  
+
 class DETR(SnpeContext):
-    # COCO classes for object detection
-    """
-    CLASSES = [
-        'N/A', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
-        'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'N/A',
-        'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse',
-        'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'N/A', 'backpack',
-        'umbrella', 'N/A', 'N/A', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis',
-        'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove',
-        'skateboard', 'surfboard', 'tennis racket', 'bottle', 'N/A', 'wine glass',
-        'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich',
-        'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake',
-        'chair', 'couch', 'potted plant', 'bed', 'N/A', 'dining table', 'N/A',
-        'N/A', 'toilet', 'N/A', 'tv', 'laptop', 'mouse', 'remote', 'keyboard',
-        'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'N/A',
-        'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier',
-        'toothbrush'
-    ]
-    """
-    CLASSES = [
-        'N/A', 'face'
-    ]
-    
     def __init__(self, dlc_path: str = "None", 
                  input_layers: list = [], 
                  output_layers: list = [], 
                  output_tensors: list = [], 
                  runtime: str = Runtime.CPU, 
-                 profile_level: str = PerfProfile.BALANCED, 
+                 classes: list = DETR_COCO80_CLASSES,
+                 profile_level: str = PerfProfile.BURST, 
                  enable_cache: bool = False):
         super().__init__(dlc_path, input_layers, output_layers, output_tensors, runtime, profile_level, enable_cache)
+        self.classes = classes
 
     def preprocess(self, frame):
         """Preprocess the input frame for the DETR model."""
@@ -63,16 +56,13 @@ class DETR(SnpeContext):
         img = transform(image).unsqueeze(0)
         out = torch.nn.functional.interpolate(img, size=(480, 480), mode='bicubic', align_corners=False)
         input_image = out.numpy().transpose(0, 2, 3, 1).astype(np.float32)[0].flatten()
-        self.SetInputBuffer(input_image, "input.1")
+        self.SetInputBuffer(input_image, self.m_input_layers[0])
 
-    def postprocess(self, frame):
+    def postprocess(self, frame, inference_start_time):
         """Process the model's output and update the frame with detected objects."""
         # Get model outputs
-        prob = self.GetOutputBuffer("4293").reshape(1, 100, 2)
-        boxes = self.GetOutputBuffer("4297").reshape(1, 100, 4)
-        
-        print(prob)
-        print(boxes)
+        prob = self.GetOutputBuffer(self.m_output_tensors[0]).reshape(1, 100, len(self.classes))
+        boxes = self.GetOutputBuffer(self.m_output_tensors[1]).reshape(1, 100, 4)
 
         # Convert outputs to tensors
         tensor_prob = torch.from_numpy(prob)
@@ -82,7 +72,7 @@ class DETR(SnpeContext):
         probas = tensor_prob.softmax(-1)[0, :, :-1]
         
         # Keep only the boxes with high confidence
-        keep = probas.max(-1).values > 0.3
+        keep = probas.max(-1).values > 0.9
         bboxes_scaled = self.rescale_bboxes(tensor_boxes[0, keep], (frame_h, frame_w))
 
         if keep.sum() == 0:
@@ -93,11 +83,35 @@ class DETR(SnpeContext):
         for p, (xmin, ymin, xmax, ymax) in zip(probas[keep], bboxes_scaled.tolist()):
             cv2.rectangle(frame, (int(xmin), int(ymin)), (int(xmax), int(ymax)), (0, 255, 0), 2)
             cl = p.argmax()
-            text = f'{self.CLASSES[cl]}: {p[cl]:0.2f}'
+            text = f'{self.classes[cl]}: {p[cl]:0.2f}'
             cv2.putText(frame, text, (int(xmin), int(ymin) - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-            print(f"Detected: {self.CLASSES[cl]}, Confidence: {p[cl]:0.2f}")
+            obj = ObjectData(xmin, ymin, xmax, ymax, self.classes[cl], p[cl])
+            obj.inference_time = time.time() - inference_start_time
+            # Publish detection result via MQTT
+            self.publish_detection(obj)
 
         return frame  # Return the modified frame
+
+    def publish_detection(self, obj):
+        label_index = self.classes.index(obj.label) if obj.label in self.classes else -1
+    
+        # If the label is not found, you can either handle it differently or return early
+        if label_index == -1:
+            print(f"Error: label '{obj.label}' not found in classes.")
+            return
+        """Publish detection results to an MQTT topic in JSON format."""
+        detection_info = {
+            'label': self.classes[label_index],  # Use the label index to fetch the class name
+            'confidence': float(obj.conf),  # Convert tensor to float
+            'bbox': {key: float(value) for key, value in obj.bbox.items()},  # Convert bbox values to float
+            'inference_time': obj.inference_time
+        }
+    
+        # Convert the detection_info dictionary to a JSON string
+        detection_json = json.dumps(detection_info)
+    
+        # Publish the JSON string to the MQTT topic
+        mqtt_client.publish("detr/detections", detection_json)
 
     def box_cxcywh_to_xyxy(self, x):
         """Convert bounding boxes from center-width-height format to xyxy format."""
@@ -129,9 +143,8 @@ class DETR(SnpeContext):
         start_time = time.time()
         self.preprocess(frame)
         self.execute()
-        frame = self.postprocess(frame)
-        
-        print(f"Inference Time: {time.time() - start_time:.4f}s")
+        frame = self.postprocess(frame, start_time)
+       
         return frame
 
     def execute(self):
@@ -142,41 +155,3 @@ class DETR(SnpeContext):
         except Exception as e:
             print(f"An error occurred during model execution: {e}")
             
-            
-if __name__ == "__main__":
-    model_object = DETR(
-        dlc_path="models/detr_demo_int8.dlc",
-        input_layers=["input.1"],
-        output_layers=["/linear_class/MatMul_post_reshape", "/Sigmoid"],
-        output_tensors=["4293", "4297"],
-        runtime=Runtime.DSP,
-        profile_level=PerfProfile.BURST,
-        enable_cache=False
-    )
-    
-    # Initialize Model
-    model_object.initialize()
-
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        print("Error: Could not open webcam.")
-        exit()
-
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            print("Error: Could not read frame.")
-            break
-
-        # Perform inference
-        processed_frame = model_object.inference(frame)
-
-        if processed_frame is not None:
-            # Display the output frame
-            cv2.imshow('DETR Object Detection', processed_frame)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()

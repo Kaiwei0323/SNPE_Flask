@@ -160,6 +160,7 @@
                 <option value="YOLOV8L_FALL_DSP">YOLOV8L_FALL_DSP</option>
                 <option value="YOLOV8S_PPE_DSP">YOLOV8S_PPE_DSP</option>
                 <option value="DETR">DETR</option>
+                <option value="DETR_FALL">DETR_FALL</option>
             </select>
             
             <label for="runtime">Runtime:</label>
@@ -177,7 +178,7 @@
         {% for name, source in camera_sources.items() %}
             <div class="camera-container">
                 <h2>{{ name.capitalize() }} Stream</h2>
-                <img src="{{ url_for('video_feed', camera_name=name) }}" alt="{{ name }} Stream">
+                <img src="{{ url_for('video_feed', camera_name=name) }}" alt="{{ name }}">
                 <form action="/delete_camera" method="post" class="delete-form">
                     <input type="hidden" name="camera_name" value="{{ name }}">
                     <button type="submit" class="delete-button">✖</button>
