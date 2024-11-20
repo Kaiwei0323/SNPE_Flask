@@ -80,7 +80,14 @@ apt install mosquitto mosquitto-clients
 ```
 systemctl enable mosquitto
 systemctl status mosquitto
+```
+Subscribe to yolov8 detection
+```
 mosquitto_sub -h localhost -t yolov8/detections -v
+```
+Subscribe to detr detection
+```
+mosquitto_sub -h localhost -t detr/detections -v
 ```
 
 5. Run Application
@@ -90,6 +97,6 @@ python3.10 app.py
 
 6. Demo Output
 
-![Screenshot from 2024-10-24 18-49-21](https://github.com/user-attachments/assets/1ad7094f-aebc-4a5f-bf00-0ca778da34f8)
+![Screenshot from 2024-11-20 22-27-25](https://github.com/user-attachments/assets/48dd959c-8b56-4b08-a4f8-f379255f2386)
 
 
