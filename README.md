@@ -38,6 +38,10 @@ Download the Neural Processing SDK from [Qualcomm SNPE SDK](https://www.qualcomm
 Documents
 └── SNPE_Flask
 └── v2.26.0.240828
+Videos
+└── freeway.mp4
+└── ppe.mp4
+└── fall.mp4
 ```
 
 ## Setup Steps
