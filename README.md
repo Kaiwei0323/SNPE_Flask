@@ -2,19 +2,15 @@
 
 ## Prerequisites
 
-### Hardware Platform:
-- **QCS6490**
+### Hardware Requirements
+- Platform: **QCS6490**
   - CPU: Octa-Core Kryo 670 
   - GPU: Qualcomm Adreno 643
 
-### Operating System:
-- **Ubuntu 20.04**
-
-### SNPE SDK Version:
-- **v2.26.0.240828**
-
-### Supported Models:
-- DETR_Resnet101, YOLOv8
+### Software Requirements
+- Operating System: **Ubuntu 20.04 (arm64)**
+- SNPE SDK Version: **v2.26.0.240828**
+- Supported Models: DETR_Resnet101, YOLOv8, YOLOv11
 
 ### Dependencies:
 - Python3.10
@@ -77,15 +73,17 @@ apt install mosquitto mosquitto-clients
 ```
 
 4. MQTT Setup
+Enable and check the Mosquitto service
 ```
 systemctl enable mosquitto
 systemctl status mosquitto
 ```
-Subscribe to yolov8 detection
+Subscribe to detection topics:
+* For YOLOv8 detection:
 ```
 mosquitto_sub -h localhost -t yolov8/detections -v
 ```
-Subscribe to detr detection
+* For DETR detection:
 ```
 mosquitto_sub -h localhost -t detr/detections -v
 ```
