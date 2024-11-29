@@ -23,6 +23,7 @@
 - Flask
 - paho-mqtt
 - mosquitto mosquitto-clients
+- pygobject
 ---
 
 ## SNPE SDK Installation
@@ -79,6 +80,7 @@ python3.10 -m pip install matplotlib
 python3.10 -m pip install Flask --ignore-installed blinker
 python3.10 -m pip install paho-mqtt
 apt install mosquitto mosquitto-clients
+python3.10 -m pip install --upgrade pygobject
 ```
 
 4. MQTT Setup

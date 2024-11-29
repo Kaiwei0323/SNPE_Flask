@@ -10,23 +10,36 @@ from fall_class import FALL_CLASSES
 from ppe_class import PPE_CLASSES
 from detr_coco80_class import DETR_COCO80_CLASSES
 from detr_fall_class import DETR_FALL_CLASSES
+from VideoPipeline import VideoPipeline
+
+import gi
+from gi.repository import Gst, GstApp
 
 class Camera(BaseCamera):
     """Using OpenCV to capture video frames with threading for inference."""
     def __init__(self, video_source="/dev/video0", model="DETR", runtime="CPU"):
+        Gst.init(None)
         self.video_source = video_source
         self.model = model
         self.runtime = self._set_runtime(runtime)
-        self.video = self._initialize_video_capture()
         self.inference_thread = None
+        self.capture_thread = None
         self.lock = threading.Lock()
         self.inference_frame_queue = queue.Queue(maxsize=30)  # Queue to store frames
+        self.capture_frame_queue = queue.Queue(maxsize=30)
         self.model_object = self._initialize_model()
+        
+        # Initialize VideoPipeline here
+        self.vp = VideoPipeline(video_source, self.capture_frame_queue)
         
         self.stop_event = threading.Event()
 
         if self.model_object is None: 
             raise Exception("Model initialization failed. Exiting.")
+
+        # Start the capture thread
+        self.capture_thread = threading.Thread(target=self.start_capture)
+        self.capture_thread.start()
 
         # Start the inference thread
         self.inference_thread = threading.Thread(target=self.start_inference)
@@ -43,15 +56,15 @@ class Camera(BaseCamera):
         else:
             return Runtime.CPU
 
-    def _initialize_video_capture(self):
+    def start_capture(self):
         """Initialize the video capture object."""
-        video = cv2.VideoCapture(self.video_source)
-        if not video.isOpened():
-            print(f"Cannot open video source: {self.video_source}")
-        video.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        video.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        video.set(cv2.CAP_PROP_FPS, 30)
-        return video
+
+        # Initialize VideoPipeline here, and call create()
+        self.vp.create()  # Ensure VideoPipeline is created
+        print("Start Capturing")
+        if not self.stop_event.is_set():
+            self.vp.start()   # Start video pipeline
+        return True  # We don't need the video capture object since we use VideoPipeline
 
     def _initialize_model(self):
         """Initialize the specified model."""
@@ -111,13 +124,17 @@ class Camera(BaseCamera):
     def start_inference(self):
         """Continuously read frames and perform inference."""
         while not self.stop_event.is_set():  # Check for the stop signal
-            ret, img = self.video.read()
-            if not ret or img is None:
+            #ret, img = self.video.read()
+            img = None
+            print(f"Capture frame queue: {self.capture_frame_queue.qsize()}")
+            if not self.capture_frame_queue.empty():
+                img = self.capture_frame_queue.get()
+            
+            if img is None:
                 if self.stop_event.is_set():
                     break
                 else:
                     print("Failed to grab a valid frame, trying to reconnect.")
-                    self._reconnect()
                     
             # Perform inference only if the stop event is not set
             if self.stop_event.is_set():
@@ -139,14 +156,20 @@ class Camera(BaseCamera):
                     
     def stop(self):
         """Stop the camera and cleanup."""
+        self.vp.destroy()
         self.stop_event.set() 
         with self.lock:
             if self.inference_thread is not None:
                 self.inference_thread.join(timeout=1)  # Wait for the thread to finish
                 self.inference_thread = None
+            if self.capture_thread is not None:
+                self.capture_thread.join(timeout=1)  # Wait for the thread to finish
+                self.capture_thread = None
+            """
             if self.video is not None:
                 self.video.release()  # Release the video capture object
                 self.video = None
+            """
 
     def frames(self):
         """Generate frames from the video source with inference."""
@@ -159,7 +182,7 @@ class Camera(BaseCamera):
                         # Get the frame from the queue
                         inference_frame = self.inference_frame_queue.get()
                         # inference_frame = cv2.resize(inference_frame, (640, 480))
-                        inference_frame = cv2.cvtColor(inference_frame, cv2.COLOR_BGR2RGB)
+                        # inference_frame = cv2.cvtColor(inference_frame, cv2.COLOR_BGR2RGB)
                         # Convert frame to JPEG and yield
                         pil_image = Image.fromarray(inference_frame)
                         pil_image.save(bio, format="jpeg")
@@ -170,11 +193,7 @@ class Camera(BaseCamera):
                 
         finally:
             # Ensure the video capture object is released only if it's initialized
-            if self.video is not None:
-                self.video.release() 
+            #if self.video is not None:
+            #    self.video.release() 
+            self.vp.destroy()
 
-    def _reconnect(self):
-        """Reconnect to the video source."""
-        print("Reconnecting to video source...")
-        self.video.release()  # Release the current capture
-        self.video = self._initialize_video_capture()  # Reinitialize
