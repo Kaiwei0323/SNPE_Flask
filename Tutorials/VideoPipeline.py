@@ -15,7 +15,6 @@ class VideoPipeline:
         self.queue = Gst.ElementFactory.make("queue", "queue")
         self.videoconvert = Gst.ElementFactory.make("qtivtransform", "qtivtransform")
         self.videoscale = Gst.ElementFactory.make("videoscale", "videoscale")
-        self.videorate = Gst.ElementFactory.make("videorate", "videorate")
         self.capsfilter = Gst.ElementFactory.make("capsfilter", "capsfilter")
         self.appsink = Gst.ElementFactory.make("appsink", "appsink")
 
@@ -38,8 +37,6 @@ class VideoPipeline:
         self.appsink.set_property("emit-signals", True)
         self.appsink.set_property("sync", False)
         self.appsink.connect("new-sample", self.on_new_sample)
-        
-        self.videorate.set_property("max-rate", 30)
 
         # Create the pipeline
         self.pipeline = Gst.Pipeline.new(self.uri)
@@ -49,7 +46,6 @@ class VideoPipeline:
         self.pipeline.add(self.queue)
         self.pipeline.add(self.videoconvert)
         self.pipeline.add(self.videoscale)
-        self.pipeline.add(self.videorate)
         self.pipeline.add(self.capsfilter)
         self.pipeline.add(self.appsink)
 
@@ -66,7 +62,7 @@ class VideoPipeline:
         # Start playing the pipeline
         if self.pipeline is not None:
             self.pipeline.set_state(Gst.State.PLAYING)
-            print("Pipeline set to PLAYING")
+            # print("Pipeline set to PLAYING")
 
     def destroy(self):
         # Clean up

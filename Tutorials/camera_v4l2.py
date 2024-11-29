@@ -62,7 +62,7 @@ class Camera(BaseCamera):
         # Initialize VideoPipeline here, and call create()
         self.vp.create()  # Ensure VideoPipeline is created
         print("Start Capturing")
-        if not self.stop_event.is_set():
+        while not self.stop_event.is_set():
             self.vp.start()   # Start video pipeline
         return True  # We don't need the video capture object since we use VideoPipeline
 
