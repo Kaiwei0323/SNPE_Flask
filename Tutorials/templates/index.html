@@ -177,7 +177,7 @@
     <div class="streams-container">
         {% for name, source in camera_sources.items() %}
             <div class="camera-container">
-                <h2>{{ name.capitalize() }} Stream</h2>
+                <h2>{{ name }}</h2>
                 <img src="{{ url_for('video_feed', camera_name=name) }}" alt="{{ name }}">
                 <form action="/delete_camera" method="post" class="delete-form">
                     <input type="hidden" name="camera_name" value="{{ name }}">
