@@ -46,6 +46,9 @@ class DETR(SnpeContext):
 
     def preprocess(self, frame):
         """Preprocess the input frame for the DETR model."""
+        if frame is None or frame.size == 0:
+            print("Received an empty frame for preprocessing.")
+            return
         # Convert frame to PIL image
         image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         transform = T.Compose([
@@ -59,6 +62,9 @@ class DETR(SnpeContext):
         self.SetInputBuffer(input_image, self.m_input_layers[0])
 
     def postprocess(self, frame, inference_start_time):
+        if frame is None or frame.size == 0:
+            print("Received an empty frame for preprocessing.")
+            return
         """Process the model's output and update the frame with detected objects."""
         # Get model outputs
         prob = self.GetOutputBuffer(self.m_output_tensors[0]).reshape(1, 100, len(self.classes))
