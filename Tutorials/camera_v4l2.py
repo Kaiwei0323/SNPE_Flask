@@ -11,6 +11,7 @@ from ppe_class import PPE_CLASSES
 from detr_coco80_class import DETR_COCO80_CLASSES
 from detr_fall_class import DETR_FALL_CLASSES
 from VideoPipeline import VideoPipeline
+from WebcamPipeline import WebcamPipeline
 
 import gi
 from gi.repository import Gst, GstApp
@@ -28,9 +29,12 @@ class Camera(BaseCamera):
         self.inference_frame_queue = queue.Queue(maxsize=30)  # Queue to store frames
         self.capture_frame_queue = queue.Queue(maxsize=30)
         self.model_object = self._initialize_model()
+        self.vp = None
         
-        # Initialize VideoPipeline here
-        self.vp = VideoPipeline(video_source, self.capture_frame_queue)
+        if self.video_source.startswith("/dev/video"):
+            self.vp = WebcamPipeline(video_source, self.capture_frame_queue)
+        else:
+            self.vp = VideoPipeline(video_source, self.capture_frame_queue)
         
         self.stop_event = threading.Event()
 
