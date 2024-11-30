@@ -30,7 +30,7 @@ class WebcamPipeline:
         self.v4l2src.set_property("device", self.uri)
 
         # Create the caps for the desired video format (e.g., 640x480, RGB format)
-        caps = Gst.Caps.from_string("video/x-raw,format=RGB")
+        caps = Gst.Caps.from_string("video/x-raw,format=RGB,width=1080,height=720")
         self.capsfilter.set_property("caps", caps)
 
         # Configure appsink properties
