@@ -8,7 +8,7 @@ import paho.mqtt.client as mqtt
 if os.environ.get('CAMERA'):
     Camera = import_module('camera_' + os.environ['CAMERA']).Camera
 else:
-    from camera_v4l2 import Camera
+    from camera import Camera
 
 CAMERA_SOURCES = {}
 
