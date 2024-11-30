@@ -57,12 +57,18 @@ su
 Password: oelinux123
 ```
 
-2. Navigate to Project Directory
+2. Clone and Install SNPE_Flask Project
+```
+apt install git
+git clone https://github.com/Kaiwei0323/SNPE_Flask.git
+```
+
+3. Navigate to Project Directory
 ```
 cd SNPE_Flask/Tutorials
 ```
 
-3. Environment Setup
+4. Environment Setup
 ```
 apt update
 apt install software-properties-common -y
@@ -83,7 +89,7 @@ apt install mosquitto mosquitto-clients
 python3.10 -m pip install --upgrade pygobject
 ```
 
-4. MQTT Setup
+5. MQTT Setup
 Enable and check the Mosquitto service
 ```
 systemctl enable mosquitto
@@ -99,12 +105,12 @@ mosquitto_sub -h localhost -t yolov8/detections -v
 mosquitto_sub -h localhost -t detr/detections -v
 ```
 
-5. Run Application
+6. Run Application
 ```
 python3.10 app.py
 ```
 
-6. Demo Output
+7. Demo Output
 
 ![Screenshot from 2024-11-20 22-27-25](https://github.com/user-attachments/assets/48dd959c-8b56-4b08-a4f8-f379255f2386)
 
