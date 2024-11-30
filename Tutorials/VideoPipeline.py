@@ -16,14 +16,20 @@ class VideoPipeline:
         self.videoconvert = Gst.ElementFactory.make("qtivtransform", "qtivtransform")
         self.videoscale = Gst.ElementFactory.make("videoscale", "videoscale")
         self.capsfilter = Gst.ElementFactory.make("capsfilter", "capsfilter")
+        self.videorate = Gst.ElementFactory.make("videorate", "videorate")
         self.appsink = Gst.ElementFactory.make("appsink", "appsink")
+        
+        self.rate = 1
 
         # Check if elements were created successfully
-        if not all([self.uridecodebin, self.queue, self.videoconvert, self.videoscale, self.capsfilter, self.appsink]):
+        if not all([self.uridecodebin, self.queue, self.videoconvert, self.videoscale, self.capsfilter, self.videorate, self.appsink]):
             print("Not all elements could be created")
             return
 
         print("Created all elements successfully")
+        
+    def set_rate(self, rate):
+        self.rate = rate
 
     def create(self):
         # Set the URI property of uridecodebin
@@ -32,6 +38,9 @@ class VideoPipeline:
         # Create the caps for the desired video format (e.g., 640x480, RGB format)
         caps = Gst.Caps.from_string("video/x-raw,format=RGB,width=1080,height=720")
         self.capsfilter.set_property("caps", caps)
+        
+        # Set the framerate property for the videorate element
+        self.videorate.set_property("rate", self.rate) 
 
         # Configure appsink properties
         self.appsink.set_property("emit-signals", True)
@@ -47,6 +56,7 @@ class VideoPipeline:
         self.pipeline.add(self.videoconvert)
         self.pipeline.add(self.videoscale)
         self.pipeline.add(self.capsfilter)
+        self.pipeline.add(self.videorate)
         self.pipeline.add(self.appsink)
 
         # Link the elements together
@@ -54,7 +64,8 @@ class VideoPipeline:
         self.queue.link(self.videoconvert)
         self.videoconvert.link(self.videoscale)
         self.videoscale.link(self.capsfilter)
-        self.capsfilter.link(self.appsink)
+        self.capsfilter.link(self.videorate)
+        self.videorate.link(self.appsink)
 
         print("Elements linked successfully")
 
@@ -97,7 +108,7 @@ class VideoPipeline:
             # Handle queue overflow by dropping the oldest frame
             if self.image_queue.qsize() >= 30:
                 drop_frame = self.image_queue.get()
-                #print("Queue full, dropping oldest frame")
+                # print("Queue full, dropping oldest frame")
 
             # Add the new frame to the queue
             self.image_queue.put(np_array)
@@ -126,12 +137,13 @@ def display_frames(image_queue):
 
 
 if __name__ == "__main__":
+    Gst.init(None)
     # Initialize the image queue
     image_queue = Q.Queue()
     # Create an instance of the VideoPipeline class
     
-    video_path = "rtsp://99.64.152.69:8554/mystream2"
-    #video_path = "file:///home/aim/Videos/freeway.mp4"
+    # video_path = "rtsp://99.64.152.69:8554/mystream2"
+    video_path = "file:///home/aim/Videos/freeway.mp4"
     
     vp = VideoPipeline(video_path, image_queue)
 
