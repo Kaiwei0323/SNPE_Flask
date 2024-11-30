@@ -92,7 +92,7 @@ class YOLOV8(SnpeContext):
     def postprocess(self, frame, inference_start_time):
         """Post-process the model output and draw bounding boxes."""
         if frame is None or frame.size == 0:
-            print("Received an empty frame for preprocessing.")
+            print("Received an empty frame for postprocessing.")
             return
         output = self.GetOutputBuffer(self.m_output_tensors[0])
         if output is None:
