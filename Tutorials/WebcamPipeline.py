@@ -13,7 +13,7 @@ class WebcamPipeline:
         # Create GStreamer elements and assign them to instance variables
         self.v4l2src = Gst.ElementFactory.make("v4l2src", "v4l2src")
         self.queue = Gst.ElementFactory.make("queue", "queue")
-        self.videoconvert = Gst.ElementFactory.make("videoconvert", "videoconvert")
+        self.videoconvert = Gst.ElementFactory.make("qtivtransform", "qtivtransform")
         self.videoscale = Gst.ElementFactory.make("videoscale", "videoscale")
         self.capsfilter = Gst.ElementFactory.make("capsfilter", "capsfilter")
         self.appsink = Gst.ElementFactory.make("appsink", "appsink")
