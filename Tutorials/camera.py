@@ -10,6 +10,7 @@ from fall_class import FALL_CLASSES
 from ppe_class import PPE_CLASSES
 from detr_coco80_class import DETR_COCO80_CLASSES
 from detr_fall_class import DETR_FALL_CLASSES
+from detr_ppe_class import DETR_PPE_CLASSES
 from VideoPipeline import VideoPipeline
 from WebcamPipeline import WebcamPipeline
 
@@ -78,6 +79,7 @@ class Camera(BaseCamera):
             model_map = {
                 "DETR": ("models/detr_resnet101_int8.dlc", ["image"], ["/model/class_labels_classifier/MatMul_post_reshape", "/model/Sigmoid"], ["logits", "boxes"], DETR_COCO80_CLASSES),
                 "DETR_FALL": ("models/fall_detr_int8.dlc", ["pixel_values"], ["/class_labels_classifier/MatMul_post_reshape", "/Sigmoid"], ["logits", "pred_boxes"], DETR_FALL_CLASSES),
+                "DETR_PPE": ("models/ppe_detr_int8.dlc", ["pixel_values"], ["/class_labels_classifier/MatMul_post_reshape", "/Sigmoid"], ["logits", "pred_boxes"], DETR_PPE_CLASSES),
                 "YOLOV8S_DSP": ("models/yolov8s_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
                 "YOLOV8S_GPU": ("models/yolov8s_quantized.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
                 "YOLOV8S_FALL_DSP": ("models/yolov8s_fall_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),

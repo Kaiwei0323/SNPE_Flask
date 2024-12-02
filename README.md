@@ -86,6 +86,8 @@ python3.10 -m pip install matplotlib
 python3.10 -m pip install Flask --ignore-installed blinker
 python3.10 -m pip install paho-mqtt
 apt install mosquitto mosquitto-clients
+apt-get install libcairo2-dev
+apt-get install libgirepository1.0-dev
 python3.10 -m pip install --upgrade pygobject
 ```
 
