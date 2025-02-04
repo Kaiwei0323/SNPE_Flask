@@ -1,11 +1,3 @@
-#==============================================================================
-#
-#  Copyright (c) 2020-2023 Qualcomm Technologies, Inc.
-#  All Rights Reserved.
-#  Confidential and Proprietary - Qualcomm Technologies, Inc.
-#
-#==============================================================================
-
 cmake_minimum_required (VERSION 3.14)
 project (snpehelper)
 set (APP "snpehelper")
@@ -15,6 +7,7 @@ set( APP_SOURCES
     "snpehelper.cpp"
     "SNPERuntime.cpp"
 )
+
 set (CHIPSET "QCS6490")
 set (SNPE_ROOT "/home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828")
 set (SNPE_INCLUDE_DIR "${SNPE_ROOT}/include/SNPE")
@@ -35,20 +28,11 @@ get_filename_component(SNPE_HTP_PATH "${SNPE_LIB_PREFIX}/aarch64-${_dtuple_POSTF
 if(CHIPSET STREQUAL "QCS8550")
 	message("QCS8550 is selected")
 	get_filename_component(SNPE_STUB_PATH "${SNPE_LIB_PREFIX}/aarch64-${_dtuple_POSTFIX}/libSnpeHtpV73Stub.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-	get_filename_component(SNPE_SKEL_PATH "${SNPE_LIB_PREFIX}/hexagon-v73/unsigned/libSnpeHtpV73Skel.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})	
+	get_filename_component(SNPE_SKEL_PATH "${SNPE_LIB_PREFIX}/hexagon-v73/unsigned/libSnpeHtpV73Skel.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 else()
 	message("Default is selected")
 	get_filename_component(SNPE_STUB_PATH "${SNPE_LIB_PREFIX}/aarch64-${_dtuple_POSTFIX}/libSnpeHtpV68Stub.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 	get_filename_component(SNPE_SKEL_PATH "${SNPE_LIB_PREFIX}/hexagon-v68/unsigned/libSnpeHtpV68Skel.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-	get_filename_component(SNPE_DSP_STUB_PATH "${SNPE_LIB_PREFIX}/aarch64-${_dtuple_POSTFIX}/libSnpeDspV66Stub.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-	get_filename_component(QNN_DSP_PATH "${SNPE_LIB_PREFIX}/aarch64-${_dtuple_POSTFIX}/libQnnDsp.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-	get_filename_component(QNN_DSP_STUB_PATH "${SNPE_LIB_PREFIX}/aarch64-${_dtuple_POSTFIX}/libQnnDspV66Stub.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-	get_filename_component(CALCULATER_SKEL_PATH "${SNPE_LIB_PREFIX}/hexagon-v68/unsigned/libCalculator_skel.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-	get_filename_component(QNN_HTP_PATH "${SNPE_LIB_PREFIX}/hexagon-v68/unsigned/libQnnHtpV68.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-	get_filename_component(QNN_HTP_SKEL_PATH "${SNPE_LIB_PREFIX}/hexagon-v68/unsigned/libQnnHtpV68Skel.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-	get_filename_component(QNN_SAVER_PATH "${SNPE_LIB_PREFIX}/hexagon-v68/unsigned/libQnnSaver.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-	get_filename_component(QNN_SYSTEM_PATH "${SNPE_LIB_PREFIX}/hexagon-v68/unsigned/libQnnSystem.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-	get_filename_component(SNPE_HTP_PATH "${SNPE_LIB_PREFIX}/hexagon-v68/unsigned/libSnpeHtpV68Skel.so" REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
 add_library(SNPE SHARED IMPORTED)

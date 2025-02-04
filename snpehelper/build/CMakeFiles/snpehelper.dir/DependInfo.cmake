@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/SNPERuntime.cpp" "/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build/CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o"
-  "/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/dllmain.cpp" "/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build/CMakeFiles/snpehelper.dir/dllmain.cpp.o"
-  "/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/snpehelper.cpp" "/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build/CMakeFiles/snpehelper.dir/snpehelper.cpp.o"
+  "/home/aim/Documents/SNPE_Flask/snpehelper/SNPERuntime.cpp" "/home/aim/Documents/SNPE_Flask/snpehelper/build/CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o"
+  "/home/aim/Documents/SNPE_Flask/snpehelper/dllmain.cpp" "/home/aim/Documents/SNPE_Flask/snpehelper/build/CMakeFiles/snpehelper.dir/dllmain.cpp.o"
+  "/home/aim/Documents/SNPE_Flask/snpehelper/snpehelper.cpp" "/home/aim/Documents/SNPE_Flask/snpehelper/build/CMakeFiles/snpehelper.dir/snpehelper.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

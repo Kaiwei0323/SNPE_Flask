@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper
+CMAKE_SOURCE_DIR = /home/aim/Documents/SNPE_Flask/snpehelper
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build
+CMAKE_BINARY_DIR = /home/aim/Documents/SNPE_Flask/snpehelper/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/snpehelper.dir/depend.make
@@ -59,42 +59,42 @@ include CMakeFiles/snpehelper.dir/flags.make
 
 CMakeFiles/snpehelper.dir/dllmain.cpp.o: CMakeFiles/snpehelper.dir/flags.make
 CMakeFiles/snpehelper.dir/dllmain.cpp.o: ../dllmain.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/snpehelper.dir/dllmain.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/snpehelper.dir/dllmain.cpp.o -c /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/dllmain.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/aim/Documents/SNPE_Flask/snpehelper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/snpehelper.dir/dllmain.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/snpehelper.dir/dllmain.cpp.o -c /home/aim/Documents/SNPE_Flask/snpehelper/dllmain.cpp
 
 CMakeFiles/snpehelper.dir/dllmain.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/snpehelper.dir/dllmain.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/dllmain.cpp > CMakeFiles/snpehelper.dir/dllmain.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aim/Documents/SNPE_Flask/snpehelper/dllmain.cpp > CMakeFiles/snpehelper.dir/dllmain.cpp.i
 
 CMakeFiles/snpehelper.dir/dllmain.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/snpehelper.dir/dllmain.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/dllmain.cpp -o CMakeFiles/snpehelper.dir/dllmain.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aim/Documents/SNPE_Flask/snpehelper/dllmain.cpp -o CMakeFiles/snpehelper.dir/dllmain.cpp.s
 
 CMakeFiles/snpehelper.dir/snpehelper.cpp.o: CMakeFiles/snpehelper.dir/flags.make
 CMakeFiles/snpehelper.dir/snpehelper.cpp.o: ../snpehelper.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/snpehelper.dir/snpehelper.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/snpehelper.dir/snpehelper.cpp.o -c /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/snpehelper.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/aim/Documents/SNPE_Flask/snpehelper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/snpehelper.dir/snpehelper.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/snpehelper.dir/snpehelper.cpp.o -c /home/aim/Documents/SNPE_Flask/snpehelper/snpehelper.cpp
 
 CMakeFiles/snpehelper.dir/snpehelper.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/snpehelper.dir/snpehelper.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/snpehelper.cpp > CMakeFiles/snpehelper.dir/snpehelper.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aim/Documents/SNPE_Flask/snpehelper/snpehelper.cpp > CMakeFiles/snpehelper.dir/snpehelper.cpp.i
 
 CMakeFiles/snpehelper.dir/snpehelper.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/snpehelper.dir/snpehelper.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/snpehelper.cpp -o CMakeFiles/snpehelper.dir/snpehelper.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aim/Documents/SNPE_Flask/snpehelper/snpehelper.cpp -o CMakeFiles/snpehelper.dir/snpehelper.cpp.s
 
 CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o: CMakeFiles/snpehelper.dir/flags.make
 CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o: ../SNPERuntime.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o -c /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/SNPERuntime.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/aim/Documents/SNPE_Flask/snpehelper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o -c /home/aim/Documents/SNPE_Flask/snpehelper/SNPERuntime.cpp
 
 CMakeFiles/snpehelper.dir/SNPERuntime.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/snpehelper.dir/SNPERuntime.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/SNPERuntime.cpp > CMakeFiles/snpehelper.dir/SNPERuntime.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aim/Documents/SNPE_Flask/snpehelper/SNPERuntime.cpp > CMakeFiles/snpehelper.dir/SNPERuntime.cpp.i
 
 CMakeFiles/snpehelper.dir/SNPERuntime.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/snpehelper.dir/SNPERuntime.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/SNPERuntime.cpp -o CMakeFiles/snpehelper.dir/SNPERuntime.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aim/Documents/SNPE_Flask/snpehelper/SNPERuntime.cpp -o CMakeFiles/snpehelper.dir/SNPERuntime.cpp.s
 
 # Object files for target snpehelper
 snpehelper_OBJECTS = \
@@ -111,7 +111,7 @@ libsnpehelper.so: CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o
 libsnpehelper.so: CMakeFiles/snpehelper.dir/build.make
 libsnpehelper.so: /home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828/lib/aarch64-ubuntu-gcc9.4/libSNPE.so
 libsnpehelper.so: CMakeFiles/snpehelper.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX shared module libsnpehelper.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/aim/Documents/SNPE_Flask/snpehelper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX shared module libsnpehelper.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/snpehelper.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -124,6 +124,6 @@ CMakeFiles/snpehelper.dir/clean:
 .PHONY : CMakeFiles/snpehelper.dir/clean
 
 CMakeFiles/snpehelper.dir/depend:
-	cd /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build /home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/build/CMakeFiles/snpehelper.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/aim/Documents/SNPE_Flask/snpehelper/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/aim/Documents/SNPE_Flask/snpehelper /home/aim/Documents/SNPE_Flask/snpehelper /home/aim/Documents/SNPE_Flask/snpehelper/build /home/aim/Documents/SNPE_Flask/snpehelper/build /home/aim/Documents/SNPE_Flask/snpehelper/build/CMakeFiles/snpehelper.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/snpehelper.dir/depend
 

@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/SNPERuntime.cpp
+/home/aim/Documents/SNPE_Flask/snpehelper/SNPERuntime.cpp
 SNPERuntime.h
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/SNPERuntime.h
+/home/aim/Documents/SNPE_Flask/snpehelper/SNPERuntime.h
 
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/SNPERuntime.h
+/home/aim/Documents/SNPE_Flask/snpehelper/SNPERuntime.h
 memory
 -
 vector
@@ -22,27 +22,27 @@ unordered_map
 string
 -
 SNPE/SNPE.hpp
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/SNPE/SNPE.hpp
+/home/aim/Documents/SNPE_Flask/snpehelper/SNPE/SNPE.hpp
 SNPE/SNPEFactory.hpp
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/SNPE/SNPEFactory.hpp
+/home/aim/Documents/SNPE_Flask/snpehelper/SNPE/SNPEFactory.hpp
 SNPE/SNPEBuilder.hpp
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/SNPE/SNPEBuilder.hpp
+/home/aim/Documents/SNPE_Flask/snpehelper/SNPE/SNPEBuilder.hpp
 DlSystem/DlEnums.hpp
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/DlSystem/DlEnums.hpp
+/home/aim/Documents/SNPE_Flask/snpehelper/DlSystem/DlEnums.hpp
 DlSystem/DlError.hpp
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/DlSystem/DlError.hpp
+/home/aim/Documents/SNPE_Flask/snpehelper/DlSystem/DlError.hpp
 DlSystem/ITensorFactory.hpp
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/DlSystem/ITensorFactory.hpp
+/home/aim/Documents/SNPE_Flask/snpehelper/DlSystem/ITensorFactory.hpp
 DlSystem/IUserBufferFactory.hpp
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/DlSystem/IUserBufferFactory.hpp
+/home/aim/Documents/SNPE_Flask/snpehelper/DlSystem/IUserBufferFactory.hpp
 DlSystem/TensorShape.hpp
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/DlSystem/TensorShape.hpp
+/home/aim/Documents/SNPE_Flask/snpehelper/DlSystem/TensorShape.hpp
 DlContainer/IDlContainer.hpp
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/DlContainer/IDlContainer.hpp
+/home/aim/Documents/SNPE_Flask/snpehelper/DlContainer/IDlContainer.hpp
 Utils.h
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/Utils.h
+/home/aim/Documents/SNPE_Flask/snpehelper/Utils.h
 
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/Utils.h
+/home/aim/Documents/SNPE_Flask/snpehelper/Utils.h
 fstream
 -
 iostream
@@ -56,15 +56,15 @@ map
 unordered_map
 -
 
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/dllmain.cpp
+/home/aim/Documents/SNPE_Flask/snpehelper/dllmain.cpp
 snpehelper.h
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/snpehelper.h
+/home/aim/Documents/SNPE_Flask/snpehelper/snpehelper.h
 
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/snpehelper.cpp
+/home/aim/Documents/SNPE_Flask/snpehelper/snpehelper.cpp
 snpehelper.h
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/snpehelper.h
+/home/aim/Documents/SNPE_Flask/snpehelper/snpehelper.h
 
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/snpehelper.h
+/home/aim/Documents/SNPE_Flask/snpehelper/snpehelper.h
 iostream
 -
 memory
@@ -82,19 +82,19 @@ pybind11/pybind11.h
 pybind11/stl.h
 -
 Utils.h
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/Utils.h
+/home/aim/Documents/SNPE_Flask/snpehelper/Utils.h
 SNPERuntime.h
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/SNPERuntime.h
+/home/aim/Documents/SNPE_Flask/snpehelper/SNPERuntime.h
 pybind11/numpy.h
 -
 DlSystem/DlVersion.h
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/DlSystem/DlVersion.h
+/home/aim/Documents/SNPE_Flask/snpehelper/DlSystem/DlVersion.h
 DlSystem/DlEnums.h
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/DlSystem/DlEnums.h
+/home/aim/Documents/SNPE_Flask/snpehelper/DlSystem/DlEnums.h
 DlSystem/DlError.h
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/DlSystem/DlError.h
+/home/aim/Documents/SNPE_Flask/snpehelper/DlSystem/DlError.h
 DlSystem/TensorShape.h
-/home/aim/Documents/qidk/Tools/snpe-helper/snpehelper/DlSystem/TensorShape.h
+/home/aim/Documents/SNPE_Flask/snpehelper/DlSystem/TensorShape.h
 
 /home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DiagLog/IDiagLog.h
 DiagLog/Options.h
