@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Farm Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #28a745;
+        }
+
+        .back-to-home {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745; /* Changed to green */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            text-decoration: none;
+        }
+
+        .back-to-home:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .sensor-data {
+            margin-top: 30px;
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .sensor-data h3 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .sensor-data p {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .sensor-data span.error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .sensor-data span.value {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Back to Home Button -->
+    <a href="/" class="back-to-home">Back to Home</a>
+
+    <h1>Smart Farm Demo</h1>
+
+    <form method="POST">
+        <label for="farm_name">Farm Name:</label>
+        <input type="text" name="farm_name" id="farm_name" value="{{ farm_name }}" required>
+
+        <label for="sensor_ip">Sensor IP Address:</label>
+        <input type="text" name="sensor_ip" id="sensor_ip" value="{{ sensor_ip }}" required>
+
+        <label for="port">Port:</label>
+        <input type="text" name="port" id="port" value="{{ port }}" required>
+
+        <button type="submit">Get Sensor Data</button>
+    </form>
+
+    {% if sensor_data %}
+        <div class="sensor-data">
+            <h3>Sensor Data for {{ farm_name }}:</h3>
+
+            {% for sensor, data in sensor_data.items() %}
+                <p>
+                    <strong>{{ sensor.capitalize() }}:</strong>
+                    {% if data.error %}
+                        <span class="error">{{ data.error }}</span>
+                    {% else %}
+                        <span class="value">{{ data }}</span>
+                    {% endif %}
+                </p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+</body>
+</html>
+
