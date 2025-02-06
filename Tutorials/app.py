@@ -4,6 +4,8 @@ from importlib import import_module
 import paho.mqtt.client as mqtt
 import requests
 import json
+import subprocess
+import signal
 
 # Import the camera driver
 if os.environ.get('CAMERA'):
@@ -149,7 +151,112 @@ def smart_farm_demo():
 
     # Ensure to pass port even if it hasn't been set yet (in case of a GET request)
     return render_template("smart_farm.html", farm_name=farm_name, sensor_ip=sensor_ip, port=port, sensor_data=sensor_data)
+    
+# To store the port-forward process for each session (since we don't have persistent session management here)
+active_processes = {}
 
+def get_k8s_services():
+    command = ["kubectl", "get", "svc", "-n", "deviceshifu", "-o", "json"]
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    if result.returncode != 0:
+        return None, result.stderr.decode("utf-8")
+    
+    services = json.loads(result.stdout)
+    
+    formatted_services = []
+    for item in services.get("items", []):
+        name = item["metadata"]["name"]
+        svc_type = item["spec"]["type"]
+        cluster_ip = item["spec"]["clusterIP"]
+        external_ip = item["status"].get("loadBalancer", {}).get("ingress", [{}])[0].get("ip", "<pending>")
+        port = item["spec"]["ports"][0]["port"] if item["spec"]["ports"] else None
+        age = item["metadata"].get("creationTimestamp", "Unknown")
+        
+        formatted_services.append({
+            "name": name,
+            "type": svc_type,
+            "cluster_ip": cluster_ip,
+            "external_ip": external_ip,
+            "port": port,
+            "age": age
+        })
+    
+    return formatted_services, None
+
+# Function to forward port asynchronously and return the PID
+def port_forward(service_name, ip_address, port):
+    command = [
+        "kubectl", "port-forward", "-n", "deviceshifu", 
+        f"svc/{service_name}", f"{port}:{80}", "--address", ip_address
+    ]
+    
+    # Start the process asynchronously
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    # Store the process ID to kill it later
+    pid = process.pid
+    active_processes[pid] = process
+
+    return pid, None
+
+# Function to stop the port forwarding by killing the process
+def stop_port_forward(pid):
+    process = active_processes.get(pid)
+    
+    if process:
+        # Kill the process using its PID
+        process.kill()
+        del active_processes[pid]
+        return True, None
+    else:
+        return False, "Process not found."
+
+@app.route('/my_kubernetes')
+def my_kubernetes():
+    return render_template('my_kubernetes.html')
+
+@app.route('/get_services', methods=['GET'])
+def get_services():
+    services, error = get_k8s_services()
+    if error:
+        return jsonify({"status": "error", "message": error}), 500
+    
+    return jsonify({"status": "success", "services": services})
+
+@app.route('/port_forward', methods=['POST'])
+def handle_port_forward():
+    service_name = request.form.get('service_name')
+    ip_address = request.form.get('ip_address')
+    port = request.form.get('port')
+
+    if not service_name or not ip_address or not port:
+        return jsonify({"status": "error", "message": "All fields are required!"}), 400
+
+    pid, error = port_forward(service_name, ip_address, port)
+    
+    if error:
+        return jsonify({"status": "error", "message": error}), 500
+    
+    return jsonify({"status": "success", "message": f"Port forwarding started on {ip_address}:{port}", "pid": pid})
+
+@app.route('/stop_port_forward', methods=['POST'])
+def handle_stop_port_forward():
+    pid = request.form.get('pid')
+
+    if not pid:
+        return jsonify({"status": "error", "message": "PID is required!"}), 400
+    
+    try:
+        pid = int(pid)
+        success, error = stop_port_forward(pid)
+        
+        if success:
+            return jsonify({"status": "success", "message": "Port forwarding stopped successfully!"})
+        else:
+            return jsonify({"status": "error", "message": error}), 500
+    except ValueError:
+        return jsonify({"status": "error", "message": "Invalid PID!"}), 400
 
 
 if __name__ == '__main__':

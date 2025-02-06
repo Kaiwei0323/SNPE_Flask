@@ -134,7 +134,17 @@
                     {% if data.error %}
                         <span class="error">{{ data.error }}</span>
                     {% else %}
-                        <span class="value">{{ data }}</span>
+                        {% if sensor == 'light' %}
+                            <span class="value">{{ data }} lux</span>
+                        {% elif sensor == 'temperature' %}
+                            <span class="value">{{ data }} °C</span>
+                        {% elif sensor == 'air' %}
+                            <span class="value">{{ data }} ppm</span>
+                        {% elif sensor == 'humidity' %}
+                            <span class="value">{{ data }} %</span>
+                        {% else %}
+                            <span class="value">{{ data }}</span>
+                        {% endif %}
                     {% endif %}
                 </p>
             {% endfor %}
