@@ -89,6 +89,7 @@ apt install mosquitto mosquitto-clients
 apt-get install libcairo2-dev
 apt-get install libgirepository1.0-dev
 python3.10 -m pip install --upgrade pygobject
+python3.10 -m pip install scikit-learn streamlit==1.31.1 scikit-learn==1.3.2 joblib pandas
 ```
 
 5. MQTT Setup
