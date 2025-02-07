@@ -3,6 +3,26 @@
 {% block title %}Video Streaming{% endblock title %}
 
 {% block content %}
+
+<!-- Adding the background image through CSS -->
+<style>
+    body {
+        background-image: url('/static/images/sliders/camera.jpg');  /* Set the background image */
+        background-size: cover;  /* Cover the entire page with the image */
+        background-position: center center;  /* Center the background image */
+        background-attachment: fixed;  /* Ensure the image stays fixed while scrolling */
+        background-repeat: no-repeat;  /* Prevent the image from repeating */
+        height: 100vh;  /* Ensure the background covers the full viewport height */
+        margin: 0;  /* Remove default body margin */
+        padding: 0;  /* Remove default body padding */
+    }
+
+    /* Add margin to the image to move it down */
+    .img-fluid {
+        margin-top: 100px; /* Adjust the value as needed */
+    }
+</style>
+
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -23,28 +43,25 @@
             width: 100%;  /* Full width */
             max-width: 1200px;  /* Max width for the form */
             background: #fff;  /* Light container background */
-            padding: 20px;
+            padding: 2px;  /* Reduced padding for smaller spacing */
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin: 0 auto;  /* Center the form horizontally */
-            display: flex;
-            flex-wrap: wrap;  /* Allow form items to wrap */
-            gap: 20px;  /* Space between form elements */
         }
 
         .form-container label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 0px;  /* Reduced margin between label and input */
             font-weight: bold;
             color: #333;
         }
 
-        /* Align the form items horizontally */
         .form-group {
             display: flex;
-            flex-wrap: wrap;  /* Allow for wrapping on smaller screens */
-            gap: 20px;  /* Add space between items */
-            width: 100%;  /* Ensure it takes up full width */
+            flex-wrap: nowrap;  /* Prevent wrapping */
+            gap: 20px;  /* Space between form items */
+            width: 100%;
+            align-items: center;  /* Align items to the center vertically */
         }
 
         .form-group > div {
@@ -54,32 +71,29 @@
 
         .form-container input[type="text"], 
         .form-container select {
-            width: 100%;  /* Make inputs and selects take full width */
+            width: 90%;  /* Make inputs and selects take full width */
             padding: 5px;
-            margin-bottom: 5px;
+            margin-bottom: 2px;  /* Reduced space below input/select */
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 2px;
             background-color: #f9f9f9;  /* Light input background */
             color: #333;
             box-sizing: border-box;
         }
 
-        .form-container .full-width {
-            width: 100%;  /* Full width for some fields */
-        }
-
-        button {
+        .form-container button {
             background-color: #007bff;  /* Default blue button */
             color: white;
-            padding: 10px;
+            padding: 5px 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            width: 100%;
             font-size: 1em;
+            width: 70%;  /* Auto width to allow the button to be next to the select */
+            margin-left: -40px;
         }
 
-        button:hover {
+        .form-container button:hover {
             background-color: #0056b3;
         }
 
@@ -204,6 +218,9 @@
                         <option value="CPU">CPU</option>
                     </select>
                 </div>
+
+                <!-- Add Camera button next to Runtime -->
+                <button type="submit">Add Camera</button>
             </div>
             
             <!-- RTSP URL input, shown only when RTSP is selected -->
@@ -211,8 +228,6 @@
                 <label for="rtsp_url">RTSP URL:</label>
                 <input type="text" id="rtsp_url" name="rtsp_url" placeholder="Enter RTSP URL">
             </div>
-
-            <button type="submit">Add Camera</button>
         </form>
     </div>
 
@@ -230,5 +245,4 @@
     </div>
 </body>
 </html>
-{% endblock content %}
-
+{% endblock content %} 

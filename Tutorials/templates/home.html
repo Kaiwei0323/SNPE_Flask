@@ -3,8 +3,29 @@
 {% block title %}Home - Smart Solutions{% endblock title %}
 
 {% block content %}
+
+<!-- Adding the background image through CSS -->
+<style>
+    body {
+        background-image: url('/static/images/sliders/ai-city.jpg');  /* Set the background image */
+        background-size: cover;  /* Cover the entire page with the image */
+        background-position: center center;  /* Center the background image */
+        background-attachment: fixed;  /* Ensure the image stays fixed while scrolling */
+        background-repeat: no-repeat;  /* Prevent the image from repeating */
+        height: 100vh;  /* Ensure the background covers the full viewport height */
+        margin: 0;  /* Remove default body margin */
+        padding: 0;  /* Remove default body padding */
+    }
+
+    /* Add margin to the image to move it down */
+    .img-fluid {
+        margin-top: 100px; /* Adjust the value as needed */
+    }
+</style>
+
     <div class="container text-center py-5">
         <h1>Welcome to Smart Solutions</h1>
+        <img src="{{ url_for('static', filename='images/sliders/qc01_rb.png') }}" alt="Smart Solutions Image" class="img-fluid">
     </div>
 {% endblock content %}
 

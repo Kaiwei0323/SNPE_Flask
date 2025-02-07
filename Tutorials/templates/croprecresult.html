@@ -1,67 +1,90 @@
 {% extends 'base.html' %} 
-{% block title %}Crop and Fertilizer Recommendation{% endblock title %} 
+{% block title %}Crop and Fertilizer Recommendation{% endblock title %}
 
 {% block content %}
+<!-- Adding the background image through CSS -->
+<style>
+    body {
+        background-image: url('/static/images/sliders/first.jpg');  /* Set the background image */
+        background-size: cover;  /* Cover the entire page with the image */
+        background-position: center center;  /* Center the background image */
+        background-attachment: fixed;  /* Ensure the image stays fixed while scrolling */
+        background-repeat: no-repeat;  /* Prevent the image from repeating */
+        height: 100vh;  /* Ensure the background covers the full viewport height */
+        margin: 0;  /* Remove default body margin */
+        padding: 0;  /* Remove default body padding */
+    }
 
-<div class="row-sm p-sm-5">
-    <div class="col-sm-12 p-sm-5">
-        <p class="text-center">
-            <h3 class="text-center">
-                Crop and Fertilizer Recommendation System
-            </h3>
+    /* Optional: Ensure content section has a background to make text readable */
+    .content-wrapper {
+        background-color: rgba(255, 255, 255, 0.8);  /* White background with opacity */
+        padding: 30px;  /* Add padding to separate content from edges */
+        border-radius: 10px;  /* Optional: Add rounded corners */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Optional: Add shadow for depth */
+    }
+</style>
 
+<div class="content-wrapper">
+    <div class="row-sm p-sm-5">
+        <div class="col-sm-12 p-sm-5">
             <p class="text-center">
-                The crop you should plant based on your data is - <h5 class="text-center"><b>{{ corrected_result1 }}</b></h5>
+                <h3 class="text-center">
+                    Crop and Fertilizer Recommendation System
+                </h3>
+
+                <p class="text-center">
+                    The crop you should plant based on your data is - <h5 class="text-center"><b>{{ corrected_result1 }}</b></h5>
+                </p>
+
+                <p class="text-center">
+                    The recommended fertilizer based on your soil conditions is - <h5 class="text-center"><b>{{ corrected_result2 }}</b></h5>
+                </p>
+                
+                <hr>
+
+                <h4 class="text-center">Sensor Data</h4>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sensor</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nitrogen (kg/ha)</td>
+                            <td>{{ sensor_values[0] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Phosphorous (kg/ha)</td>
+                            <td>{{ sensor_values[1] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Potassium (kg/ha)</td>
+                            <td>{{ sensor_values[2] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Temperature (°C)</td>
+                            <td>{{ sensor_values[3] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Humidity (%)</td>
+                            <td>{{ sensor_values[4] }}</td>
+                        </tr>
+                        <tr>
+                            <td>pH of Soil</td>
+                            <td>{{ sensor_values[5] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Rainfall (mm)</td>
+                            <td>{{ sensor_values[6] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </p>
-
-            <p class="text-center">
-                The recommended fertilizer based on your soil conditions is - <h5 class="text-center"><b>{{ corrected_result2 }}</b></h5>
-            </p>
-            
-            <hr>
-
-            <h4 class="text-center">Sensor Data</h4>
-
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sensor</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Nitrogen (kg/ha)</td>
-                        <td>{{ sensor_values[0] }}</td>
-                    </tr>
-                    <tr>
-                        <td>Phosphorous (kg/ha)</td>
-                        <td>{{ sensor_values[1] }}</td>
-                    </tr>
-                    <tr>
-                        <td>Potassium (kg/ha)</td>
-                        <td>{{ sensor_values[2] }}</td>
-                    </tr>
-                    <tr>
-                        <td>Temperature (°C)</td>
-                        <td>{{ sensor_values[3] }}</td>
-                    </tr>
-                    <tr>
-                        <td>Humidity (%)</td>
-                        <td>{{ sensor_values[4] }}</td>
-                    </tr>
-                    <tr>
-                        <td>pH of Soil</td>
-                        <td>{{ sensor_values[5] }}</td>
-                    </tr>
-                    <tr>
-                        <td>Rainfall (mm)</td>
-                        <td>{{ sensor_values[6] }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </p>
-    </div>  
+        </div>  
+    </div>
 </div>
 
 {% endblock content %}
