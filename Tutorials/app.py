@@ -89,59 +89,7 @@ def video_feed(camera_name):
     )
 
 
-@app.route('/smart_farm_demo', methods=["GET", "POST"])
-def smart_farm_demo():
-    # Initialize variables
-    farm_name = sensor_ip = port = ""  # Ensure all variables are initialized
-    sensor_data = {}
 
-    if request.method == "POST":
-        # Get form data
-        farm_name = request.form["farm_name"]
-        sensor_ip = request.form["sensor_ip"]
-        port = request.form["port"]
-
-        # Create URLs for the four sensor endpoints
-        endpoints = {
-            "light": f"http://{sensor_ip}:{port}/light",
-            "temperature": f"http://{sensor_ip}:{port}/temperature",
-            "air": f"http://{sensor_ip}:{port}/air",
-            "humidity": f"http://{sensor_ip}:{port}/humidity"
-        }
-
-        def fetch_sensor_data(sensor, url):
-            try:
-                response = requests.get(url)
-                if response.status_code != 200:
-                    return {"error": f"Failed to fetch data (Status Code: {response.status_code})"}
-
-                data = response.json()
-                mqtt_message = data.get('mqtt_message', '{}')
-                if mqtt_message == '{}':
-                    return {"error": "Empty mqtt_message"}
-
-                sensor_json = json.loads(mqtt_message)
-                return extract_sensor_value(sensor, sensor_json)
-
-            except (requests.RequestException, ValueError, json.JSONDecodeError) as e:
-                return {"error": f"Error fetching or parsing data: {e}"}
-
-        def extract_sensor_value(sensor, sensor_json):
-            # Map each sensor to its corresponding value in the JSON
-            mapping = {
-                'light': 'brightness',
-                'temperature': 'temperature',
-                'air': 'pollution_rate',
-                'humidity': 'humidity'
-            }
-            return {sensor: sensor_json.get(mapping.get(sensor), 'N/A')}
-
-        # Process each sensor's data
-        for sensor, url in endpoints.items():
-            sensor_data.update(fetch_sensor_data(sensor, url))
-
-    # Ensure to pass port even if it hasn't been set yet (in case of a GET request)
-    return render_template("smart_farm.html", farm_name=farm_name, sensor_ip=sensor_ip, port=port, sensor_data=sensor_data)
     
 @app.route('/croprecommendation/<res1>/<res2>')
 def cropresult(res1, res2):
@@ -161,13 +109,13 @@ def cropresult(res1, res2):
 @app.route('/croprecommendation', methods=['GET', 'POST'])
 def cr():
     if request.method == 'POST':
-        # Get the user's input for sensor IP and port
+        # Get the user's input for sensor IP, port, and protocol
         sensor_ip = request.form.get('sensor_ip')
         sensor_port = request.form.get('sensor_port')
 
         # Validate the input (simple check)
         if not sensor_ip or not sensor_port:
-            return "Invalid input! Please provide both sensor IP and port."
+            return "Invalid input! Please provide sensor IP and port."
 
         # Define the list of sensor names
         sensor_names = ['nitrogen', 'phosphorous', 'potassium', 'temperature', 'humidity', 'ph', 'rainfall']
@@ -184,16 +132,21 @@ def cr():
                 # Make the GET request to fetch the sensor value
                 response = requests.get(url)
                 response.raise_for_status()  # Raise an exception if the request fails
-                
+
                 # Assuming the response is a JSON object containing the sensor value in 'mqtt_message'
                 response_json = response.json()
+                
+                if isinstance(response_json, int):
+                    sensor_value = response_json
+                else:
 
-                # Extract the actual sensor value from the 'mqtt_message' field
-                sensor_data = response_json.get("mqtt_message", "{}")
-                sensor_json = json.loads(sensor_data)  # Parse the inner JSON
-                sensor_value = sensor_json.get(sensor, 0)  # Default to 0 if the value is missing
+                    # Extract the actual sensor value from the 'mqtt_message' field
+                    sensor_data = response_json.get("mqtt_message", "{}")
+                    sensor_json = json.loads(sensor_data)  # Parse the inner JSON
+                    sensor_value = sensor_json.get(sensor, 0)  # Default to 0 if the value is missing
 
                 sensor_values.append(float(sensor_value))  # Assuming the value is numeric
+
             except requests.exceptions.RequestException as e:
                 # Handle the error and append a default value if there's an issue fetching the sensor data
                 print(f"Error fetching {sensor}: {e}")
