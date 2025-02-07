@@ -1,116 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kubernetes Port Forwarding</title>
-    <style>
-        /* Global Styles */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            color: #333;
-        }
+{% extends 'base.html' %}
 
-        h1 {
-            font-size: 2.5em;
-            color: #007bff;
-            margin-bottom: 20px;
-        }
+{% block title %}Kubernetes Port Forwarding{% endblock title %}
 
-        /* Container Style */
-        .container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 480px;
-            text-align: center;
-        }
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Kubernetes Port Forwarding</h1>
+        
+        <div id="alertBox" class="alert d-none"></div>
 
-        /* Input & Select Styling */
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 1em;
-            box-sizing: border-box;
-        }
+        <div class="text-center mb-4">
+            <button class="btn btn-primary" onclick="fetchServices()">Fetch Services</button>
+        </div>
 
-        input:focus, select:focus {
-            border-color: #007bff;
-            outline: none;
-        }
+        <div class="form-group">
+            <label for="service_list">Select Service:</label>
+            <select id="service_list" class="form-control">
+                <option value="">Select a service</option>
+            </select>
+        </div>
 
-        /* Button Styling */
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-            margin: 8px 0;
-        }
+        <div class="form-group">
+            <label for="ip_address">IP Address:</label>
+            <input type="text" id="ip_address" class="form-control" value="0.0.0.0" required>
+        </div>
 
-        button:hover {
-            background-color: #0056b3;
-        }
+        <div class="form-group">
+            <label for="port">Port:</label>
+            <input type="number" id="port" class="form-control" value="3000" required>
+        </div>
 
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
+        <div class="text-center mt-4">
+            <button class="btn btn-success" onclick="portForward()">Forward Port</button>
+            <button id="stopButton" class="btn btn-danger" onclick="stopPortForward()" style="display: none;">Stop Port Forward</button>
+        </div>
 
-        /* Alert Box Styling */
-        .alert, .success-alert {
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 6px;
-            font-size: 1em;
-            display: none;
-        }
+        <!-- Status Text Display -->
+        <div id="statusText" class="text-center mt-4" style="font-size: 18px; font-weight: bold;">
+            <!-- Status will be shown here -->
+        </div>
+    </div>
 
-        .alert {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .success-alert {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        /* Back Button Styling */
-        .back-button {
-            margin-top: 20px;
-            font-size: 1em;
-        }
-
-        .back-button a {
-            color: #007bff;
-            text-decoration: none;
-            transition: text-decoration 0.3s;
-        }
-
-        .back-button a:hover {
-            text-decoration: underline;
-        }
-    </style>
     <script>
         let currentPid = null;  // Store the PID for stopping the process
 
@@ -138,7 +67,7 @@
                             serviceList.appendChild(option);
                         });
                     } else {
-                        alert("Error fetching services: " + data.message);
+                        showAlert("Error fetching services: " + data.message, 'alert');
                     }
                 });
         }
@@ -147,6 +76,9 @@
             let serviceName = document.getElementById("service_list").value;
             let ipAddress = document.getElementById("ip_address").value;
             let port = document.getElementById("port").value;
+
+            // Show status text
+            showStatus("Port Forwarding in Progress...");
 
             let formData = new FormData();
             formData.append('service_name', serviceName);
@@ -159,27 +91,23 @@
             })
             .then(response => response.json())
             .then(data => {
-                let alertBox = document.getElementById("alertBox");
                 if (data.status === "success") {
-                    alertBox.classList.add("success-alert");
-                    alertBox.classList.remove("alert");
-                    alertBox.textContent = data.message;
-                    alertBox.style.display = "block";
+                    showAlert(data.message, 'success-alert');
                     currentPid = data.pid;  // Store the PID for later stopping
                     localStorage.setItem('currentPid', currentPid);  // Store PID in localStorage
                     document.getElementById("stopButton").style.display = "inline-block";
+                    // Update status text
+                    showStatus("Port Forwarding Active!");
                 } else {
-                    alertBox.classList.add("alert");
-                    alertBox.classList.remove("success-alert");
-                    alertBox.textContent = "Error: " + data.message;
-                    alertBox.style.display = "block";
+                    showAlert("Error: " + data.message, 'alert');
+                    showStatus("Port Forwarding Failed.");
                 }
             });
         }
 
         function stopPortForward() {
             if (!currentPid) {
-                alert("No port forwarding process to stop!");
+                showAlert("No port forwarding process to stop!", 'alert');
                 return;
             }
 
@@ -192,61 +120,32 @@
             })
             .then(response => response.json())
             .then(data => {
-                let alertBox = document.getElementById("alertBox");
                 if (data.status === "success") {
-                    alertBox.classList.add("success-alert");
-                    alertBox.classList.remove("alert");
-                    alertBox.textContent = data.message;
-                    alertBox.style.display = "block";
+                    showAlert(data.message, 'success-alert');
                     currentPid = null;  // Clear the PID
                     localStorage.removeItem('currentPid');  // Remove the PID from localStorage
                     document.getElementById("stopButton").style.display = "none";
+                    // Update status text
+                    showStatus("Port Forwarding Stopped.");
                 } else {
-                    alertBox.classList.add("alert");
-                    alertBox.classList.remove("success-alert");
-                    alertBox.textContent = "Error: " + data.message;
-                    alertBox.style.display = "block";
+                    showAlert("Error: " + data.message, 'alert');
+                    showStatus("Failed to Stop Port Forwarding.");
                 }
             });
         }
+
+        function showAlert(message, alertClass) {
+            let alertBox = document.getElementById("alertBox");
+            alertBox.classList.remove("alert", "success-alert");
+            alertBox.classList.add(alertClass);
+            alertBox.textContent = message;
+            alertBox.style.display = "block";
+        }
+
+        function showStatus(message) {
+            let statusText = document.getElementById("statusText");
+            statusText.textContent = message;
+        }
     </script>
-</head>
-<body>
-    <h1>Kubernetes Port Forwarding</h1>
-    
-    <div class="container">
-        <div id="alertBox" class="alert"></div>
-
-        <div class="action-buttons">
-            <button onclick="fetchServices()">Fetch Services</button>
-        </div>
-        
-        <div>
-            <label for="service_list">Select Service:</label>
-            <select id="service_list">
-                <option value="">Select a service</option>
-            </select>
-        </div>
-        
-        <div>
-            <label for="ip_address">IP Address:</label>
-            <input type="text" id="ip_address" value="0.0.0.0" required>
-        </div>
-        
-        <div>
-            <label for="port">Port:</label>
-            <input type="number" id="port" value="3000" required>
-        </div>
-        
-        <div class="action-buttons">
-            <button onclick="portForward()">Forward Port</button>
-            <button id="stopButton" onclick="stopPortForward()" style="display: none;">Stop Port Forward</button>
-        </div>
-
-        <div class="back-button">
-            <a href="/">Back to Home</a>
-        </div>
-    </div>
-</body>
-</html>
+{% endblock content %}
 

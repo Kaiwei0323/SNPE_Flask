@@ -7,6 +7,12 @@ import json
 import subprocess
 import signal
 
+import numpy as np
+import pickle
+
+REC_MODEL = pickle.load(open('naive_bayes_model.pkl', 'rb'))
+FERT_MODEL = pickle.load(open('random_forest_model.pkl', 'rb'))
+
 # Import the camera driver
 if os.environ.get('CAMERA'):
     Camera = import_module('camera_' + os.environ['CAMERA']).Camera
@@ -25,7 +31,7 @@ def home():
 @app.route('/vision_solution')
 def vision_solution():
     """Video streaming home page."""
-    return render_template('index.html', camera_sources=CAMERA_SOURCES)
+    return render_template('vision.html', camera_sources=CAMERA_SOURCES)
 
 @app.route('/add_camera', methods=['POST'])
 def add_camera():
@@ -81,21 +87,6 @@ def video_feed(camera_name):
         gen(camera_instance),  # Use the existing camera instance
         mimetype='multipart/x-mixed-replace; boundary=frame'
     )
-    
-@app.route('/delete_all_cameras', methods=['POST'])
-def delete_all_cameras():
-    """Delete all cameras."""
-    camera_names = list(CAMERA_SOURCES.keys())  # Create a list of camera names to iterate over
-    
-    for camera_name in camera_names:
-        camera_instance = CAMERA_SOURCES[camera_name].get("camera_instance")
-        if camera_instance:
-            camera_instance.stop()  # Stop the camera and cleanup
-            print(f"Stopped camera: {camera_name}")
-        del CAMERA_SOURCES[camera_name]  # Remove camera from the sources
-    
-    print("All cameras have been deleted.")
-    return redirect(url_for('home'))  # Redirect back to home
 
 
 @app.route('/smart_farm_demo', methods=["GET", "POST"])
@@ -151,6 +142,102 @@ def smart_farm_demo():
 
     # Ensure to pass port even if it hasn't been set yet (in case of a GET request)
     return render_template("smart_farm.html", farm_name=farm_name, sensor_ip=sensor_ip, port=port, sensor_data=sensor_data)
+    
+@app.route('/croprecommendation/<res1>/<res2>')
+def cropresult(res1, res2):
+    # Convert the sensor values from the URL (e.g., JSON-encoded list) or pass as part of the response
+    # Here, we assume the sensor values are passed as a query string in the URL, or can be derived otherwise.
+    sensor_values = request.args.getlist('sensor_values')
+
+    print(res1)
+    corrected_result1 = res1
+    print(res2)
+    corrected_result2 = res2
+
+    # Pass the results and sensor values to the template
+    return render_template('croprecresult.html', corrected_result1=corrected_result1, corrected_result2=corrected_result2, sensor_values=sensor_values)
+
+
+@app.route('/croprecommendation', methods=['GET', 'POST'])
+def cr():
+    if request.method == 'POST':
+        # Get the user's input for sensor IP and port
+        sensor_ip = request.form.get('sensor_ip')
+        sensor_port = request.form.get('sensor_port')
+
+        # Validate the input (simple check)
+        if not sensor_ip or not sensor_port:
+            return "Invalid input! Please provide both sensor IP and port."
+
+        # Define the list of sensor names
+        sensor_names = ['nitrogen', 'phosphorous', 'potassium', 'temperature', 'humidity', 'ph', 'rainfall']
+        
+        # Initialize an empty list to hold the sensor values
+        sensor_values = []
+
+        # Fetch data for each sensor using the IP and port from user input
+        for sensor in sensor_names:
+            try:
+                # Construct the API URL dynamically using the user input
+                url = f'http://{sensor_ip}:{sensor_port}/{sensor}'
+                
+                # Make the GET request to fetch the sensor value
+                response = requests.get(url)
+                response.raise_for_status()  # Raise an exception if the request fails
+                
+                # Assuming the response is a JSON object containing the sensor value in 'mqtt_message'
+                response_json = response.json()
+
+                # Extract the actual sensor value from the 'mqtt_message' field
+                sensor_data = response_json.get("mqtt_message", "{}")
+                sensor_json = json.loads(sensor_data)  # Parse the inner JSON
+                sensor_value = sensor_json.get(sensor, 0)  # Default to 0 if the value is missing
+
+                sensor_values.append(float(sensor_value))  # Assuming the value is numeric
+            except requests.exceptions.RequestException as e:
+                # Handle the error and append a default value if there's an issue fetching the sensor data
+                print(f"Error fetching {sensor}: {e}")
+                sensor_values.append(0)  # Default value in case of error
+
+        # Crop prediction - use all 7 sensor values for crop prediction
+        crop_input = np.array(sensor_values)  # Use all 7 features for crop prediction
+        crop_input = crop_input.reshape(1, -1)
+
+        # Crop prediction using the REC_MODEL
+        res1 = REC_MODEL.predict(crop_input)[0]  # Crop prediction result
+
+        # Fertilizer prediction - use only the first 3 features (nitrogen, phosphorous, potassium)
+        fertilizer_input = np.array(sensor_values[:3])  # Only take the first 3 values for fertilizer prediction
+        fertilizer_input = fertilizer_input.reshape(1, -1)
+
+        # Fertilizer prediction using the FERT_MODEL
+        res2 = FERT_MODEL.predict(fertilizer_input)[0]  # Fertilizer prediction result
+
+        # Crop and Fertilizer dictionaries
+        crop_dict = {1: "Rice", 2: "Maize", 3: "Jute", 4: "Cotton", 5: "Coconut", 6: "Papaya", 7: "Orange",
+                     8: "Apple", 9: "Muskmelon", 10: "Watermelon", 11: "Grapes", 12: "Mango", 13: "Banana",
+                     14: "Pomegranate", 15: "Lentil", 16: "Blackgram", 17: "Mungbean", 18: "Mothbeans",
+                     19: "Pigeonpeas", 20: "Kidneybeans", 21: "Chickpea", 22: "Coffee"}
+
+        fertilizer_dict = {
+            0: 'Urea',
+            1: 'DAP',
+            2: 'Fourteen-Thirty Five-Fourteen',
+            3: 'Twenty Eight-Twenty Eight',
+            4: 'Seventeen-Seventeen-Seventeen',
+            5: 'Twenty-Twenty',
+            6: 'Ten-Twenty Six-Twenty Six'
+        }
+
+        # Map results to human-readable names
+        crop = crop_dict.get(res1, "Unknown Crop")
+        fert = fertilizer_dict.get(res2, "Unknown Fertilizer")
+
+        # Redirect to the `cropresult` route and pass results and sensor values as URL parameters
+        return redirect(url_for('cropresult', res1=crop, res2=fert, sensor_values=sensor_values))
+
+    return render_template('croprec.html')
+
     
 # To store the port-forward process for each session (since we don't have persistent session management here)
 active_processes = {}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %} 
+{% block title %}Crop and Fertilizer Recommendation{% endblock title %}
+
+{% block content %}
+
+<div class="row-sm p-sm-5">
+    <div class="col-sm-12 p-sm-5">
+        <p class="text-center">
+            <h3 class="text-center">
+                Crop and Fertilizer Recommendation
+            </h3>
+            <p class="text-center">
+                Enter the farm sensor IP and port to get the sensor values
+            </p>
+        </p>
+        <p>
+            <h4 class="text-center">
+                Enter Farm Sensor Information
+            </h4>
+        </p>
+        <form method="POST" enctype="multipart/form-data">
+            
+            <!-- Farm Sensor IP and Port Fields -->
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Farm Sensor IP</span>
+                <input type="text" name="sensor_ip" class="form-control" placeholder="Enter IP of the sensor (e.g., 192.168.1.100)" aria-label="Farm Sensor IP" aria-describedby="basic-addon1" required>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Farm Sensor Port</span>
+                <input type="number" name="sensor_port" class="form-control" placeholder="Enter Port Number (e.g., 3000)" aria-label="Farm Sensor Port" aria-describedby="basic-addon1" required>
+            </div>
+            
+            <!-- Submit button -->
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}
+

@@ -1,0 +1,68 @@
+{% extends 'base.html' %} 
+{% block title %}Crop and Fertilizer Recommendation{% endblock title %} 
+
+{% block content %}
+
+<div class="row-sm p-sm-5">
+    <div class="col-sm-12 p-sm-5">
+        <p class="text-center">
+            <h3 class="text-center">
+                Crop and Fertilizer Recommendation System
+            </h3>
+
+            <p class="text-center">
+                The crop you should plant based on your data is - <h5 class="text-center"><b>{{ corrected_result1 }}</b></h5>
+            </p>
+
+            <p class="text-center">
+                The recommended fertilizer based on your soil conditions is - <h5 class="text-center"><b>{{ corrected_result2 }}</b></h5>
+            </p>
+            
+            <hr>
+
+            <h4 class="text-center">Sensor Data</h4>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sensor</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Nitrogen (kg/ha)</td>
+                        <td>{{ sensor_values[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Phosphorous (kg/ha)</td>
+                        <td>{{ sensor_values[1] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Potassium (kg/ha)</td>
+                        <td>{{ sensor_values[2] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Temperature (°C)</td>
+                        <td>{{ sensor_values[3] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Humidity (%)</td>
+                        <td>{{ sensor_values[4] }}</td>
+                    </tr>
+                    <tr>
+                        <td>pH of Soil</td>
+                        <td>{{ sensor_values[5] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Rainfall (mm)</td>
+                        <td>{{ sensor_values[6] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </p>
+    </div>  
+</div>
+
+{% endblock content %}
+

@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block title %}Video Streaming{% endblock title %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Video Streaming</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;  /* Light background */
+            color: #333;  /* Dark text color */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;  /* Stack the content vertically */
+            gap: 20px;  /* Add space between form and streams */
+        }
+
+        .form-container {
+            width: 100%;  /* Full width */
+            max-width: 1200px;  /* Max width for the form */
+            background: #fff;  /* Light container background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;  /* Center the form horizontally */
+            display: flex;
+            flex-wrap: wrap;  /* Allow form items to wrap */
+            gap: 20px;  /* Space between form elements */
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Align the form items horizontally */
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;  /* Allow for wrapping on smaller screens */
+            gap: 20px;  /* Add space between items */
+            width: 100%;  /* Ensure it takes up full width */
+        }
+
+        .form-group > div {
+            flex: 1;  /* Allow the items to take equal width */
+            min-width: 250px;  /* Ensure items don't shrink too small */
+        }
+
+        .form-container input[type="text"], 
+        .form-container select {
+            width: 100%;  /* Make inputs and selects take full width */
+            padding: 5px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;  /* Light input background */
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        .form-container .full-width {
+            width: 100%;  /* Full width for some fields */
+        }
+
+        button {
+            background-color: #007bff;  /* Default blue button */
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .streams-container {
+            display: flex;  /* Use flexbox to lay out streams */
+            flex-wrap: wrap;  /* Allow streams to wrap to the next line */
+            gap: 10px;
+            justify-content: center;  /* Center the streams horizontally */
+            align-items: center;  /* Center the streams vertically (optional) */
+            max-width: 1200px;  /* Optional: You can limit the maximum width of the streams container */
+            margin: 0 auto;  /* Center the container horizontally */
+        }
+
+        .camera-container {
+            position: relative;
+            background: #fff;  /* Light background */
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;  /* Ensure two videos fit per row */
+            margin-bottom: 10px;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .delete-button:hover {
+            background-color: darkred;
+        }
+
+        #rtsp-url {
+            display: none;  /* Hide the RTSP URL input */
+        }
+
+        .go-home-button {
+            background-color: #007bff;  /* Blue background */
+        }
+
+        .go-home-button:hover {
+            background-color: #0056b3;  /* Darker blue on hover */
+        }
+
+    </style>
+
+    <script>
+        // JavaScript to toggle RTSP input visibility
+        function toggleRTSPInput() {
+            var videoSource = document.getElementById("video_source").value;
+            var rtspInput = document.getElementById("rtsp-url");
+            
+            if (videoSource === "RTSP") {
+                rtspInput.style.display = "block"; // Show RTSP URL input
+            } else {
+                rtspInput.style.display = "none"; // Hide RTSP URL input
+            }
+        }
+
+        window.onload = toggleRTSPInput;  // Trigger the function on page load
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <form action="/add_camera" method="post">
+            <div class="form-group">
+                <div>
+                    <label for="camera_name">Camera Name:</label>
+                    <input type="text" id="camera_name" name="camera_name" required>
+                </div>
+                
+                <div>
+                    <label for="video_source">Video Source:</label>
+                    <select id="video_source" name="video_source" onchange="toggleRTSPInput()" required>
+                        <option value="file:///home/aim/Videos/fall.mp4">FALL</option>
+                        <option value="file:///home/aim/Videos/ppe.mp4">PPE</option>
+                        <option value="file:///home/aim/Videos/freeway.mp4">FREEWAY</option>
+                        <option value='/dev/video0'>WEBCAM</option>
+                        <option value="RTSP">RTSP</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="model">Model:</label>
+                    <select id="model" name="model" required>
+                        <option value="YOLOV8S_DSP">YOLOV8S_DSP</option>
+                        <option value="YOLOV8S_GPU">YOLOV8S_GPU</option>
+                        <option value="YOLOV8S_FALL_DSP">YOLOV8S_FALL_DSP</option>
+                        <option value="YOLOV8L_FALL_DSP">YOLOV8L_FALL_DSP</option>
+                        <option value="YOLOV8S_PPE_DSP">YOLOV8S_PPE_DSP</option>
+                        <option value="DETR">DETR</option>
+                        <option value="DETR_FALL">DETR_FALL</option>
+                        <option value="DETR_PPE">DETR_PPE</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="runtime">Runtime:</label>
+                    <select id="runtime" name="runtime" required>
+                        <option value="DSP">DSP</option>
+                        <option value="GPU">GPU</option>
+                        <option value="CPU">CPU</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- RTSP URL input, shown only when RTSP is selected -->
+            <div id="rtsp-url">
+                <label for="rtsp_url">RTSP URL:</label>
+                <input type="text" id="rtsp_url" name="rtsp_url" placeholder="Enter RTSP URL">
+            </div>
+
+            <button type="submit">Add Camera</button>
+        </form>
+    </div>
+
+    <div class="streams-container">
+        {% for name, source in camera_sources.items() %}
+            <div class="camera-container">
+                <h2>{{ name }}</h2>
+                <img src="{{ url_for('video_feed', camera_name=name) }}" alt="{{ name }}">
+                <form action="/delete_camera" method="post" class="delete-form">
+                    <input type="hidden" name="camera_name" value="{{ name }}">
+                    <button type="submit" class="delete-button">✖</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
+{% endblock content %}
+
