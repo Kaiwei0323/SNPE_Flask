@@ -7,7 +7,9 @@ from base_camera import BaseCamera
 from snpehelper_manager import PerfProfile, Runtime
 from coco80_class import COCO80_CLASSES
 from fall_class import FALL_CLASSES
+from brain_tumor_class import BRAIN_TUMOR_CLASSES
 from ppe_class import PPE_CLASSES
+from med_ppe_class import MED_PPE_CLASSES
 from detr_coco80_class import DETR_COCO80_CLASSES
 from detr_fall_class import DETR_FALL_CLASSES
 from detr_ppe_class import DETR_PPE_CLASSES
@@ -15,7 +17,7 @@ from VideoPipeline import VideoPipeline
 from WebcamPipeline import WebcamPipeline
 
 import gi
-from gi.repository import Gst, GstApp
+from gi.repository import Gst, GstApp, GLib
 
 class Camera(BaseCamera):
     """Using OpenCV to capture video frames with threading for inference."""
@@ -52,6 +54,7 @@ class Camera(BaseCamera):
         self.inference_thread = threading.Thread(target=self.start_inference)
         self.inference_thread.start()
 
+
     def _set_runtime(self, runtime):
         """Set the runtime based on the specified string."""
         if runtime == "CPU":
@@ -84,7 +87,9 @@ class Camera(BaseCamera):
                 "YOLOV8S_GPU": ("models/yolov8s_quantized.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
                 "YOLOV8S_FALL_DSP": ("models/yolov8s_fall_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),
                 "YOLOV8L_FALL_DSP": ("models/yolov8l_fall_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),
+                "YOLOV8S_BRAIN_TUMOR_DSP": ("models/yolov8s_brain_tumor_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], BRAIN_TUMOR_CLASSES),
                 "YOLOV8S_PPE_DSP": ("models/ppe_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], PPE_CLASSES),
+                "YOLOV8S_MED_PPE_DSP": ("models/yolov8s_med_ppe_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], MED_PPE_CLASSES),
             }
 
             if self.model in model_map:

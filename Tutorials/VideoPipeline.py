@@ -1,6 +1,6 @@
 import gi
 import queue as Q
-from gi.repository import Gst, GstApp
+from gi.repository import Gst, GstApp, GLib
 import numpy as np
 import cv2
 
@@ -8,6 +8,8 @@ class VideoPipeline:
     def __init__(self, uri, image_queue):
         self.uri = uri  # Set URI for the video stream
         self.pipeline = None  # Will hold the pipeline reference
+        self.bus = None
+        self.loop = None
         self.image_queue = image_queue  # Queue to store image frames
         
         # Create GStreamer elements and assign them to instance variables
@@ -30,6 +32,17 @@ class VideoPipeline:
         
     def set_rate(self, rate):
         self.rate = rate
+        
+    def on_message(self, bus, message):
+        t = message.type
+        print(f"Message type: {t}")  # Debug output to check message type
+        if t == Gst.MessageType.EOS:
+            print("------------EOS--------------------------")
+            self.pipeline.set_state(Gst.State.NULL)  # Stop the pipeline
+            self.pipeline.set_state(Gst.State.READY)  # Prepare the pipeline for restart
+            self.pipeline.set_state(Gst.State.PLAYING) 
+            
+        
 
     def create(self):
         # Set the URI property of uridecodebin
@@ -67,13 +80,22 @@ class VideoPipeline:
         self.capsfilter.link(self.videorate)
         self.videorate.link(self.appsink)
 
+        # Connect to the EOS signal to detect end of stream
+        self.bus = self.pipeline.get_bus()
+        self.bus.add_signal_watch()
+        self.bus.connect("message", self.on_message)
+
         print("Elements linked successfully")
 
     def start(self):
         # Start playing the pipeline
+        
         if self.pipeline is not None:
+        
             self.pipeline.set_state(Gst.State.PLAYING)
             # print("Pipeline set to PLAYING")
+            self.loop = GLib.MainLoop()
+            self.loop.run()
 
     def destroy(self):
         # Clean up
@@ -118,6 +140,7 @@ class VideoPipeline:
         else:
             print("Failed to get sample")
             return Gst.FlowReturn.ERROR
+            
 
 """
 # Function to display frames from the queue
