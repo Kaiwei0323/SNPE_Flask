@@ -49,7 +49,7 @@ class VideoPipeline:
         self.uridecodebin.set_property("uri", self.uri)
 
         # Create the caps for the desired video format (e.g., 640x480, RGB format)
-        caps = Gst.Caps.from_string("video/x-raw,format=RGB,width=1080,height=720")
+        caps = Gst.Caps.from_string("video/x-raw,format=RGB,width=1080,height=580")
         self.capsfilter.set_property("caps", caps)
         
         # Set the framerate property for the videorate element

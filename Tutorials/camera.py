@@ -39,7 +39,7 @@ class Camera(BaseCamera):
         else:
             self.vp = VideoPipeline(video_source, self.capture_frame_queue)
             if self.video_source.startswith("file://"):
-                self.vp.set_rate(0.2)
+                self.vp.set_rate(0.1)
         
         self.stop_event = threading.Event()
 
