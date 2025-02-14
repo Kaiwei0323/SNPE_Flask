@@ -3,14 +3,16 @@ import queue as Q
 from gi.repository import Gst, GstApp, GLib
 import numpy as np
 import cv2
+import time
 
 class VideoPipeline:
-    def __init__(self, uri, image_queue):
+    def __init__(self, uri, image_queue, capture_lock):
         self.uri = uri  # Set URI for the video stream
         self.pipeline = None  # Will hold the pipeline reference
         self.bus = None
         self.loop = None
         self.image_queue = image_queue  # Queue to store image frames
+        self.capture_lock = capture_lock
         
         # Create GStreamer elements and assign them to instance variables
         self.uridecodebin = Gst.ElementFactory.make("uridecodebin", "uridecodebin")
@@ -35,12 +37,16 @@ class VideoPipeline:
         
     def on_message(self, bus, message):
         t = message.type
-        print(f"Message type: {t}")  # Debug output to check message type
+        # print(f"Message type: {t}")  # Debug output to check message type
         if t == Gst.MessageType.EOS:
             print("------------EOS--------------------------")
-            self.pipeline.set_state(Gst.State.NULL)  # Stop the pipeline
-            self.pipeline.set_state(Gst.State.READY)  # Prepare the pipeline for restart
-            self.pipeline.set_state(Gst.State.PLAYING) 
+            self.reconnect()
+
+            
+    def reconnect(self):
+        self.pipeline.set_state(Gst.State.NULL)  # Stop the pipeline
+        self.pipeline.set_state(Gst.State.READY)  # Prepare the pipeline for restart
+        self.pipeline.set_state(Gst.State.PLAYING)        
             
         
 
@@ -126,20 +132,22 @@ class VideoPipeline:
                                   buffer=buffer.extract_dup(0, buffer_size))
 
             np_array = np.copy(np_array)
+            
+            with self.capture_lock:
+                # Handle queue overflow by dropping the oldest frame
+                if self.image_queue.qsize() >= 30:
+                    drop_frame = self.image_queue.get()
+                    # print("Queue full, dropping oldest frame")
 
-            # Handle queue overflow by dropping the oldest frame
-            if self.image_queue.qsize() >= 30:
-                drop_frame = self.image_queue.get()
-                # print("Queue full, dropping oldest frame")
-
-            # Add the new frame to the queue
-            self.image_queue.put(np_array)
-            # print(f"Frame added to queue. Current queue size: {self.image_queue.qsize()}")
+                # Add the new frame to the queue
+                self.image_queue.put(np_array)
+                # print(f"Frame added to queue. Current queue size: {self.image_queue.qsize()}")
 
             return Gst.FlowReturn.OK
         else:
             print("Failed to get sample")
             return Gst.FlowReturn.ERROR
+           
             
 
 """

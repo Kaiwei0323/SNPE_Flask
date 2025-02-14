@@ -185,8 +185,13 @@ class YOLOV8(SnpeContext):
         """Run inference on the frame and return the processed frame."""
         start_time = time.time()
         self.preprocess(frame)
+        # print(f"Preprocessing Time: {time.time() - start_time:.4f}s")
+        execute_start_time = time.time()
         self.execute()
+        # print(f"Execution Time: {time.time() - execute_start_time:.4f}s")
+        postprocess_start_time = time.time()
         frame = self.postprocess(frame, start_time)
+        # print(f"Postprocessing Time: {time.time() - postprocess_start_time:.4f}s")
         
         # print(f"Inference Time: {time.time() - start_time:.4f}s")
         return frame
