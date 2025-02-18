@@ -20,6 +20,12 @@ from WebcamPipeline import WebcamPipeline
 import gi
 from gi.repository import Gst, GstApp, GLib
 
+from mqtt import MQTTClient
+
+import json
+
+mqtt_client = MQTTClient()
+
 class Camera():
     """Using OpenCV to capture video frames with threading for inference."""
     def __init__(self, video_source="/dev/video0", model="DETR", runtime="CPU"):
@@ -41,6 +47,7 @@ class Camera():
         self.capture_time = None
         self.inference_time = None
         self.display_time = None
+        
         
         if self.video_source.startswith("/dev/video"):
             self.vp = WebcamPipeline(video_source, self.capture_frame_queue, self.capture_lock)
@@ -259,7 +266,7 @@ class Camera():
             capture_time_ms = self.capture_time * 1000 if self.capture_time is not None else 0
             inference_time_ms = self.inference_time * 1000 if self.inference_time is not None else 0
             display_time_ms = self.display_time * 1000 if self.display_time is not None else 0
-
+            """
             # Print the information
             print("-----------------------------------------------------------")
             print(f"Capture frame queue: | {self.capture_frame_queue.qsize()}   ")
@@ -268,4 +275,20 @@ class Camera():
             print(f"Inference Time:      | {inference_time_ms:.4f}ms")
             print(f"Display Time:        | {display_time_ms:.4f}ms")
             print("-----------------------------------------------------------")
+            """
+            """Publish detection results to an MQTT topic in JSON format."""
+            detection_time_info = {
+                'Capture frame queue': self.capture_frame_queue.qsize(),
+                'Display Queue Size': self.inference_frame_queue.qsize(),
+                'Capturue Time': capture_time_ms,
+                'Inference Time': inference_time_ms,
+                'Display Time': display_time_ms
+            }
+    
+            # Convert the detection_info dictionary to a JSON string
+            detection_time_json = json.dumps(detection_time_info, indent=4)
+            # print(detection_time_json)
+    
+            # Publish the JSON string to the MQTT topic
+            mqtt_client.publish("detection_time", detection_time_json)
 

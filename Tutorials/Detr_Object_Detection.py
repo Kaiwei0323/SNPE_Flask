@@ -114,7 +114,7 @@ class DETR(SnpeContext):
         }
     
         # Convert the detection_info dictionary to a JSON string
-        detection_json = json.dumps(detection_info)
+        detection_json = json.dumps(detection_info, indent=4)
     
         # Publish the JSON string to the MQTT topic
         mqtt_client.publish("detr/detections", detection_json)

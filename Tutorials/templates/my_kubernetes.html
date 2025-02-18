@@ -3,172 +3,278 @@
 {% block title %}Kubernetes Port Forwarding{% endblock title %}
 
 {% block content %}
-
 <!-- Adding the background image through CSS -->
 <style>
     body {
-        background-image: url('/static/images/sliders/Kubernet.png');  /* Set the background image */
-        background-size: cover;  /* Cover the entire page with the image */
-        background-position: center center;  /* Center the background image */
-        background-attachment: fixed;  /* Ensure the image stays fixed while scrolling */
-        background-repeat: no-repeat;  /* Prevent the image from repeating */
-        height: 100vh;  /* Ensure the background covers the full viewport height */
-        margin: 0;  /* Remove default body margin */
-        padding: 0;  /* Remove default body padding */
-        font-weight: bold; /* Make all text bold */
+        background-image: url('/static/images/sliders/Kubernet.png');
+        background-size: cover;
+        background-position: center center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-weight: bold;
     }
 
-    /* Add margin to the image to move it down */
     .img-fluid {
-        margin-top: 100px; /* Adjust the value as needed */
+        margin-top: 100px;
+    }
+
+    .active-services-list {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .active-services-list table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .active-services-list th, .active-services-list td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+    .active-services-list th {
+        background-color: #f2f2f2;
     }
 </style>
 
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Kubernetes Port Forwarding</h1>
-        
-        <div id="alertBox" class="alert d-none"></div>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Kubernetes Port Forwarding</h1>
+    
+    <div id="alertBox" class="alert d-none"></div>
 
-        <div class="text-center mb-4">
-            <button class="btn btn-primary" onclick="fetchServices()">Fetch Services</button>
-        </div>
-
-        <div class="form-group">
-            <label for="service_list">Select Service:</label>
-            <select id="service_list" class="form-control">
-                <option value="">Select a service</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="ip_address">IP Address:</label>
-            <input type="text" id="ip_address" class="form-control" value="0.0.0.0" required>
-        </div>
-
-        <div class="form-group">
-            <label for="port">Port:</label>
-            <input type="number" id="port" class="form-control" value="3000" required>
-        </div>
-
-        <div class="text-center mt-4">
-            <button class="btn btn-success" onclick="portForward()">Forward Port</button>
-            <button id="stopButton" class="btn btn-danger" onclick="stopPortForward()" style="display: none;">Stop Port Forward</button>
-        </div>
-
-        <!-- Status Text Display -->
-        <div id="statusText" class="text-center mt-4" style="font-size: 18px; font-weight: bold;">
-            <!-- Status will be shown here -->
-        </div>
-        <img src="{{ url_for('static', filename='images/sliders/Kubernetes.png') }}" alt="Smart Solutions Image" class="img-fluid" style="width: 200px; height: auto;">
-
+    <div class="text-center mb-4">
+        <button class="btn btn-primary" onclick="fetchServices()">Fetch Services</button>
     </div>
 
-    <script>
-        let currentPid = null;  // Store the PID for stopping the process
+    <div class="form-group">
+        <label for="service_list">Select Service:</label>
+        <select id="service_list" class="form-control">
+            <option value="">Select a service</option>
+        </select>
+    </div>
 
-        // Fetch the stored PID from localStorage when the page loads
-        window.onload = function() {
-            currentPid = localStorage.getItem('currentPid');
-            if (currentPid) {
-                document.getElementById("stopButton").style.display = "inline-block";
+    <div class="form-group">
+        <label for="ip_address">IP Address:</label>
+        <input type="text" id="ip_address" class="form-control" value="0.0.0.0" required>
+    </div>
+
+    <div class="form-group">
+        <label for="port">Port:</label>
+        <input type="number" id="port" class="form-control" value="3000" required>
+    </div>
+
+    <div class="text-center mt-4">
+        <button class="btn btn-success" onclick="portForward()">Forward Port</button>
+    </div>
+
+    <div id="statusText" class="text-center mt-4" style="font-size: 18px; font-weight: bold;">
+        <!-- Status will be shown here -->
+    </div>
+
+    <!-- Display Active Services -->
+    <div class="active-services-list">
+        <h3>Active Port Forwarding Services</h3>
+        <table id="activeServicesTable">
+            <thead>
+                <tr>
+                    <th>Service Name</th>
+                    <th>IP Address</th>
+                    <th>Port</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Active services will be dynamically appended here -->
+            </tbody>
+        </table>
+    </div>
+
+    <img src="{{ url_for('static', filename='images/sliders/Kubernetes.png') }}" alt="Smart Solutions Image" class="img-fluid" style="width: 200px; height: auto;">
+</div>
+
+<script>
+    let currentPid = null;  // Store the PID for stopping the process
+
+    // Fetch the stored PID from localStorage when the page loads
+    window.onload = function() {
+        currentPid = localStorage.getItem('currentPid');
+
+        // Load active services from localStorage and display them in the table
+        loadActiveServicesFromLocalStorage();
+    }
+
+    function fetchServices() {
+        fetch('/get_services')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    let serviceList = document.getElementById("service_list");
+                    serviceList.innerHTML = "";
+                    data.services.forEach(service => {
+                        let option = document.createElement("option");
+                        option.value = service.name;
+                        option.text = `${service.name} - ${service.type} - ${service.cluster_ip}`;
+                        serviceList.appendChild(option);
+                    });
+                } else {
+                    showAlert("Error fetching services: " + data.message, 'alert');
+                }
+            });
+    }
+
+    function portForward() {
+        let serviceName = document.getElementById("service_list").value;
+        let ipAddress = document.getElementById("ip_address").value;
+        let port = document.getElementById("port").value;
+
+        // Show status text
+        showStatus("Port Forwarding in Progress...");
+
+        let formData = new FormData();
+        formData.append('service_name', serviceName);
+        formData.append('ip_address', ipAddress);
+        formData.append('port', port);
+
+        fetch('/port_forward', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                showAlert(data.message, 'success-alert');
+                currentPid = data.pid;  // Store the PID for later stopping
+                localStorage.setItem('currentPid', currentPid);  // Store PID in localStorage
+                
+                // Update status text
+                showStatus("Port Forwarding Active!");
+                
+                // Add the new active service to the table and save it to localStorage
+                appendActiveService(serviceName, ipAddress, port, currentPid);
             } else {
-                document.getElementById("stopButton").style.display = "none";
+                showAlert("Error: " + data.message, 'alert');
+                showStatus("Port Forwarding Failed.");
             }
+        });
+    }
+
+    function stopPortForward() {
+        if (!currentPid) {
+            showAlert("No port forwarding process to stop!", 'alert');
+            return;
         }
 
-        function fetchServices() {
-            fetch('/get_services')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        let serviceList = document.getElementById("service_list");
-                        serviceList.innerHTML = "";
-                        data.services.forEach(service => {
-                            let option = document.createElement("option");
-                            option.value = service.name;
-                            option.text = `${service.name} - ${service.type} - ${service.cluster_ip}`;
-                            serviceList.appendChild(option);
-                        });
-                    } else {
-                        showAlert("Error fetching services: " + data.message, 'alert');
-                    }
-                });
-        }
+        let formData = new FormData();
+        formData.append('pid', currentPid);
 
-        function portForward() {
-            let serviceName = document.getElementById("service_list").value;
-            let ipAddress = document.getElementById("ip_address").value;
-            let port = document.getElementById("port").value;
+        fetch('/stop_port_forward', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                showAlert(data.message, 'success-alert');
+                currentPid = null;
+                localStorage.removeItem('currentPid');
+                showStatus("Port Forwarding Stopped.");
 
-            // Show status text
-            showStatus("Port Forwarding in Progress...");
-
-            let formData = new FormData();
-            formData.append('service_name', serviceName);
-            formData.append('ip_address', ipAddress);
-            formData.append('port', port);
-
-            fetch('/port_forward', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    showAlert(data.message, 'success-alert');
-                    currentPid = data.pid;  // Store the PID for later stopping
-                    localStorage.setItem('currentPid', currentPid);  // Store PID in localStorage
-                    document.getElementById("stopButton").style.display = "inline-block";
-                    // Update status text
-                    showStatus("Port Forwarding Active!");
-                } else {
-                    showAlert("Error: " + data.message, 'alert');
-                    showStatus("Port Forwarding Failed.");
-                }
-            });
-        }
-
-        function stopPortForward() {
-            if (!currentPid) {
-                showAlert("No port forwarding process to stop!", 'alert');
-                return;
+                // Remove the service from the active list
+                removeActiveService(currentPid);
+            } else {
+                showAlert("Error: " + data.message, 'alert');
+                showStatus("Failed to Stop Port Forwarding.");
             }
+        });
+    }
 
-            let formData = new FormData();
-            formData.append('pid', currentPid);
-
-            fetch('/stop_port_forward', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    showAlert(data.message, 'success-alert');
-                    currentPid = null;  // Clear the PID
-                    localStorage.removeItem('currentPid');  // Remove the PID from localStorage
-                    document.getElementById("stopButton").style.display = "none";
-                    // Update status text
-                    showStatus("Port Forwarding Stopped.");
-                } else {
-                    showAlert("Error: " + data.message, 'alert');
-                    showStatus("Failed to Stop Port Forwarding.");
-                }
-            });
+    function removeActiveService(pid) {
+        const row = document.getElementById(pid);
+        if (row) {
+            row.remove();  // Remove the service row from the table
         }
 
-        function showAlert(message, alertClass) {
-            let alertBox = document.getElementById("alertBox");
-            alertBox.classList.remove("alert", "success-alert");
-            alertBox.classList.add(alertClass);
-            alertBox.textContent = message;
-            alertBox.style.display = "block";
+        // Remove the service from the active services list in localStorage
+        let activeServices = JSON.parse(localStorage.getItem("activeServices")) || [];
+        activeServices = activeServices.filter(service => service.pid !== pid);
+        localStorage.setItem("activeServices", JSON.stringify(activeServices));
+
+        // Send request to stop port forwarding
+        let formData = new FormData();
+        formData.append('pid', pid);
+
+        fetch('/stop_port_forward', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                showAlert(data.message, 'success-alert');
+                localStorage.removeItem('currentPid');  // Clear stored PID
+                showStatus("Port Forwarding Stopped.");
+            } else {
+                showAlert("Error: " + data.message, 'alert');
+                showStatus("Failed to Stop Port Forwarding.");
+            }
+        });
+    }
+
+    function appendActiveService(serviceName, ipAddress, port, pid) {
+        const tableBody = document.getElementById("activeServicesTable").getElementsByTagName("tbody")[0];
+        const newRow = tableBody.insertRow();
+        newRow.id = pid;  // Use the PID as the row ID for easy removal
+        newRow.innerHTML = `
+            <td>${serviceName}</td>
+            <td>${ipAddress}</td>
+            <td>${port}</td>
+            <td><button class="btn btn-danger" onclick="removeActiveService('${pid}')">Stop</button></td>
+        `;
+        
+        // Save the active services list to localStorage
+        saveActiveServicesToLocalStorage();
+    }
+
+    function showAlert(message, alertClass) {
+        let alertBox = document.getElementById("alertBox");
+        alertBox.classList.remove("alert", "success-alert");
+        alertBox.classList.add(alertClass);
+        alertBox.textContent = message;
+        alertBox.style.display = "block";
+    }
+
+    function showStatus(message) {
+        let statusText = document.getElementById("statusText");
+        statusText.textContent = message;
+    }
+
+    function loadActiveServicesFromLocalStorage() {
+        let activeServices = JSON.parse(localStorage.getItem("activeServices")) || [];
+        
+        activeServices.forEach(service => {
+            appendActiveService(service.serviceName, service.ipAddress, service.port, service.pid);
+        });
+    }
+
+    function saveActiveServicesToLocalStorage() {
+        const tableRows = document.getElementById("activeServicesTable").getElementsByTagName("tbody")[0].rows;
+        let activeServices = [];
+
+        for (let row of tableRows) {
+            let serviceName = row.cells[0].innerText;
+            let ipAddress = row.cells[1].innerText;
+            let port = row.cells[2].innerText;
+            let pid = row.id;  // The PID is used as the row ID
+            
+            activeServices.push({ serviceName, ipAddress, port, pid });
         }
 
-        function showStatus(message) {
-            let statusText = document.getElementById("statusText");
-            statusText.textContent = message;
-        }
-    </script>
+        localStorage.setItem("activeServices", JSON.stringify(activeServices));
+    }
+</script>
+
 {% endblock content %}
 
