@@ -62,16 +62,18 @@
             gap: 20px;  /* Space between form items */
             width: 100%;
             align-items: center;  /* Align items to the center vertically */
+            margin-left: 20px;
         }
 
         .form-group > div {
             flex: 1;  /* Allow the items to take equal width */
-            min-width: 250px;  /* Ensure items don't shrink too small */
+            min-width: 200px;  /* Ensure items don't shrink too small */
+            margin-left: 20px;
         }
 
         .form-container input[type="text"], 
         .form-container select {
-            width: 90%;  /* Make inputs and selects take full width */
+            width: 100%;  /* Make inputs and selects take full width */
             padding: 5px;
             margin-bottom: 2px;  /* Reduced space below input/select */
             border: 1px solid #ccc;
@@ -89,8 +91,9 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 1em;
-            width: 70%;  /* Auto width to allow the button to be next to the select */
-            margin-left: -40px;
+            width: auto;  /* Auto width to allow the button to be next to the select */
+            margin-right: 50px;
+            margin-top: 20px;
         }
 
         .form-container button:hover {
