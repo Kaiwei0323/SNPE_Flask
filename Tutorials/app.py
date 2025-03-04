@@ -10,6 +10,8 @@ import signal
 import numpy as np
 import pickle
 
+import sys
+
 REC_MODEL = pickle.load(open('naive_bayes_model.pkl', 'rb'))
 FERT_MODEL = pickle.load(open('random_forest_model.pkl', 'rb'))
 
@@ -299,6 +301,18 @@ def handle_stop_port_forward():
         return jsonify({"status": "error", "message": "Invalid PID!"}), 400
 
 
-if __name__ == '__main__':
-    app.run(host='192.168.1.164', port=5001, threaded=True)
+if __name__ == "__main__":
+    # Default values
+    host = "0.0.0.0"
+    port = 5001
+    
+    # Check for command-line arguments
+    if len(sys.argv) > 1:
+        for arg in sys.argv:
+            if "--host=" in arg:
+                host = arg.split("=")[1]
+            if "--port=" in arg:
+                port = int(arg.split("=")[1])
+
+    app.run(host=host, port=port, debug=True)
 
