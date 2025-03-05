@@ -163,6 +163,9 @@ class Camera():
     def start_inference(self):
         last_frame_time = time.time()
         reconnect_threshold = 5
+        
+        frame_count = 0
+        total_time = 0.0
         """Continuously read frames and perform inference."""
         while not self.stop_event.is_set():  # Check for the stop signal
             curr_time = time.time()
@@ -185,7 +188,7 @@ class Camera():
                         self.vp.reconnect()
                         last_frame_time = time.time()  # Reset the time after reconnect
                     else:
-                        print("Failed to grab a valid frame.")
+                        # print("Failed to grab a valid frame.")
                         continue
                     
             self.frame_counter += 1  # Increment the frame counter
@@ -202,9 +205,24 @@ class Camera():
                     else:
                         print("Model object is not initialized.")
                     
-                    self.inference_time = time.time() - inference_start	
+                    inference_end = time.time()
+                    inference_time = inference_end - inference_start
+
+                    # Update total time and frame count for FPS calculation
+                    frame_count += 1
+                    total_time += inference_time
+
+                    # Calculate and print FPS every second
+                    if frame_count >= 30:  # Update FPS every 30 frames (or another interval)
+                        fps = frame_count / total_time
+                        print(f"FPS: {fps:.2f}")
+                        frame_count = 0
+                        total_time = 0.0  # Reset for the next period
+
+                    self.inference_time = inference_time	
             else:
-                print(f"Skipped frame {self.frame_counter} (not every {self.infer_every_n_frames} frame)")
+                pass
+                # print(f"Skipped frame {self.frame_counter} (not every {self.infer_every_n_frames} frame)")
         
         print("Inference loop ended")
                     
