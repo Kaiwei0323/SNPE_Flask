@@ -37,19 +37,22 @@ class VideoPipeline:
         
     def on_message(self, bus, message):
         t = message.type
-        # print(f"Message type: {t}")  # Debug output to check message type
         if t == Gst.MessageType.EOS:
             print("------------EOS--------------------------")
             self.reconnect()
+        elif t == Gst.MessageType.ERROR:
+            err, debug = message.parse_error()
+            print(f"Error: {err}, {debug}")
+        elif t == Gst.MessageType.WARNING:
+            warn, debug = message.parse_warning()
+            print(f"Warning: {warn}, {debug}")
 
-            
     def reconnect(self):
+        print("Reconnecting pipeline...")
         self.pipeline.set_state(Gst.State.NULL)  # Stop the pipeline
         self.pipeline.set_state(Gst.State.READY)  # Prepare the pipeline for restart
         self.pipeline.set_state(Gst.State.PLAYING)        
             
-        
-
     def create(self):
         # Set the URI property of uridecodebin
         self.uridecodebin.set_property("uri", self.uri)
@@ -95,11 +98,8 @@ class VideoPipeline:
 
     def start(self):
         # Start playing the pipeline
-        
         if self.pipeline is not None:
-        
             self.pipeline.set_state(Gst.State.PLAYING)
-            # print("Pipeline set to PLAYING")
             self.loop = GLib.MainLoop()
             self.loop.run()
 
@@ -135,7 +135,7 @@ class VideoPipeline:
             
             with self.capture_lock:
                 # Handle queue overflow by dropping the oldest frame
-                if self.image_queue.qsize() >= 30:
+                if self.image_queue.full():
                     drop_frame = self.image_queue.get()
                     # print("Queue full, dropping oldest frame")
 
@@ -147,40 +147,3 @@ class VideoPipeline:
         else:
             print("Failed to get sample")
             return Gst.FlowReturn.ERROR
-           
-            
-
-"""
-# Function to display frames from the queue
-def display_frames(image_queue):
-    while True:
-        if not image_queue.empty():
-            frame = image_queue.get()
-            print("Consume frame from queue")
-            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            cv2.imshow("Video Frame", frame_rgb)
-
-        # Check if the user presses 'q' to quit
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cv2.destroyAllWindows()
-
-
-if __name__ == "__main__":
-    Gst.init(None)
-    # Initialize the image queue
-    image_queue = Q.Queue()
-    # Create an instance of the VideoPipeline class
-    
-    # video_path = "rtsp://99.64.152.69:8554/mystream2"
-    video_path = "file:///home/aim/Videos/freeway.mp4"
-    
-    vp = VideoPipeline(video_path, image_queue)
-
-    # Create, start, and destroy the pipeline
-    vp.create()  # Initialize and create the pipeline
-    vp.start()   # Start playing the pipeline
-    display_frames(image_queue)
-    vp.destroy() # Clean up and stop the pipeline
-"""

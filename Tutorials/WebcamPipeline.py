@@ -35,7 +35,7 @@ class WebcamPipeline:
             else:
                 with self.capture_lock:
                     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                    if self.image_queue.qsize() >= 30:
+                    if self.image_queue.full():
                         drop_frame = self.image_queue.get()
                     self.image_queue.put(img)
             # print(f"Capture Time: {time.time() - capture_start_time:.4f}s")

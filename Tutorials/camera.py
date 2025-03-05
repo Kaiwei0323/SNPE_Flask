@@ -30,6 +30,11 @@ class Camera():
     """Using OpenCV to capture video frames with threading for inference."""
     def __init__(self, video_source="/dev/video0", model="DETR", runtime="CPU"):
         Gst.init(None)
+        
+        # Add a parameter to control how often inference happens (e.g., every 5th frame)
+        self.infer_every_n_frames = 3
+        self.frame_counter = 0  # Initialize the frame counter
+        
         self.video_source = video_source
         self.model = model
         self.runtime = self._set_runtime(runtime)
@@ -39,8 +44,8 @@ class Camera():
         self.info_thread = None
         self.display_lock = threading.Lock()
         self.capture_lock = threading.Lock()
-        self.inference_frame_queue = queue.Queue(maxsize=30)  # Queue to store frames
-        self.capture_frame_queue = queue.Queue(maxsize=30)
+        self.inference_frame_queue = queue.Queue(maxsize=60)  # Queue to store frames
+        self.capture_frame_queue = queue.Queue(maxsize=60)
         self.model_object = self._initialize_model()
         self.vp = None
         
@@ -166,7 +171,7 @@ class Camera():
             with self.capture_lock:
                 # print(f"Capture frame queue: {self.capture_frame_queue.qsize()}")
                 if not self.capture_frame_queue.empty():
-                    img = self.capture_frame_queue.get()
+                    img = self.capture_frame_queue.get_nowait()
                     last_frame_time = time.time()
                 self.capture_time = time.time() - curr_time
             if img is None:
@@ -181,25 +186,25 @@ class Camera():
                         last_frame_time = time.time()  # Reset the time after reconnect
                     else:
                         print("Failed to grab a valid frame.")
+                        continue
                     
-            # Perform inference only if the stop event is not set
-            if self.stop_event.is_set():
-                break
-        
-            # Perform inference
-            with self.display_lock:
-                inference_start = time.time()
-                if self.model_object is not None:
-                    processed_frame = self.model_object.inference(img)
-                    if not self.inference_frame_queue.full() and processed_frame is not None and processed_frame.size != 0:
-                        self.inference_frame_queue.put(processed_frame)  # Fallback to original image
-                        # print(f"Display Queue Size: {self.inference_frame_queue.qsize()}")
+            self.frame_counter += 1  # Increment the frame counter
+            if self.frame_counter % self.infer_every_n_frames == 0:  # Check if it's the n-th frame
+                with self.display_lock:
+                    inference_start = time.time()
+                    if self.model_object is not None:
+                        processed_frame = self.model_object.inference(img)
+                        if not self.inference_frame_queue.full() and processed_frame is not None and processed_frame.size != 0:
+                            self.inference_frame_queue.put(processed_frame)
+                            # print(f"Display Queue Size: {self.inference_frame_queue.qsize()}")
+                        else:
+                            print("Dropped Inferenced Frame.")   
                     else:
-                        print("Dropped Inferenced Frame.")   
-                else:
-                    print("Model object is not initialized.")
+                        print("Model object is not initialized.")
                     
-                self.inference_time = time.time() - inference_start           
+                    self.inference_time = time.time() - inference_start	
+            else:
+                print(f"Skipped frame {self.frame_counter} (not every {self.infer_every_n_frames} frame)")
         
         print("Inference loop ended")
                     
@@ -237,10 +242,7 @@ class Camera():
                     if not self.inference_frame_queue.empty():
                         display_start_time = time.time()
                         # Get the frame from the queue
-                        inference_frame = self.inference_frame_queue.get()
-                        # inference_frame = cv2.resize(inference_frame, (640, 480))
-                        # inference_frame = cv2.cvtColor(inference_frame, cv2.COLOR_BGR2RGB)
-                        # Convert frame to JPEG and yield
+                        inference_frame = self.inference_frame_queue.get_nowait()
                         pil_image = Image.fromarray(inference_frame)
                         pil_image.save(bio, format="jpeg")
                         yield bio.getvalue()
