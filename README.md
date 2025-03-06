@@ -10,7 +10,7 @@
 ### Software Requirements
 - Operating System: **Ubuntu 20.04 (arm64)**
 - SNPE SDK Version: **v2.26.0.240828**
-- Supported Models: DETR_Resnet101, YOLOv8, YOLOv11
+- Supported Models: DETR, YOLOv8, YOLOv11, YOLOv12
 
 ### Dependencies:
 - Python3.10
@@ -66,24 +66,24 @@ Videos
 ```
 
 ## Setup Steps
-1. Switch to Admin Mode
+### 1. Switch to Admin Mode
 ```
 su
 Password: oelinux123
 ```
 
-2. Clone and Install SNPE_Flask Project
+### 2. Clone and Install SNPE_Flask Project
 ```
 apt install git
 git clone https://github.com/Kaiwei0323/SNPE_Flask.git
 ```
 
-3. Navigate to Project Directory
+### 3. Navigate to Project Directory
 ```
 cd SNPE_Flask/Tutorials
 ```
 
-4. Environment Setup
+### 4. Environment Setup
 ```
 apt update
 apt install software-properties-common -y
@@ -106,16 +106,28 @@ apt-get install libgirepository1.0-dev
 python3.10 -m pip install --upgrade pygobject
 ```
 
-5. Run Application
+### 5. Run Application
 ```
 python3.10 app.py
 ```
 
-6. Demo Output
+### 6. Demo Output
 
 ![Screenshot from 2024-11-20 22-27-25](https://github.com/user-attachments/assets/48dd959c-8b56-4b08-a4f8-f379255f2386)
 
-7. MQTT Setup (Optional)
+### 7. Sample Input
+* Camera Name: Demo
+* Video Source: RTSP
+* RTSP URL: rtsp://99.64.152.69:8554/mystream2
+* Model: YOLOV8S_DSP
+* Runtime: DSP
+  
+**Note:**
+* Models with the suffix "_DSP" are designed to run exclusively on the DSP runtime.
+* Models with the suffix "_GPU" can run on both CPU and GPU.
+
+
+### 8. MQTT Setup (Optional)
 
 Enable and check the Mosquitto service
 ```
