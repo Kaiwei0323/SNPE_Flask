@@ -90,6 +90,46 @@ def video_feed(camera_name):
         mimetype='multipart/x-mixed-replace; boundary=frame'
     )
 
+@app.route('/update_inference_frequency', methods=['POST'])
+def update_inference_frequency():
+    try:
+        # Parse the incoming JSON request
+        data = request.get_json()
+
+        # Check if 'camera_name' and 'infer_every_n_frames' are in the request body
+        if not data or 'infer_every_n_frames' not in data or 'camera_name' not in data:
+            return jsonify({"error": "Both 'camera_name' and 'infer_every_n_frames' are required"}), 400
+
+        # Extract the camera name and new frequency value
+        camera_name = data['camera_name']
+        new_frequency = data['infer_every_n_frames']
+        
+        # Ensure frequency is greater than zero
+        if new_frequency <= 0:
+            return jsonify({"error": "Frequency must be greater than 0"}), 400
+
+        # Retrieve the camera instance from CAMERA_SOURCES
+        camera_data = CAMERA_SOURCES.get(camera_name)
+        if not camera_data:
+            return jsonify({"error": f"Camera '{camera_name}' not found"}), 404
+
+        camera_instance = camera_data["camera_instance"]
+        
+        # Update the Camera object's frequency
+        camera_instance.infer_every_n_frames = new_frequency
+
+        # Return a success message with the updated frequency
+        response = {
+            "message": f"Inference frequency for '{camera_name}' updated to {new_frequency}",
+            "current_frequency": camera_instance.infer_every_n_frames
+        }
+
+        return jsonify(response), 200
+
+    except Exception as e:
+        # Log the exception for better debugging
+        print(f"Error updating inference frequency: {e}")
+        return jsonify({"error": str(e)}), 500
 
 
     
@@ -315,4 +355,3 @@ if __name__ == "__main__":
                 port = int(arg.split("=")[1])
 
     app.run(host=host, port=port, debug=True)
-

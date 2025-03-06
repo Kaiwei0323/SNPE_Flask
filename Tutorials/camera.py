@@ -32,7 +32,7 @@ class Camera():
         Gst.init(None)
         
         # Add a parameter to control how often inference happens (e.g., every 5th frame)
-        self.infer_every_n_frames = 3
+        self.infer_every_n_frames = 5
         self.frame_counter = 0  # Initialize the frame counter
         
         self.video_source = video_source
@@ -311,4 +311,3 @@ class Camera():
     
             # Publish the JSON string to the MQTT topic
             mqtt_client.publish("detection_time", detection_time_json)
-

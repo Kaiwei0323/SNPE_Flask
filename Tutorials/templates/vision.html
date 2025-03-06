@@ -160,7 +160,66 @@
         .go-home-button:hover {
             background-color: #0056b3;  /* Darker blue on hover */
         }
+        
+        /* Frequency container */
+        .frequency-container {
+            display: flex;
+            flex-direction: row;  /* Align children horizontally */
+            justify-content: center;  /* Align items to the right */
+            gap: 10px;  /* Reduced space between the input and button */
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100vw;  /* Full width of the viewport */
+            box-sizing: border-box;  /* Include padding in width calculation */
+            margin: 0 auto;  /* Ensure it's centered */
+            max-width: 100%;  /* Make sure it doesn't exceed 100% of the viewport */
+            align-items: center;  /* Vertically center the elements */
+        }
 
+        /* Frequency container input styling */
+        .frequency-container input[type="number"] {
+            padding: 8px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            flex-grow: 1;  /* Allow input to grow and take up available space */
+            min-width: 40px;  /* Set a minimum width to prevent it from shrinking too small */
+            max-width: 100px;  /* Limit the max width */
+            box-sizing: border-box;
+            transition: border 0.3s ease;
+        }
+
+        /* Button styling */
+        .frequency-container button {
+            background-color: #007bff;  /* Blue button */
+            color: white;
+            padding: 8px 12px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            flex-grow: 1;  /* Allow button to grow and take up available space */
+            min-width: 120px;  /* Set a minimum width to prevent it from shrinking too small */
+            max-width: 200px;  /* Limit the max width */
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover and active states for the button */
+        .frequency-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .frequency-container button:active {
+            background-color: #003f8f;
+        }
+
+        /* Input field focus */
+        .frequency-container input[type="number"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
     </style>
 
     <script>
@@ -177,6 +236,49 @@
         }
 
         window.onload = toggleRTSPInput;  // Trigger the function on page load
+    </script>
+    
+    <script>
+        function validateFrequency(cameraName) {
+            const inputElement = document.getElementById("infer_frequency_" + cameraName);
+            const value = parseInt(inputElement.value);
+
+            // If the value is less than 1, reset it to 1 (or show an error message)
+            if (value < 1) {
+                inputElement.value = 1;
+                alert("Inference frequency must be greater than 0.");
+            }
+        }
+
+        function updateInferenceFrequency(cameraName) {
+            const frequencyInput = document.getElementById("infer_frequency_" + cameraName);
+            const frequencyValue = parseInt(frequencyInput.value);
+
+            // Ensure the frequency is a valid number greater than 0
+            if (frequencyValue < 1) {
+                alert("Inference frequency must be greater than 0.");
+                return;
+            }
+
+            // Proceed to send the request to update frequency
+            fetch('/update_inference_frequency', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    camera_name: cameraName,
+                    infer_every_n_frames: frequencyValue,
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                alert('Error updating frequency: ' + error);
+            });
+        }
     </script>
 </head>
 <body>
@@ -242,6 +344,11 @@
         {% for name, source in camera_sources.items() %}
             <div class="camera-container">
                 <h2>{{ name }}</h2>
+                <div class="frequency-container">
+                    <label for="infer_frequency_{{ name }}">Set Inference Frequency (every N frames):</label>
+                    <input type="number" id="infer_frequency_{{ name }}" name="infer_frequency" min="1" value="5" oninput="validateFrequency('{{ name }}')">
+                    <button type="button" onclick="updateInferenceFrequency('{{ name }}')">Update Frequency</button>
+                </div>
                 <img src="{{ url_for('video_feed', camera_name=name) }}" alt="{{ name }}">
                 <form action="/delete_camera" method="post" class="delete-form">
                     <input type="hidden" name="camera_name" value="{{ name }}">
