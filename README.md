@@ -10,7 +10,7 @@
 ### Software Requirements
 - Operating System: **Ubuntu 20.04 (arm64)**
 - SNPE SDK Version: **v2.26.0.240828**
-- Supported Models: DETR, YOLOv8, YOLOv11, YOLOv12
+- Supported Models: **DETR**, **YOLOv8**, **YOLOv11**, **YOLOv12**
 
 ### Dependencies:
 - Python3.10
