@@ -45,6 +45,9 @@ def add_camera():
     
     if video_source == "RTSP":
         video_source = request.form['rtsp_url']
+    elif video_source == "/dev/video":
+        video_source = "/dev/video" + request.form['webcam_idx']
+        print(f"Webcam index: {video_source}")
     
     # Update CAMERA_SOURCES with new camera information
     CAMERA_SOURCES[camera_name] = {

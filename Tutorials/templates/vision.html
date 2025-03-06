@@ -220,22 +220,60 @@
             border-color: #007bff;
             outline: none;
         }
+        
+/* Add more space from the left for the input fields inside the RTSP URL and Webcam Index containers */
+#rtsp-url, #webcam-idx {
+    display: flex;  /* Use flexbox for these specific containers */
+    flex-direction: column;  /* Stack the label and input vertically */
+    gap: 5px;  /* Space between label and input */
+    margin-bottom: 15px;  /* Add some margin for separation */
+    padding-left: 30px;  /* Add padding to the left of the entire container */
+}
+
+/* Style the input fields inside these divs */
+#rtsp-url input[type="text"], #webcam-idx input[type="text"] {
+    width: 80%;  /* Full width for inputs */
+    padding: 8px;
+    margin-top: 5px;
+    margin-left: 10px;  /* Add space from the left of the input itself */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+    font-size: 15px;
+}
+
+/* Optional: Keep labels bold and add some spacing */
+#rtsp-url label, #webcam-idx label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-left: 10px;  /* Optional: add left margin to the label if needed */
+    font-size: 15px;
+}
+
     </style>
 
     <script>
-        // JavaScript to toggle RTSP input visibility
-        function toggleRTSPInput() {
+        // JavaScript to toggle RTSP and Webcam input visibility
+        function toggleInputFields() {
             var videoSource = document.getElementById("video_source").value;
             var rtspInput = document.getElementById("rtsp-url");
+            var webcamIdxInput = document.getElementById("webcam-idx");
             
             if (videoSource === "RTSP") {
                 rtspInput.style.display = "block"; // Show RTSP URL input
+                webcamIdxInput.style.display = "none"; // Hide Webcam index input
+            } else if (videoSource === "/dev/video") {
+                rtspInput.style.display = "none"; // Hide RTSP URL input
+                webcamIdxInput.style.display = "block"; // Show Webcam index input
             } else {
                 rtspInput.style.display = "none"; // Hide RTSP URL input
+                webcamIdxInput.style.display = "none"; // Hide Webcam index input
             }
         }
 
-        window.onload = toggleRTSPInput;  // Trigger the function on page load
+        // Trigger the function on page load to check the default value
+        window.onload = toggleInputFields;
     </script>
     
     <script>
@@ -292,13 +330,13 @@
                 
                 <div>
                     <label for="video_source">Video Source:</label>
-                    <select id="video_source" name="video_source" onchange="toggleRTSPInput()" required>
+                    <select id="video_source" name="video_source" onchange="toggleInputFields()" required>
                         <option value="file:///home/aim/Videos/fall.mp4">FALL</option>
                         <option value="file:///home/aim/Videos/ppe.mp4">PPE</option>
                         <option value="file:///home/aim/Videos/med_ppe.mp4">MED_PPE</option>
                         <option value="file:///home/aim/Videos/brain_tumor.mp4">BRAIN_TUMOR</option>
                         <option value="file:///home/aim/Videos/freeway.mp4">FREEWAY</option>
-                        <option value='/dev/video0'>WEBCAM</option>
+                        <option value='/dev/video'>WEBCAM</option>
                         <option value="RTSP">RTSP</option>
                     </select>
                 </div>
@@ -336,6 +374,12 @@
             <div id="rtsp-url">
                 <label for="rtsp_url">RTSP URL:</label>
                 <input type="text" id="rtsp_url" name="rtsp_url" placeholder="Enter RTSP URL">
+            </div>
+            
+            <!-- Webcam Index input, shown only when WEBCAM is selected -->
+            <div id="webcam-idx">
+                <label for="webcam_idx">WEBCAM INDEX:</label>
+                <input type="text" id="webcam_idx" name="webcam_idx" placeholder="Enter Webcam Index">
             </div>
         </form>
     </div>
