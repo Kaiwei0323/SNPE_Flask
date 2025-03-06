@@ -5,6 +5,8 @@ from importlib import import_module
 import paho.mqtt.client as mqtt
 import sys
 
+from camera import model_map
+
 # Import the camera driver
 if os.environ.get('CAMERA'):
     Camera = import_module('camera_' + os.environ['CAMERA']).Camera
@@ -18,7 +20,8 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     """Video streaming home page."""
-    return render_template('index.html', camera_sources=CAMERA_SOURCES)
+    model_options = [model for model in model_map.keys()]
+    return render_template('index.html', camera_sources=CAMERA_SOURCES, model_options=model_options)
 
 @app.route('/add_camera', methods=['POST'])
 def add_camera():

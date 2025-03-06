@@ -168,16 +168,9 @@
 
             <label for="model">Model:</label>
             <select id="model" name="model" required>
-                <option value="YOLOV8S_DSP">YOLOV8S_DSP</option>
-                <option value="YOLOV8S_GPU">YOLOV8S_GPU</option>
-                <option value="YOLOV8S_FALL_DSP">YOLOV8S_FALL_DSP</option>
-                <option value="YOLOV8L_FALL_DSP">YOLOV8L_FALL_DSP</option>
-                <option value="YOLOV8S_BRAIN_TUMOR_DSP">YOLOV8S_BRAIN_TUMOR_DSP</option>
-                <option value="YOLOV8S_PPE_DSP">YOLOV8S_PPE_DSP</option>
-                <option value="YOLOV8S_MED_PPE_DSP">YOLOV8S_MED_PPE_DSP</option>
-                <option value="DETR">DETR</option>
-                <option value="DETR_FALL">DETR_FALL</option>
-                <option value="DETR_PPE">DETR_PPE</option>
+                {% for model in model_options %}
+                    <option value="{{ model }}">{{ model }}</option>
+                {% endfor %}
             </select>
             
             <label for="runtime">Runtime:</label>

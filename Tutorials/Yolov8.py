@@ -15,9 +15,9 @@ import torchvision.transforms as T
 from PIL import Image
 from snpehelper_manager import PerfProfile, Runtime, SnpeContext
 import time
-from coco80_class import COCO80_CLASSES
-from fall_class import FALL_CLASSES
-from ppe_class import PPE_CLASSES
+
+from myclasses import *
+
 import paho.mqtt.client as mqtt
 from mqtt import MQTTClient
 import json
