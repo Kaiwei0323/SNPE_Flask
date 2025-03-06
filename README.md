@@ -169,6 +169,7 @@ mosquitto_sub -h localhost -t detr/detections -v
 ### 4. Modify the camera.py File
 * Open the SNPE_Flask/Tutorials/camera.py file.
 * Modify the model_map (lines 24-35) to include your new model. This will ensure that the application can recognize and use your model.
+* In the example above, add **"YOLOV8S_DSP": ("models/yolov8s_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES)** to the model_map.
 
 ### 5. Run the Application
 * After completing the above steps, rerun the application. Your model will now be available for selection and use within the app.
