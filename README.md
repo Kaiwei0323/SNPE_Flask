@@ -27,16 +27,29 @@
 ---
 
 ## SNPE SDK Installation
-
+* v2.26.0.240828
+```
+curl -L -O "https://huggingface.co/datasets/kaiwei0323/my-sdk/resolve/main/v2.26.0.240828.zip"
+```
 Download the Neural Processing SDK from [Qualcomm SNPE SDK](https://www.qualcomm.com/developer/software/neural-processing-sdk-for-ai).
 
 ## Download Pre-recorded Videos
-1. Access the SFTP server
-    - Use the credentials for the **qcs6490** user to access the server
-2. Navigate to the video directory
-    - The videos are located in: 
+* Download Link
+
 ```
-/Files/QC01U/Demo_Video
+curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/brain_tumor.mp4"
+```
+```
+curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/fall.mp4"
+```
+```
+curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/freeway.mp4"
+```
+```
+curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/med_ppe.mp4"
+```
+```
+curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/ppe.mp4"
 ```
 
 ## Directory Structure
@@ -48,6 +61,8 @@ Videos
 └── freeway.mp4
 └── ppe.mp4
 └── fall.mp4
+└── brain_tumor.mp4
+└── med_ppe.mp4
 ```
 
 ## Setup Steps
@@ -91,13 +106,27 @@ apt-get install libgirepository1.0-dev
 python3.10 -m pip install --upgrade pygobject
 ```
 
-5. MQTT Setup
+5. Run Application
+```
+python3.10 app.py
+```
+
+6. Demo Output
+
+![Screenshot from 2024-11-20 22-27-25](https://github.com/user-attachments/assets/48dd959c-8b56-4b08-a4f8-f379255f2386)
+
+7. MQTT Setup (Optional)
+
 Enable and check the Mosquitto service
 ```
 systemctl enable mosquitto
 systemctl status mosquitto
 ```
 Subscribe to detection topics:
+* For detection time
+```
+mosquitto_sub -h localhost -t detection_time -v
+```
 * For YOLOv8 detection:
 ```
 mosquitto_sub -h localhost -t yolov8/detections -v
@@ -106,14 +135,3 @@ mosquitto_sub -h localhost -t yolov8/detections -v
 ```
 mosquitto_sub -h localhost -t detr/detections -v
 ```
-
-6. Run Application
-```
-python3.10 app.py
-```
-
-7. Demo Output
-
-![Screenshot from 2024-11-20 22-27-25](https://github.com/user-attachments/assets/48dd959c-8b56-4b08-a4f8-f379255f2386)
-
-
