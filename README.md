@@ -164,7 +164,7 @@ mosquitto_sub -h localhost -t detr/detections -v
 ### 3. Add Your Model to the Project
 * Place your .dlc model file in the SNPE_Flask/Tutorials/models/ folder.
 * Create a Python class file for your model and save it in the SNPE_Flask/Tutorials/myclasses/ folder.
-* update the __init__.py file inside myclasses/
+* Update the __init__.py file inside myclasses/
 
 ### 4. Modify the camera.py File
 * Open the SNPE_Flask/Tutorials/camera.py file.
