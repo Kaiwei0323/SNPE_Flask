@@ -147,3 +147,28 @@ mosquitto_sub -h localhost -t yolov8/detections -v
 ```
 mosquitto_sub -h localhost -t detr/detections -v
 ```
+
+## Deploy your own model
+### 1. Convert Your Model to .dlc Format
+* Visit our Model Conversion website: [Model Conversion Website](http://99.64.152.69:5000/). 
+* Go to **Model Conversion** Tab.
+* Refer to the Application User Manual Section for detailed instructions on how to convert your model to the .dlc format: [User Manual](https://github.com/Kaiwei0323/qc_model_conversion_flask).
+
+### 2. Visualize Your Model
+* After conversion, use the Model Visualization tab on the website to visualize your model.
+* Find and note the input layer and output layer names of your model.
+![Screenshot from 2025-03-06 21-44-16](https://github.com/user-attachments/assets/45f9f79c-5a94-4171-8b1b-c22c67806705)
+
+
+
+### 3. Add Your Model to the Project
+* Place your .dlc model file in the SNPE_Flask/Tutorials/models/ folder.
+* Create a Python class file for your model and save it in the SNPE_Flask/Tutorials/myclasses/ folder.
+* update the __init__.py file inside myclasses/
+
+### 4. Modify the camera.py File
+* Open the SNPE_Flask/Tutorials/camera.py file.
+* Modify the model_map (lines 24-35) to include your new model. This will ensure that the application can recognize and use your model.
+
+### 5. Run the Application
+* After completing the above steps, rerun the application. Your model will now be available for selection and use within the app.
