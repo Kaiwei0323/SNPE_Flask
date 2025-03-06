@@ -6,14 +6,9 @@ import cv2
 import time
 # from base_camera import BaseCamera
 from snpehelper_manager import PerfProfile, Runtime
-from coco80_class import COCO80_CLASSES
-from fall_class import FALL_CLASSES
-from brain_tumor_class import BRAIN_TUMOR_CLASSES
-from ppe_class import PPE_CLASSES
-from med_ppe_class import MED_PPE_CLASSES
-from detr_coco80_class import DETR_COCO80_CLASSES
-from detr_fall_class import DETR_FALL_CLASSES
-from detr_ppe_class import DETR_PPE_CLASSES
+
+from myclasses import *
+
 from VideoPipeline import VideoPipeline
 from WebcamPipeline import WebcamPipeline
 
@@ -25,6 +20,19 @@ from mqtt import MQTTClient
 import json
 
 mqtt_client = MQTTClient()
+
+model_map = {
+    "DETR": ("models/detr_resnet101_int8.dlc", ["image"], ["/model/class_labels_classifier/MatMul_post_reshape", "/model/Sigmoid"], ["logits", "boxes"], DETR_COCO80_CLASSES),
+    "DETR_FALL": ("models/fall_detr_int8.dlc", ["pixel_values"], ["/class_labels_classifier/MatMul_post_reshape", "/Sigmoid"], ["logits", "pred_boxes"], DETR_FALL_CLASSES),
+    "DETR_PPE": ("models/ppe_detr_int8.dlc", ["pixel_values"], ["/class_labels_classifier/MatMul_post_reshape", "/Sigmoid"], ["logits", "pred_boxes"], DETR_PPE_CLASSES),
+    "YOLOV8S_DSP": ("models/yolov8s_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
+    "YOLOV8S_GPU": ("models/yolov8s_quantized.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
+    "YOLOV8S_FALL_DSP": ("models/yolov8s_fall_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),
+    "YOLOV8L_FALL_DSP": ("models/yolov8l_fall_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),
+    "YOLOV8S_BRAIN_TUMOR_DSP": ("models/yolov8s_brain_tumor_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], BRAIN_TUMOR_CLASSES),
+    "YOLOV8S_PPE_DSP": ("models/ppe_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], PPE_CLASSES),
+    "YOLOV8S_MED_PPE_DSP": ("models/yolov8s_med_ppe_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], MED_PPE_CLASSES),
+}
 
 class Camera():
     """Using OpenCV to capture video frames with threading for inference."""
@@ -107,19 +115,6 @@ class Camera():
     def _initialize_model(self):
         """Initialize the specified model."""
         try:
-            model_map = {
-                "DETR": ("models/detr_resnet101_int8.dlc", ["image"], ["/model/class_labels_classifier/MatMul_post_reshape", "/model/Sigmoid"], ["logits", "boxes"], DETR_COCO80_CLASSES),
-                "DETR_FALL": ("models/fall_detr_int8.dlc", ["pixel_values"], ["/class_labels_classifier/MatMul_post_reshape", "/Sigmoid"], ["logits", "pred_boxes"], DETR_FALL_CLASSES),
-                "DETR_PPE": ("models/ppe_detr_int8.dlc", ["pixel_values"], ["/class_labels_classifier/MatMul_post_reshape", "/Sigmoid"], ["logits", "pred_boxes"], DETR_PPE_CLASSES),
-                "YOLOV8S_DSP": ("models/yolov8s_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
-                "YOLOV8S_GPU": ("models/yolov8s_quantized.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], COCO80_CLASSES),
-                "YOLOV8S_FALL_DSP": ("models/yolov8s_fall_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),
-                "YOLOV8L_FALL_DSP": ("models/yolov8l_fall_encode_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], FALL_CLASSES),
-                "YOLOV8S_BRAIN_TUMOR_DSP": ("models/yolov8s_brain_tumor_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], BRAIN_TUMOR_CLASSES),
-                "YOLOV8S_PPE_DSP": ("models/ppe_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], PPE_CLASSES),
-                "YOLOV8S_MED_PPE_DSP": ("models/yolov8s_med_ppe_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], MED_PPE_CLASSES),
-            }
-
             if self.model in model_map:
                 dlc_path, input_layers, output_layers, output_tensors, *classes = model_map[self.model]
                 return self._load_model(dlc_path, input_layers, output_layers, output_tensors, classes[0] if classes else None)

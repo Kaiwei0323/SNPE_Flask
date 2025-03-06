@@ -221,36 +221,35 @@
             outline: none;
         }
         
-/* Add more space from the left for the input fields inside the RTSP URL and Webcam Index containers */
-#rtsp-url, #webcam-idx {
-    display: flex;  /* Use flexbox for these specific containers */
-    flex-direction: column;  /* Stack the label and input vertically */
-    gap: 5px;  /* Space between label and input */
-    margin-bottom: 15px;  /* Add some margin for separation */
-    padding-left: 30px;  /* Add padding to the left of the entire container */
-}
+        /* Add more space from the left for the input fields inside the RTSP URL and Webcam Index containers */
+        #rtsp-url, #webcam-idx {
+            display: flex;  /* Use flexbox for these specific containers */
+            flex-direction: column;  /* Stack the label and input vertically */
+            gap: 5px;  /* Space between label and input */
+            margin-bottom: 15px;  /* Add some margin for separation */
+            padding-left: 30px;  /* Add padding to the left of the entire container */
+        }
 
-/* Style the input fields inside these divs */
-#rtsp-url input[type="text"], #webcam-idx input[type="text"] {
-    width: 80%;  /* Full width for inputs */
-    padding: 8px;
-    margin-top: 5px;
-    margin-left: 10px;  /* Add space from the left of the input itself */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    box-sizing: border-box;
-    font-size: 15px;
-}
+        /* Style the input fields inside these divs */
+        #rtsp-url input[type="text"], #webcam-idx input[type="text"] {
+            width: 80%;  /* Full width for inputs */
+            padding: 8px;
+            margin-top: 5px;
+            margin-left: 10px;  /* Add space from the left of the input itself */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
 
-/* Optional: Keep labels bold and add some spacing */
-#rtsp-url label, #webcam-idx label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    margin-left: 10px;  /* Optional: add left margin to the label if needed */
-    font-size: 15px;
-}
-
+        /* Optional: Keep labels bold and add some spacing */
+        #rtsp-url label, #webcam-idx label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            margin-left: 10px;  /* Optional: add left margin to the label if needed */
+            font-size: 15px;
+        }
     </style>
 
     <script>
@@ -344,16 +343,9 @@
                 <div>
                     <label for="model">Model:</label>
                     <select id="model" name="model" required>
-                        <option value="YOLOV8S_DSP">YOLOV8S_DSP</option>
-                        <option value="YOLOV8S_GPU">YOLOV8S_GPU</option>
-                        <option value="YOLOV8S_FALL_DSP">YOLOV8S_FALL_DSP</option>
-                        <option value="YOLOV8L_FALL_DSP">YOLOV8L_FALL_DSP</option>
-                        <option value="YOLOV8S_BRAIN_TUMOR_DSP">YOLOV8S_BRAIN_TUMOR_DSP</option>
-                        <option value="YOLOV8S_PPE_DSP">YOLOV8S_PPE_DSP</option>
-                        <option value="YOLOV8S_MED_PPE_DSP">YOLOV8S_MED_PPE_DSP</option>
-                        <option value="DETR">DETR</option>
-                        <option value="DETR_FALL">DETR_FALL</option>
-                        <option value="DETR_PPE">DETR_PPE</option>
+                        {% for model in model_options %}
+                            <option value="{{ model }}">{{ model }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 

@@ -12,6 +12,8 @@ import pickle
 
 import sys
 
+from camera import model_map
+
 REC_MODEL = pickle.load(open('naive_bayes_model.pkl', 'rb'))
 FERT_MODEL = pickle.load(open('random_forest_model.pkl', 'rb'))
 
@@ -33,7 +35,8 @@ def home():
 @app.route('/vision_solution')
 def vision_solution():
     """Video streaming home page."""
-    return render_template('vision.html', camera_sources=CAMERA_SOURCES)
+    model_options = [model for model in model_map.keys()]
+    return render_template('vision.html', camera_sources=CAMERA_SOURCES, model_options=model_options)
 
 @app.route('/add_camera', methods=['POST'])
 def add_camera():
