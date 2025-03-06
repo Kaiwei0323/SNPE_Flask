@@ -106,28 +106,34 @@
             background-color: darkred;
         }
 
-        /* Hide the RTSP input by default */
-        #rtsp-url {
+        /* Hide the RTSP and Webcam Index inputs by default */
+        #rtsp-url, #webcam-idx {
             display: none;
         }
 
     </style>
 
     <script>
-        // JavaScript to toggle RTSP input visibility
-        function toggleRTSPInput() {
+        // JavaScript to toggle RTSP and Webcam input visibility
+        function toggleInputFields() {
             var videoSource = document.getElementById("video_source").value;
             var rtspInput = document.getElementById("rtsp-url");
+            var webcamIdxInput = document.getElementById("webcam-idx");
             
             if (videoSource === "RTSP") {
                 rtspInput.style.display = "block"; // Show RTSP URL input
+                webcamIdxInput.style.display = "none"; // Hide Webcam index input
+            } else if (videoSource === "/dev/video") {
+                rtspInput.style.display = "none"; // Hide RTSP URL input
+                webcamIdxInput.style.display = "block"; // Show Webcam index input
             } else {
                 rtspInput.style.display = "none"; // Hide RTSP URL input
+                webcamIdxInput.style.display = "none"; // Hide Webcam index input
             }
         }
 
         // Trigger the function on page load to check the default value
-        window.onload = toggleRTSPInput;
+        window.onload = toggleInputFields;
     </script>
 </head>
 <body>
@@ -138,11 +144,13 @@
             <input type="text" id="camera_name" name="camera_name" required>
             
             <label for="video_source">Video Source:</label>
-            <select id="video_source" name="video_source" onchange="toggleRTSPInput()" required>
+            <select id="video_source" name="video_source" onchange="toggleInputFields()" required>
                 <option value="file:///home/aim/Videos/fall.mp4">FALL</option>
                 <option value="file:///home/aim/Videos/ppe.mp4">PPE</option>
+                <option value="file:///home/aim/Videos/med_ppe.mp4">MED_PPE</option>
+                <option value="file:///home/aim/Videos/brain_tumor.mp4">BRAIN_TUMOR</option>
                 <option value="file:///home/aim/Videos/freeway.mp4">FREEWAY</option>
-                <option value='/dev/video0'>WEBCAM</option>
+                <option value='/dev/video'>WEBCAM</option>
                 <option value="RTSP">RTSP</option>
             </select>
 
@@ -151,6 +159,12 @@
                 <label for="rtsp_url">RTSP URL:</label>
                 <input type="text" id="rtsp_url" name="rtsp_url" placeholder="Enter RTSP URL">
             </div>
+            
+            <!-- Webcam Index input, shown only when WEBCAM is selected -->
+            <div id="webcam-idx">
+                <label for="webcam_idx">WEBCAM INDEX:</label>
+                <input type="text" id="webcam_idx" name="webcam_idx" placeholder="Enter Webcam Index">
+            </div>
 
             <label for="model">Model:</label>
             <select id="model" name="model" required>
@@ -158,7 +172,9 @@
                 <option value="YOLOV8S_GPU">YOLOV8S_GPU</option>
                 <option value="YOLOV8S_FALL_DSP">YOLOV8S_FALL_DSP</option>
                 <option value="YOLOV8L_FALL_DSP">YOLOV8L_FALL_DSP</option>
+                <option value="YOLOV8S_BRAIN_TUMOR_DSP">YOLOV8S_BRAIN_TUMOR_DSP</option>
                 <option value="YOLOV8S_PPE_DSP">YOLOV8S_PPE_DSP</option>
+                <option value="YOLOV8S_MED_PPE_DSP">YOLOV8S_MED_PPE_DSP</option>
                 <option value="DETR">DETR</option>
                 <option value="DETR_FALL">DETR_FALL</option>
                 <option value="DETR_PPE">DETR_PPE</option>
@@ -166,9 +182,9 @@
             
             <label for="runtime">Runtime:</label>
             <select id="runtime" name="runtime" required>
-                <option value="CPU">CPU</option>
-                <option value="GPU">GPU</option>
                 <option value="DSP">DSP</option>
+                <option value="GPU">GPU</option>
+                <option value="CPU">CPU</option>
             </select>
             
             <button type="submit">Add Camera</button>

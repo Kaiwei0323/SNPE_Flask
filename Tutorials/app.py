@@ -3,6 +3,7 @@ import cv2
 import os
 from importlib import import_module
 import paho.mqtt.client as mqtt
+import sys
 
 # Import the camera driver
 if os.environ.get('CAMERA'):
@@ -27,9 +28,15 @@ def add_camera():
     model = request.form['model']
     runtime = request.form['runtime']
     
+    print(f"Adding camera: {camera_name}, Video Source: {video_source}, Model: {model}, Runtime: {runtime}")
+    
     if video_source == "RTSP":
         video_source = request.form['rtsp_url']
-    
+        print(f"RTSP URL: {video_source}")
+    elif video_source == "/dev/video":
+        video_source = "/dev/video" + request.form['webcam_idx']
+        print(f"Webcam index: {video_source}")
+
     # Update CAMERA_SOURCES with new camera information
     CAMERA_SOURCES[camera_name] = {
         "source": video_source,
@@ -39,6 +46,7 @@ def add_camera():
     }
 
     return redirect(url_for('index'))
+
 
 @app.route('/delete_camera', methods=['POST'])
 def delete_camera():
@@ -74,6 +82,18 @@ def video_feed(camera_name):
         mimetype='multipart/x-mixed-replace; boundary=frame'
     )
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, threaded=True)
+if __name__ == "__main__":
+    # Default values
+    host = "0.0.0.0"
+    port = 5001
+    
+    # Check for command-line arguments
+    if len(sys.argv) > 1:
+        for arg in sys.argv:
+            if "--host=" in arg:
+                host = arg.split("=")[1]
+            if "--port=" in arg:
+                port = int(arg.split("=")[1])
+
+    app.run(host=host, port=port, debug=True)
 

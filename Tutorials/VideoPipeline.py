@@ -1,14 +1,18 @@
 import gi
 import queue as Q
-from gi.repository import Gst, GstApp
+from gi.repository import Gst, GstApp, GLib
 import numpy as np
 import cv2
+import time
 
 class VideoPipeline:
-    def __init__(self, uri, image_queue):
+    def __init__(self, uri, image_queue, capture_lock):
         self.uri = uri  # Set URI for the video stream
         self.pipeline = None  # Will hold the pipeline reference
+        self.bus = None
+        self.loop = None
         self.image_queue = image_queue  # Queue to store image frames
+        self.capture_lock = capture_lock
         
         # Create GStreamer elements and assign them to instance variables
         self.uridecodebin = Gst.ElementFactory.make("uridecodebin", "uridecodebin")
@@ -30,13 +34,31 @@ class VideoPipeline:
         
     def set_rate(self, rate):
         self.rate = rate
+        
+    def on_message(self, bus, message):
+        t = message.type
+        if t == Gst.MessageType.EOS:
+            print("------------EOS--------------------------")
+            self.reconnect()
+        elif t == Gst.MessageType.ERROR:
+            err, debug = message.parse_error()
+            print(f"Error: {err}, {debug}")
+        elif t == Gst.MessageType.WARNING:
+            warn, debug = message.parse_warning()
+            print(f"Warning: {warn}, {debug}")
 
+    def reconnect(self):
+        print("Reconnecting pipeline...")
+        self.pipeline.set_state(Gst.State.NULL)  # Stop the pipeline
+        self.pipeline.set_state(Gst.State.READY)  # Prepare the pipeline for restart
+        self.pipeline.set_state(Gst.State.PLAYING)        
+            
     def create(self):
         # Set the URI property of uridecodebin
         self.uridecodebin.set_property("uri", self.uri)
 
         # Create the caps for the desired video format (e.g., 640x480, RGB format)
-        caps = Gst.Caps.from_string("video/x-raw,format=RGB,width=1080,height=720")
+        caps = Gst.Caps.from_string("video/x-raw,format=RGB,width=1080,height=580")
         self.capsfilter.set_property("caps", caps)
         
         # Set the framerate property for the videorate element
@@ -67,13 +89,19 @@ class VideoPipeline:
         self.capsfilter.link(self.videorate)
         self.videorate.link(self.appsink)
 
+        # Connect to the EOS signal to detect end of stream
+        self.bus = self.pipeline.get_bus()
+        self.bus.add_signal_watch()
+        self.bus.connect("message", self.on_message)
+
         print("Elements linked successfully")
 
     def start(self):
         # Start playing the pipeline
         if self.pipeline is not None:
             self.pipeline.set_state(Gst.State.PLAYING)
-            # print("Pipeline set to PLAYING")
+            self.loop = GLib.MainLoop()
+            self.loop.run()
 
     def destroy(self):
         # Clean up
@@ -104,52 +132,18 @@ class VideoPipeline:
                                   buffer=buffer.extract_dup(0, buffer_size))
 
             np_array = np.copy(np_array)
+            
+            with self.capture_lock:
+                # Handle queue overflow by dropping the oldest frame
+                if self.image_queue.full():
+                    drop_frame = self.image_queue.get()
+                    # print("Queue full, dropping oldest frame")
 
-            # Handle queue overflow by dropping the oldest frame
-            if self.image_queue.qsize() >= 30:
-                drop_frame = self.image_queue.get()
-                # print("Queue full, dropping oldest frame")
-
-            # Add the new frame to the queue
-            self.image_queue.put(np_array)
-            # print(f"Frame added to queue. Current queue size: {self.image_queue.qsize()}")
+                # Add the new frame to the queue
+                self.image_queue.put(np_array)
+                # print(f"Frame added to queue. Current queue size: {self.image_queue.qsize()}")
 
             return Gst.FlowReturn.OK
         else:
             print("Failed to get sample")
             return Gst.FlowReturn.ERROR
-
-"""
-# Function to display frames from the queue
-def display_frames(image_queue):
-    while True:
-        if not image_queue.empty():
-            frame = image_queue.get()
-            print("Consume frame from queue")
-            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            cv2.imshow("Video Frame", frame_rgb)
-
-        # Check if the user presses 'q' to quit
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cv2.destroyAllWindows()
-
-
-if __name__ == "__main__":
-    Gst.init(None)
-    # Initialize the image queue
-    image_queue = Q.Queue()
-    # Create an instance of the VideoPipeline class
-    
-    # video_path = "rtsp://99.64.152.69:8554/mystream2"
-    video_path = "file:///home/aim/Videos/freeway.mp4"
-    
-    vp = VideoPipeline(video_path, image_queue)
-
-    # Create, start, and destroy the pipeline
-    vp.create()  # Initialize and create the pipeline
-    vp.start()   # Start playing the pipeline
-    display_frames(image_queue)
-    vp.destroy() # Clean up and stop the pipeline
-"""
