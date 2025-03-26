@@ -31,7 +31,8 @@
 ```
 curl -L -O "https://huggingface.co/datasets/kaiwei0323/my-sdk/resolve/main/v2.26.0.240828.zip"
 ```
-Extract the file and place it in the Documents folder.
+-> Extract the file and place it in the Documents folder.
+
 Download the Neural Processing SDK from [Qualcomm SNPE SDK](https://www.qualcomm.com/developer/software/neural-processing-sdk-for-ai).
 
 ## Download Pre-recorded Videos
@@ -52,6 +53,7 @@ curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/m
 ```
 curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/ppe.mp4"
 ```
+-> Place the video files in the Videos folder.
 
 ## Directory Structure
 ```
