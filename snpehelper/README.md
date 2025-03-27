@@ -14,7 +14,7 @@ cd build
 cmake ..
 make
 ```
-This will generate libsnpehelper.so.
+This will generate libsnpehelper.so in build folder.
 
 ## 3. Move libsnpehelper.so to the Tutorials Folder
 ```
