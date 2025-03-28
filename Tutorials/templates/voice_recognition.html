@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Voice Recognition
+{% endblock %}
+
+{% block content %}
+    <h1 class="page-title">Real-time Voice Recognition</h1>
+
+    <div class="container">
+        <div class="microphone-section">
+            <label for="mic-select" class="mic-label">Select Microphone:</label>
+            <select id="mic-select" class="mic-select">
+                <option value="">Select a microphone</option>
+            </select>
+        </div>
+
+        <div class="button-section">
+            <button id="start-btn" class="start-btn" disabled>Start Recognition</button>
+        </div>
+
+        <div class="text-output" id="transcription-output">
+            <p>Transcribed text will appear here...</p>
+        </div>
+    </div>
+
+    <style>
+        /* Basic reset for body */
+        body {
+            background-image: url('/static/images/sliders/jail.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            margin-top: 50px;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .microphone-section, .button-section, .text-output {
+            margin-bottom: 20px;
+        }
+
+        .mic-label {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        .mic-select {
+            font-size: 1rem;
+            padding: 10px;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #333;
+        }
+
+        .start-btn {
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            width: 250px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .start-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .start-btn:hover:enabled {
+            background-color: #0056b3;
+        }
+
+        .text-output {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .text-output p {
+            font-size: 1.2rem;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .start-btn {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .mic-select {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+
+    <script>
+        // Global variable to store the interval ID
+        let textUpdateInterval = null;
+
+        // Fetch available microphones on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/get_microphones')
+                .then(response => response.json())
+                .then(data => {
+                    const micSelect = document.getElementById('mic-select');
+                    data.forEach(device => {
+                        const option = document.createElement('option');
+                        option.value = device.index;
+                        option.textContent = device.name;
+                        micSelect.appendChild(option);
+                    });
+                });
+        });
+
+        // Enable the start button once a microphone is selected
+        document.getElementById('mic-select').addEventListener('change', function() {
+            const micSelect = document.getElementById('mic-select');
+            const startButton = document.getElementById('start-btn');
+
+            // Only enable the start button if a microphone is selected
+            startButton.disabled = !micSelect.value;
+        });
+
+        // Function to continuously fetch the last transcribed text
+        function startTextUpdate() {
+            // Clear existing interval before starting a new one
+            if (textUpdateInterval !== null) {
+                clearInterval(textUpdateInterval);
+                textUpdateInterval = null;  // Reset the interval
+            }
+
+            // Start a new interval to fetch transcriptions every 50ms
+            textUpdateInterval = setInterval(function() {
+                fetch('/get_last_text')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('transcription-output').innerHTML = `<p>${data.text}</p>`;
+                    });
+            }, 50); // Update every 50ms
+        }
+
+        // Start/Stop transcription when the Start/Stop button is clicked
+        document.getElementById('start-btn').addEventListener('click', function() {
+            const micIndex = document.getElementById('mic-select').value;
+            const startButton = document.getElementById('start-btn');
+            const buttonText = startButton.innerText;
+
+            if (buttonText === "Start Recognition") {
+                console.log('Starting recognition...');
+                startButton.innerText = "Stop Recognition";
+                startTextUpdate();  // Start updating the text every 50ms
+
+                // Start recognition
+                fetch('/start_recognition', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mic_index: parseInt(micIndex) })
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.status === 'started') {
+                          console.log('Recognition started');
+                      }
+                  });
+            } else if (buttonText === "Stop Recognition") {
+                console.log('Stopping recognition...');
+                startButton.innerText = "Start Recognition";
+
+                // Stop recognition
+                fetch('/stop_recognition', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.status === 'stopped') {
+                          // Reload the page to reset everything
+                          location.reload();
+                          console.log('Recognition stopped');
+                      }
+                  });
+            }
+        });
+
+        // Listen for when the user is about to leave the page (navigate away or close)
+        window.onbeforeunload = function() {
+            // Stop recognition before unloading the page
+            fetch('/stop_recognition', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === 'stopped') {
+                      // Reload the page to reset everything
+                      location.reload();
+                      console.log('Recognition stopped due to page unload');
+                  }
+              });
+        };
+    </script>
+{% endblock %}
+
