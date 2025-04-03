@@ -107,16 +107,22 @@ python3.10 -m pip install --upgrade pygobject
 python3.10 -m pip install scikit-learn streamlit==1.31.1 scikit-learn==1.3.2 joblib pandas
 ```
 
-5. Run Application
+5. Install wav2vec2 ONNX Model
+```
+wget "https://huggingface.co/datasets/kaiwei0323/wav2vec-onnx/resolve/main/wav2vec2-large-xlsr-53-english.onnx?download=true" -O wav2vec2-large-xlsr-53-english.onnx
+wget "https://huggingface.co/datasets/kaiwei0323/wav2vec-onnx/resolve/main/wav2vec2-large-xlsr-53-english_quant.onnx?download=true" -O wav2vec2-large-xlsr-53-english_quant.onnx
+```
+
+6. Run Application
 ```
 python3.10 app.py
 ```
 
-6. Demo Output
+7. Demo Output
 
 ![Screenshot from 2025-02-07 22-34-21](https://github.com/user-attachments/assets/4b77b4ee-b454-4324-86ec-5f2ef95e984e)
 
-7. MQTT Setup (Optional)
+8. MQTT Setup (Optional)
 Enable and check the Mosquitto service
 ```
 systemctl enable mosquitto
