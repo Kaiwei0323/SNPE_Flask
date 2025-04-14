@@ -25,7 +25,6 @@
     </div>
 
     <style>
-        /* Basic reset for body */
         body {
             background-image: url('/static/images/sliders/jail.jpg');
             background-size: cover;
@@ -139,11 +138,10 @@
     </style>
 
     <script>
-        // Global variable to store the interval ID
         let textUpdateInterval = null;
+        let isRecognitionRunning = false;
 
-        // Fetch available microphones on page load
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             fetch('/get_microphones')
                 .then(response => response.json())
                 .then(data => {
@@ -157,45 +155,62 @@
                 });
         });
 
-        // Enable the start button once a microphone is selected
-        document.getElementById('mic-select').addEventListener('change', function() {
+        // Handle microphone selection change
+        document.getElementById('mic-select').addEventListener('change', function () {
             const micSelect = document.getElementById('mic-select');
             const startButton = document.getElementById('start-btn');
-
-            // Only enable the start button if a microphone is selected
             startButton.disabled = !micSelect.value;
         });
 
-        // Function to continuously fetch the last transcribed text
         function startTextUpdate() {
-            // Clear existing interval before starting a new one
             if (textUpdateInterval !== null) {
                 clearInterval(textUpdateInterval);
-                textUpdateInterval = null;  // Reset the interval
+                textUpdateInterval = null;
             }
 
-            // Start a new interval to fetch transcriptions every 50ms
-            textUpdateInterval = setInterval(function() {
+            textUpdateInterval = setInterval(function () {
                 fetch('/get_last_text')
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById('transcription-output').innerHTML = `<p>${data.text}</p>`;
                     });
-            }, 50); // Update every 50ms
+            }, 50);
         }
 
-        // Start/Stop transcription when the Start/Stop button is clicked
-        document.getElementById('start-btn').addEventListener('click', function() {
+        function stopRecognition() {
+            if (isRecognitionRunning) {
+                fetch('/stop_recognition', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.status === 'stopped') {
+                          console.log('Recognition stopped');
+                          
+                          // Disable start button if no mic is selected
+                          const micSelect = document.getElementById('mic-select');
+                          const startButton = document.getElementById('start-btn');
+                          startButton.disabled = !micSelect.value;
+                      }
+                  });
+
+                clearInterval(textUpdateInterval);
+                textUpdateInterval = null;
+                isRecognitionRunning = false;
+            }
+        }
+
+        document.getElementById('start-btn').addEventListener('click', function () {
             const micIndex = document.getElementById('mic-select').value;
             const startButton = document.getElementById('start-btn');
-            const buttonText = startButton.innerText;
 
-            if (buttonText === "Start Recognition") {
-                console.log('Starting recognition...');
+            if (!isRecognitionRunning) {
                 startButton.innerText = "Stop Recognition";
-                startTextUpdate();  // Start updating the text every 50ms
+                startTextUpdate();
+                isRecognitionRunning = true;
 
-                // Start recognition
                 fetch('/start_recognition', {
                     method: 'POST',
                     headers: {
@@ -208,44 +223,24 @@
                           console.log('Recognition started');
                       }
                   });
-            } else if (buttonText === "Stop Recognition") {
-                console.log('Stopping recognition...');
+            } else {
                 startButton.innerText = "Start Recognition";
-
-                // Stop recognition
-                fetch('/stop_recognition', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then(response => response.json())
-                  .then(data => {
-                      if (data.status === 'stopped') {
-                          // Reload the page to reset everything
-                          location.reload();
-                          console.log('Recognition stopped');
-                      }
-                  });
+                stopRecognition();
             }
         });
 
-        // Listen for when the user is about to leave the page (navigate away or close)
-        window.onbeforeunload = function() {
-            // Stop recognition before unloading the page
-            fetch('/stop_recognition', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.json())
-              .then(data => {
-                  if (data.status === 'stopped') {
-                      // Reload the page to reset everything
-                      location.reload();
-                      console.log('Recognition stopped due to page unload');
-                  }
-              });
-        };
+        // Stop recognition if user navigates away
+        window.addEventListener('beforeunload', function () {
+            if (isRecognitionRunning) {
+                const data = JSON.stringify({});
+                const blob = new Blob([data], { type: 'application/json' });
+                navigator.sendBeacon('/stop_recognition', blob);
+
+                clearInterval(textUpdateInterval);
+                textUpdateInterval = null;
+                isRecognitionRunning = false;
+            }
+        });
     </script>
 {% endblock %}
 
