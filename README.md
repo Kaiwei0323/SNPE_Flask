@@ -75,7 +75,7 @@ Password: oelinux123
 2. Clone and Install SNPE_Flask Project
 ```
 apt install git
-git clone https://github.com/Kaiwei0323/SNPE_Flask.git
+git clone https://github.com/Kaiwei0323/SNPE_Flask.git -b demo
 ```
 
 3. Navigate to Project Directory
@@ -103,8 +103,11 @@ python3.10 -m pip install paho-mqtt
 apt install mosquitto mosquitto-clients
 apt-get install libcairo2-dev
 apt-get install libgirepository1.0-dev
-python3.10 -m pip install --upgrade pygobject
+python3.10 -m pip install pygobject==3.50.0
 python3.10 -m pip install scikit-learn streamlit==1.31.1 scikit-learn==1.3.2 joblib pandas
+apt install portaudio19-dev
+python3.10 -m pip install pyaudio
+python3.10 -m pip install psutil
 ```
 
 5. Install wav2vec2 ONNX Model
