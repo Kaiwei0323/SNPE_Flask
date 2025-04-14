@@ -75,7 +75,7 @@ Password: oelinux123
 2. Clone and Install SNPE_Flask Project
 ```
 apt install git
-git clone https://github.com/Kaiwei0323/SNPE_Flask.git
+git clone https://github.com/Kaiwei0323/SNPE_Flask.git -b demo
 ```
 
 3. Navigate to Project Directory
@@ -103,8 +103,12 @@ python3.10 -m pip install paho-mqtt
 apt install mosquitto mosquitto-clients
 apt-get install libcairo2-dev
 apt-get install libgirepository1.0-dev
-python3.10 -m pip install --upgrade pygobject
+python3.10 -m pip install pygobject==3.50.0
 python3.10 -m pip install scikit-learn streamlit==1.31.1 scikit-learn==1.3.2 joblib pandas
+apt install portaudio19-dev
+python3.10 -m pip install pyaudio
+python3.10 -m pip install psutil
+curl -sfL https://get.k3s.io | sh -s - --flannel-backend=host-gw
 ```
 
 5. Install wav2vec2 ONNX Model
@@ -113,16 +117,25 @@ wget "https://huggingface.co/datasets/kaiwei0323/wav2vec-onnx/resolve/main/wav2v
 wget "https://huggingface.co/datasets/kaiwei0323/wav2vec-onnx/resolve/main/wav2vec2-large-xlsr-53-english_quant.onnx?download=true" -O wav2vec2-large-xlsr-53-english_quant.onnx
 ```
 
-6. Run Application
+6. Kubernetes Sensor Setup
+```
+kubectl apply -f https://raw.githubusercontent.com/Edgenesis/shifu/v0.57.0/pkg/k8s/crd/install/shifu_install.yml
+
+kubectl apply -f 'https://cloud.shifu.dev/manifests/1fc51d1d-fa77-4721-9765-f2e0e9b2acb1.yaml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=root%2F20250414%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250414T200321Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=98aaf0ad0f9cb89028845a4d2470aef7763ca1cb5d9b21bc536fb741da62ed6a'
+
+kubectl apply -f 'https://cloud.shifu.dev/manifests/cdfc4158-ee27-4816-bdae-6c7467eb0999.yaml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=root%2F20250414%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250414T200340Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=a34e8ada0d469b7ce4620ad1dfd08c97c6c82d0cbd169e80e2890bf0518b97fa'
+```
+
+7. Run Application
 ```
 python3.10 app.py
 ```
 
-7. Demo Output
+8. Demo Output
 
 ![Screenshot from 2025-02-07 22-34-21](https://github.com/user-attachments/assets/4b77b4ee-b454-4324-86ec-5f2ef95e984e)
 
-8. MQTT Setup (Optional)
+9. MQTT Setup (Optional)
 Enable and check the Mosquitto service
 ```
 systemctl enable mosquitto
