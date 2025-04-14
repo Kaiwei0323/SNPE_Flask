@@ -111,13 +111,18 @@ python3.10 -m pip install psutil
 curl -sfL https://get.k3s.io | sh -s - --flannel-backend=host-gw
 ```
 
-5. Install wav2vec2 ONNX Model
+5. Export XDG_RUNTIME_DIR environment variable
+```
+export XDG_RUNTIME_DIR=/run/user/0
+```
+
+6. Install wav2vec2 ONNX Model
 ```
 wget "https://huggingface.co/datasets/kaiwei0323/wav2vec-onnx/resolve/main/wav2vec2-large-xlsr-53-english.onnx?download=true" -O wav2vec2-large-xlsr-53-english.onnx
 wget "https://huggingface.co/datasets/kaiwei0323/wav2vec-onnx/resolve/main/wav2vec2-large-xlsr-53-english_quant.onnx?download=true" -O wav2vec2-large-xlsr-53-english_quant.onnx
 ```
 
-6. Kubernetes Sensor Setup
+7. Kubernetes Sensor Setup
 ```
 kubectl apply -f https://raw.githubusercontent.com/Edgenesis/shifu/v0.57.0/pkg/k8s/crd/install/shifu_install.yml
 
@@ -126,16 +131,16 @@ kubectl apply -f 'https://cloud.shifu.dev/manifests/1fc51d1d-fa77-4721-9765-f2e0
 kubectl apply -f 'https://cloud.shifu.dev/manifests/cdfc4158-ee27-4816-bdae-6c7467eb0999.yaml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=root%2F20250414%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250414T200340Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=a34e8ada0d469b7ce4620ad1dfd08c97c6c82d0cbd169e80e2890bf0518b97fa'
 ```
 
-7. Run Application
+8. Run Application
 ```
 python3.10 app.py
 ```
 
-8. Demo Output
+9. Demo Output
 
 ![Screenshot from 2025-02-07 22-34-21](https://github.com/user-attachments/assets/4b77b4ee-b454-4324-86ec-5f2ef95e984e)
 
-9. MQTT Setup (Optional)
+10. MQTT Setup (Optional)
 Enable and check the Mosquitto service
 ```
 systemctl enable mosquitto
