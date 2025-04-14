@@ -140,6 +140,7 @@
     <script>
         let textUpdateInterval = null;
         let isRecognitionRunning = false;
+        let textFetchController = null;
 
         document.addEventListener("DOMContentLoaded", function () {
             fetch('/get_microphones')
@@ -155,7 +156,7 @@
                 });
         });
 
-        // Handle microphone selection change
+        // Enable Start button when mic is selected
         document.getElementById('mic-select').addEventListener('change', function () {
             const micSelect = document.getElementById('mic-select');
             const startButton = document.getElementById('start-btn');
@@ -163,22 +164,43 @@
         });
 
         function startTextUpdate() {
+            stopTextUpdate(); // just in case
+
+            textFetchController = new AbortController();
+
+            textUpdateInterval = setInterval(function () {
+                fetch('/get_last_text', { signal: textFetchController.signal })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('transcription-output').innerHTML = `<p>${data.text}</p>`;
+                    })
+                    .catch(error => {
+                        if (error.name === 'AbortError') {
+                            console.log('Fetch aborted');
+                        } else {
+                            console.error('Fetch error:', error);
+                        }
+                    });
+            }, 50);
+        }
+
+        function stopTextUpdate() {
             if (textUpdateInterval !== null) {
                 clearInterval(textUpdateInterval);
                 textUpdateInterval = null;
             }
 
-            textUpdateInterval = setInterval(function () {
-                fetch('/get_last_text')
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('transcription-output').innerHTML = `<p>${data.text}</p>`;
-                    });
-            }, 50);
+            if (textFetchController) {
+                textFetchController.abort();
+                textFetchController = null;
+            }
         }
 
         function stopRecognition() {
             if (isRecognitionRunning) {
+                stopTextUpdate();
+                isRecognitionRunning = false;
+
                 fetch('/stop_recognition', {
                     method: 'POST',
                     headers: {
@@ -188,17 +210,16 @@
                   .then(data => {
                       if (data.status === 'stopped') {
                           console.log('Recognition stopped');
-                          
-                          // Disable start button if no mic is selected
-                          const micSelect = document.getElementById('mic-select');
-                          const startButton = document.getElementById('start-btn');
-                          startButton.disabled = !micSelect.value;
+                      } else {
+                          console.warn('Stop failed or not acknowledged');
                       }
-                  });
 
-                clearInterval(textUpdateInterval);
-                textUpdateInterval = null;
-                isRecognitionRunning = false;
+                      const micSelect = document.getElementById('mic-select');
+                      const startButton = document.getElementById('start-btn');
+                      startButton.disabled = !micSelect.value;
+                  }).catch(error => {
+                      console.error('Error stopping recognition:', error);
+                  });
             }
         }
 
@@ -229,15 +250,13 @@
             }
         });
 
-        // Stop recognition if user navigates away
+        // Clean up on unload
         window.addEventListener('beforeunload', function () {
             if (isRecognitionRunning) {
                 const data = JSON.stringify({});
                 const blob = new Blob([data], { type: 'application/json' });
                 navigator.sendBeacon('/stop_recognition', blob);
-
-                clearInterval(textUpdateInterval);
-                textUpdateInterval = null;
+                stopTextUpdate();
                 isRecognitionRunning = false;
             }
         });

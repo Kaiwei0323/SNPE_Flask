@@ -22,7 +22,7 @@ import webrtcvad
 from queue import Queue
 from wav2vec2_onnx_mic_inference import Wave2Vec2ONNXInference
 
-
+from flask_cors import CORS
 
 REC_MODEL = pickle.load(open('naive_bayes_model.pkl', 'rb'))
 FERT_MODEL = pickle.load(open('random_forest_model.pkl', 'rb'))
@@ -36,6 +36,7 @@ else:
 CAMERA_SOURCES = {}
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def home():
@@ -430,7 +431,7 @@ def get_last_text():
 
 if __name__ == "__main__":
     # Default values
-    host = "0.0.0.0"
+    host = "192.168.1.164"
     port = 5001
     
     # Check for command-line arguments
