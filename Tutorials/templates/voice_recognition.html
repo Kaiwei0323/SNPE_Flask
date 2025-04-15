@@ -19,6 +19,10 @@
             <button id="start-btn" class="start-btn" disabled>Start Recognition</button>
         </div>
 
+        <div id="status-indicator" class="status-indicator hidden">
+            <p id="status-message">Model Initializing...</p>
+        </div>
+
         <div class="text-output" id="transcription-output">
             <p>Transcribed text will appear here...</p>
         </div>
@@ -116,6 +120,72 @@
             line-height: 1.6;
         }
 
+        .start-btn.stop-active {
+            background-color: #dc3545;
+        }
+
+        .start-btn.stop-active:hover {
+            background-color: #a71d2a;
+        }
+
+        .status-indicator {
+            padding: 15px 25px;
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #007bff;
+            text-align: center;
+            animation: pulse 1.2s ease-in-out infinite;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        .status-indicator.green-active {
+            background-color: linear-gradient(to bottom, rgba(255, 255, 255, 0.85) 50%, #ffffff 50%); /* Make background transparent */
+            border-color: #28a745; /* Green border */
+            color: #28a745; /* Green text color */
+            animation: none;
+        }
+
+        .status-indicator .start-speaking {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745; /* Green text color */
+            background: transparent; /* Remove the white box */
+            padding: 5px 10px; /* Adjust padding */
+            border-radius: 8px;
+            text-align: center;
+            animation: fadeIn 2s ease-out;
+            transition: all 0.3s ease-in-out;
+            display: inline-block; /* Ensure it fits the content size */
+            margin: 0; /* Remove any margins to prevent extra space around */
+        }
+
+        .status-indicator .start-speaking:hover {
+            color: #fff; /* White text on hover */
+            background-color: #28a745; /* Green background on hover */
+            transform: scale(1.05);
+        }
+
+
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -135,15 +205,6 @@
                 padding: 15px;
             }
         }
-        
-        .start-btn.stop-active {
-            background-color: #dc3545; /* Bootstrap red */
-        }
-
-        .start-btn.stop-active:hover {
-            background-color: #a71d2a; /* Darker red on hover */
-        }
-
     </style>
 
     <script>
@@ -165,7 +226,6 @@
                 });
         });
 
-        // Enable Start button when mic is selected
         document.getElementById('mic-select').addEventListener('change', function () {
             const micSelect = document.getElementById('mic-select');
             const startButton = document.getElementById('start-btn');
@@ -173,8 +233,7 @@
         });
 
         function startTextUpdate() {
-            stopTextUpdate(); // just in case
-
+            stopTextUpdate();
             textFetchController = new AbortController();
 
             textUpdateInterval = setInterval(function () {
@@ -219,21 +278,23 @@
                   .then(data => {
                       if (data.status === 'stopped') {
                           console.log('Recognition stopped');
-                      } else {
-                          console.warn('Stop failed or not acknowledged');
                       }
 
                       const micSelect = document.getElementById('mic-select');
                       const startButton = document.getElementById('start-btn');
-                      
+
                       micSelect.value = "";
-                      
                       startButton.disabled = true;
                       startButton.innerText = "Start Recognition";
-                      
-                      // Reset the transcription box
+                      startButton.classList.remove('stop-active');
+
                       document.getElementById('transcription-output').innerHTML = "<p>Transcribed text will appear here...</p>";
-                      startButton.classList.remove('stop-active'); // 🔵 Back to blue
+
+                      const statusIndicator = document.getElementById('status-indicator');
+                      const statusMessage = document.getElementById('status-message');
+                      statusIndicator.classList.add('hidden');
+                      statusIndicator.classList.remove('green-active');
+                      statusMessage.innerText = "";
                   }).catch(error => {
                       console.error('Error stopping recognition:', error);
                   });
@@ -243,11 +304,25 @@
         document.getElementById('start-btn').addEventListener('click', function () {
             const micIndex = document.getElementById('mic-select').value;
             const startButton = document.getElementById('start-btn');
+            const statusIndicator = document.getElementById('status-indicator');
+            const statusMessage = document.getElementById('status-message');
+
             if (!isRecognitionRunning) {
+                statusMessage.innerText = "Model Initializing...";
+                statusIndicator.classList.remove('hidden');
+                statusIndicator.classList.remove('green-active');
+
                 startButton.innerText = "Stop Recognition";
-                startButton.classList.add('stop-active'); // 🔴 Make it red
-                startTextUpdate();
+                startButton.classList.add('stop-active');
                 isRecognitionRunning = true;
+                document.getElementById('transcription-output').innerHTML = "<p></p>";
+
+                setTimeout(() => {
+                    statusMessage.innerText = "Start Speaking...";
+                    statusIndicator.classList.add('green-active');
+                    statusMessage.classList.add('start-speaking'); // Add the new smaller, green text style
+                    startTextUpdate();
+                }, 10000);
 
                 fetch('/start_recognition', {
                     method: 'POST',
@@ -261,18 +336,24 @@
                           console.log('Recognition started');
                       }
                   });
+
             } else {
                 startButton.disabled = true;
                 startButton.classList.remove('stop-active');
                 startButton.innerText = "Start Recognition";
-                // Defer stopRecognition to the next frame
+
+                // Hide indicator
+                statusIndicator.classList.add('hidden');
+                statusMessage.innerText = "";
+                statusMessage.classList.remove('green-active'); // Reset color
+                statusMessage.classList.remove('start-speaking'); // Reset to normal style
+
                 requestAnimationFrame(() => {
                     stopRecognition();
                 });
             }
         });
 
-        // Clean up on unload
         window.addEventListener('beforeunload', function () {
             if (isRecognitionRunning) {
                 const data = JSON.stringify({});
