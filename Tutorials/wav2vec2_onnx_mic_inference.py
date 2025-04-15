@@ -37,6 +37,12 @@ class Wave2Vec2ONNXInference:
     def stop(self):
         """Stop the ASR process gracefully."""
         self.stop_event.set()
+        if self.asr_process is not None:
+            self.asr_process.join(timeout=1)  # Wait for the thread to finish
+            self.asr_process = None
+        if self.vad_process is not None:
+            self.vad_process.join(timeout=1)  # Wait for the thread to finish
+            self.vad_process = None
         print("ASR process stopped.")
         
     def start(self):
