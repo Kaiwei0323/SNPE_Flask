@@ -135,6 +135,15 @@
                 padding: 15px;
             }
         }
+        
+        .start-btn.stop-active {
+            background-color: #dc3545; /* Bootstrap red */
+        }
+
+        .start-btn.stop-active:hover {
+            background-color: #a71d2a; /* Darker red on hover */
+        }
+
     </style>
 
     <script>
@@ -216,7 +225,15 @@
 
                       const micSelect = document.getElementById('mic-select');
                       const startButton = document.getElementById('start-btn');
-                      startButton.disabled = !micSelect.value;
+                      
+                      micSelect.value = "";
+                      
+                      startButton.disabled = true;
+                      startButton.innerText = "Start Recognition";
+                      
+                      // Reset the transcription box
+                      document.getElementById('transcription-output').innerHTML = "<p>Transcribed text will appear here...</p>";
+                      startButton.classList.remove('stop-active'); // 🔵 Back to blue
                   }).catch(error => {
                       console.error('Error stopping recognition:', error);
                   });
@@ -226,9 +243,9 @@
         document.getElementById('start-btn').addEventListener('click', function () {
             const micIndex = document.getElementById('mic-select').value;
             const startButton = document.getElementById('start-btn');
-
             if (!isRecognitionRunning) {
                 startButton.innerText = "Stop Recognition";
+                startButton.classList.add('stop-active'); // 🔴 Make it red
                 startTextUpdate();
                 isRecognitionRunning = true;
 
@@ -245,8 +262,13 @@
                       }
                   });
             } else {
+                startButton.disabled = true;
+                startButton.classList.remove('stop-active');
                 startButton.innerText = "Start Recognition";
-                stopRecognition();
+                // Defer stopRecognition to the next frame
+                requestAnimationFrame(() => {
+                    stopRecognition();
+                });
             }
         });
 

@@ -431,7 +431,7 @@ def get_last_text():
 
 if __name__ == "__main__":
     # Default values
-    host = "192.168.1.164"
+    host = "0.0.0.0"
     port = 5001
     
     # Check for command-line arguments
