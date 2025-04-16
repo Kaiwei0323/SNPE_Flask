@@ -277,6 +277,24 @@
         }
     }
 
+    function waitForFirstInference() {
+        return new Promise((resolve) => {
+            const checkInterval = setInterval(() => {
+                fetch('/get_last_text')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.inference_time && data.inference_time > 0) {
+                            clearInterval(checkInterval);
+                            resolve();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error checking inference:', error);
+                    });
+            }, 500);
+        });
+    }
+
     document.getElementById('start-btn').addEventListener('click', function () {
         const micIndex = document.getElementById('mic-select').value;
         const btn = document.getElementById('start-btn');
@@ -284,6 +302,7 @@
         const statusMessage = document.getElementById('status-message');
 
         if (!isRecognitionRunning) {
+            btn.disabled = true;
             statusMessage.innerText = "Model Initializing...";
             statusIndicator.classList.remove('hidden');
             statusIndicator.classList.remove('green-active');
@@ -293,13 +312,6 @@
             isRecognitionRunning = true;
             document.getElementById('transcription-output').innerHTML = "";
 
-            setTimeout(() => {
-                statusMessage.innerText = "Start Speaking...";
-                statusIndicator.classList.add('green-active');
-                statusMessage.classList.add('start-speaking');
-                startTextUpdate();
-            }, 10000);
-
             fetch('/start_recognition', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -308,6 +320,13 @@
               .then(data => {
                   if (data.status === 'started') {
                       console.log('Recognition started');
+                      waitForFirstInference().then(() => {
+                          statusMessage.innerText = "Start Speaking...";
+                          btn.disabled = false;
+                          statusIndicator.classList.add('green-active');
+                          statusMessage.classList.add('start-speaking');
+                          startTextUpdate();
+                      });
                   }
               });
 
@@ -331,5 +350,6 @@
         }
     });
 </script>
+
 {% endblock %}
 

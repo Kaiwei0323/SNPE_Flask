@@ -29,8 +29,8 @@ class Wave2Vec2ONNXInference:
         
         self.device_name = device_name
         self.device_index = device_index
-        self.asr_input_queue = Queue()
-        self.asr_output_queue = Queue()
+        self.asr_input_queue = Queue(maxsize=120)
+        self.asr_output_queue = Queue(maxsize=120)
         self.stop_event = threading.Event()
         self.asr_process = None
         self.vad_process = None
@@ -102,6 +102,8 @@ class Wave2Vec2ONNXInference:
                     frames += frame
                 else:
                     if len(frames) > 1:
+                        if asr_input_queue.full():
+                            asr_input_queue.get()
                         asr_input_queue.put(frames)
                     frames = b''
 
@@ -109,6 +111,8 @@ class Wave2Vec2ONNXInference:
             print(f"VAD Error: {e}")
         finally:
             if len(frames) > 1:
+                if asr_input_queue.full():
+                    asr_input_queue.get()
                 asr_input_queue.put(frames)
             stream.stop_stream()
             stream.close()
@@ -137,6 +141,8 @@ class Wave2Vec2ONNXInference:
                 inference_time = time.time() - start_time
 
                 if transcription and transcription != "":
+                    if output_queue.full():
+                        output_queue.get()
                     output_queue.put([transcription, inference_time])
 
                 # print(f"Inference Time: {inference_time:.4f} seconds, text: {transcription}")
