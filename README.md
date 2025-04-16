@@ -108,7 +108,7 @@ python3.10 -m pip install paho-mqtt
 apt install mosquitto mosquitto-clients
 apt-get install libcairo2-dev
 apt-get install libgirepository1.0-dev
-python3.10 -m pip install --upgrade pygobject
+python3.10 -m pip install pygobject==3.50.0
 ```
 > **Note:** Please enter the commands above one by one, as executing them all at once may cause the process to stop.
 
