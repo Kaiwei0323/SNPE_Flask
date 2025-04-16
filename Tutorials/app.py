@@ -410,7 +410,7 @@ def start_recognition():
     # Start a new ASR session
     asr = Wave2Vec2ONNXInference(
         model_name="jonatasgrosman/wav2vec2-large-xlsr-53-english",
-        onnx_path="wav2vec2-large-xlsr-53-english_quant.onnx",
+        onnx_path="wav2vec2-large-xlsr-53-english.quant.onnx",
         device_name="mic",
         device_index=mic_index
     )
