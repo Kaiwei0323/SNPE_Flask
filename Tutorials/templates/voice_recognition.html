@@ -5,364 +5,331 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="page-title">Real-time Voice Recognition</h1>
+<h1 class="page-title">Real-time Voice Recognition</h1>
 
-    <div class="container">
-        <div class="microphone-section">
-            <label for="mic-select" class="mic-label">Select Microphone:</label>
-            <select id="mic-select" class="mic-select">
-                <option value="">Select a microphone</option>
-            </select>
-        </div>
-
-        <div class="button-section">
-            <button id="start-btn" class="start-btn" disabled>Start Recognition</button>
-        </div>
-
-        <div id="status-indicator" class="status-indicator hidden">
-            <p id="status-message">Model Initializing...</p>
-        </div>
-
-        <div class="text-output" id="transcription-output">
-            <p>Transcribed text will appear here...</p>
-        </div>
+<div class="container">
+    <div class="microphone-section">
+        <label for="mic-select" class="mic-label">Select Microphone:</label>
+        <select id="mic-select" class="mic-select">
+            <option value="">Select a microphone</option>
+        </select>
     </div>
 
-    <style>
-        body {
-            background-image: url('/static/images/sliders/jail.jpg');
-            background-size: cover;
-            background-position: center center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            height: 100vh;
-            margin: 0;
-            padding: 0;
-            font-weight: bold;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-        }
+    <div class="button-section">
+        <button id="start-btn" class="start-btn" disabled>Start Recognition</button>
+    </div>
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-            margin-top: 50px;
-        }
+    <div id="status-indicator" class="status-indicator hidden">
+        <p id="status-message">Model Initializing...</p>
+    </div>
 
-        .page-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
-        }
+    <div class="text-output" id="transcription-output">
+        <p>Transcribed text will appear here...</p>
+    </div>
+</div>
 
-        .microphone-section, .button-section, .text-output {
-            margin-bottom: 20px;
-        }
+<style>
+    body {
+        background-image: url('/static/images/sliders/jail.jpg');
+        background-size: cover;
+        background-position: center center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-weight: bold;
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+    }
 
-        .mic-label {
-            font-size: 1.2rem;
-            color: #333;
-            margin-bottom: 5px;
-            display: inline-block;
-        }
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
+        margin-top: 50px;
+    }
 
-        .mic-select {
-            font-size: 1rem;
-            padding: 10px;
-            width: 250px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #fff;
-            color: #333;
-        }
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+    }
 
-        .start-btn {
-            font-size: 1.2rem;
-            padding: 10px 20px;
-            width: 250px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    .microphone-section,
+    .button-section,
+    .text-output {
+        margin-bottom: 20px;
+    }
 
-        .start-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
+    .mic-label {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 5px;
+        display: inline-block;
+    }
 
-        .start-btn:hover:enabled {
-            background-color: #0056b3;
-        }
+    .mic-select {
+        font-size: 1rem;
+        padding: 10px;
+        width: 250px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #333;
+    }
 
-        .text-output {
-            width: 100%;
-            max-width: 800px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
+    .start-btn {
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        width: 250px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
 
-        .text-output p {
-            font-size: 1.2rem;
-            color: #333;
-            line-height: 1.6;
-        }
+    .start-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
 
-        .start-btn.stop-active {
-            background-color: #dc3545;
-        }
+    .start-btn:hover:enabled {
+        background-color: #0056b3;
+    }
 
-        .start-btn.stop-active:hover {
-            background-color: #a71d2a;
-        }
+    .start-btn.stop-active {
+        background-color: #dc3545;
+    }
 
-        .status-indicator {
-            padding: 15px 25px;
-            background-color: rgba(255, 255, 255, 0.85);
-            border: 2px solid #007bff;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #007bff;
-            text-align: center;
-            animation: pulse 1.2s ease-in-out infinite;
-            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-        }
+    .start-btn.stop-active:hover {
+        background-color: #a71d2a;
+    }
 
-        .status-indicator.green-active {
-            background-color: linear-gradient(to bottom, rgba(255, 255, 255, 0.85) 50%, #ffffff 50%); /* Make background transparent */
-            border-color: #28a745; /* Green border */
-            color: #28a745; /* Green text color */
-            animation: none;
-        }
+    .status-indicator {
+        padding: 15px 25px;
+        background-color: rgba(255, 255, 255, 0.85);
+        border: 2px solid #007bff;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #007bff;
+        text-align: center;
+        animation: pulse 1.2s ease-in-out infinite;
+    }
 
-        .status-indicator .start-speaking {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #28a745; /* Green text color */
-            background: transparent; /* Remove the white box */
-            padding: 5px 10px; /* Adjust padding */
-            border-radius: 8px;
-            text-align: center;
-            animation: fadeIn 2s ease-out;
-            transition: all 0.3s ease-in-out;
-            display: inline-block; /* Ensure it fits the content size */
-            margin: 0; /* Remove any margins to prevent extra space around */
-        }
+    .status-indicator.green-active {
+        border-color: #28a745;
+        color: #28a745;
+        animation: none;
+    }
 
-        .status-indicator .start-speaking:hover {
-            color: #fff; /* White text on hover */
-            background-color: #28a745; /* Green background on hover */
-            transform: scale(1.05);
-        }
+    .status-indicator .start-speaking {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #28a745;
+        background: transparent;
+        padding: 5px 10px;
+        border-radius: 8px;
+        text-align: center;
+        animation: fadeIn 2s ease-out;
+        transition: all 0.3s ease-in-out;
+        display: inline-block;
+        margin: 0;
+    }
 
+    .status-indicator .start-speaking:hover {
+        color: #fff;
+        background-color: #28a745;
+        transform: scale(1.05);
+    }
 
+    .text-output {
+        width: 100%;
+        max-width: 800px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+        overflow-y: auto;
+        max-height: 300px;
+    }
 
-        .hidden {
-            display: none;
-        }
+    .text-output p {
+        font-size: 1.2rem;
+        color: #333;
+        line-height: 1.6;
+        margin: 5px 0;
+    }
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+    .hidden {
+        display: none;
+    }
 
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(-20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.7; }
+        100% { transform: scale(1); opacity: 1; }
+    }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(-20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
 
-            .page-title {
-                font-size: 2rem;
-            }
+    @media (max-width: 768px) {
+        .container { padding: 10px; }
+        .page-title { font-size: 2rem; }
+        .start-btn, .mic-select { width: 100%; padding: 15px; }
+    }
+</style>
 
-            .start-btn {
-                width: 100%;
-                padding: 15px;
-            }
+<script>
+    let textUpdateInterval = null;
+    let isRecognitionRunning = false;
+    let textFetchController = null;
 
-            .mic-select {
-                width: 100%;
-                padding: 15px;
-            }
-        }
-    </style>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch('/get_microphones')
+            .then(response => response.json())
+            .then(data => {
+                const micSelect = document.getElementById('mic-select');
+                data.forEach(device => {
+                    const option = document.createElement('option');
+                    option.value = device.index;
+                    option.textContent = device.name;
+                    micSelect.appendChild(option);
+                });
+            });
+    });
 
-    <script>
-        let textUpdateInterval = null;
-        let isRecognitionRunning = false;
-        let textFetchController = null;
+    document.getElementById('mic-select').addEventListener('change', function () {
+        document.getElementById('start-btn').disabled = !this.value;
+    });
 
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch('/get_microphones')
+    function startTextUpdate() {
+        stopTextUpdate();
+        textFetchController = new AbortController();
+
+        textUpdateInterval = setInterval(() => {
+            fetch('/get_last_text', { signal: textFetchController.signal })
                 .then(response => response.json())
                 .then(data => {
-                    const micSelect = document.getElementById('mic-select');
-                    data.forEach(device => {
-                        const option = document.createElement('option');
-                        option.value = device.index;
-                        option.textContent = device.name;
-                        micSelect.appendChild(option);
-                    });
-                });
-        });
-
-        document.getElementById('mic-select').addEventListener('change', function () {
-            const micSelect = document.getElementById('mic-select');
-            const startButton = document.getElementById('start-btn');
-            startButton.disabled = !micSelect.value;
-        });
-
-        function startTextUpdate() {
-            stopTextUpdate();
-            textFetchController = new AbortController();
-
-            textUpdateInterval = setInterval(function () {
-                fetch('/get_last_text', { signal: textFetchController.signal })
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('transcription-output').innerHTML = `<p>${data.text}</p>`;
-                    })
-                    .catch(error => {
-                        if (error.name === 'AbortError') {
-                            console.log('Fetch aborted');
-                        } else {
-                            console.error('Fetch error:', error);
-                        }
-                    });
-            }, 50);
-        }
-
-        function stopTextUpdate() {
-            if (textUpdateInterval !== null) {
-                clearInterval(textUpdateInterval);
-                textUpdateInterval = null;
-            }
-
-            if (textFetchController) {
-                textFetchController.abort();
-                textFetchController = null;
-            }
-        }
-
-        function stopRecognition() {
-            if (isRecognitionRunning) {
-                stopTextUpdate();
-                isRecognitionRunning = false;
-
-                fetch('/stop_recognition', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
+                    if (data && data.text) {
+                        const outputDiv = document.getElementById('transcription-output');
+                        const fullText = data.text.trim();
+                        const sentences = fullText.split(/[\n\.!?]+/).filter(s => s.trim());
+                        const lastLine = sentences.pop() || '';
+                        outputDiv.innerHTML = `<p>${lastLine.trim()}</p>`;
                     }
-                }).then(response => response.json())
-                  .then(data => {
-                      if (data.status === 'stopped') {
-                          console.log('Recognition stopped');
-                      }
-
-                      const micSelect = document.getElementById('mic-select');
-                      const startButton = document.getElementById('start-btn');
-
-                      micSelect.value = "";
-                      startButton.disabled = true;
-                      startButton.innerText = "Start Recognition";
-                      startButton.classList.remove('stop-active');
-
-                      document.getElementById('transcription-output').innerHTML = "<p>Transcribed text will appear here...</p>";
-
-                      const statusIndicator = document.getElementById('status-indicator');
-                      const statusMessage = document.getElementById('status-message');
-                      statusIndicator.classList.add('hidden');
-                      statusIndicator.classList.remove('green-active');
-                      statusMessage.innerText = "";
-                  }).catch(error => {
-                      console.error('Error stopping recognition:', error);
-                  });
-            }
-        }
-
-        document.getElementById('start-btn').addEventListener('click', function () {
-            const micIndex = document.getElementById('mic-select').value;
-            const startButton = document.getElementById('start-btn');
-            const statusIndicator = document.getElementById('status-indicator');
-            const statusMessage = document.getElementById('status-message');
-
-            if (!isRecognitionRunning) {
-                statusMessage.innerText = "Model Initializing...";
-                statusIndicator.classList.remove('hidden');
-                statusIndicator.classList.remove('green-active');
-
-                startButton.innerText = "Stop Recognition";
-                startButton.classList.add('stop-active');
-                isRecognitionRunning = true;
-                document.getElementById('transcription-output').innerHTML = "<p></p>";
-
-                setTimeout(() => {
-                    statusMessage.innerText = "Start Speaking...";
-                    statusIndicator.classList.add('green-active');
-                    statusMessage.classList.add('start-speaking'); // Add the new smaller, green text style
-                    startTextUpdate();
-                }, 10000);
-
-                fetch('/start_recognition', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ mic_index: parseInt(micIndex) })
-                }).then(response => response.json())
-                  .then(data => {
-                      if (data.status === 'started') {
-                          console.log('Recognition started');
-                      }
-                  });
-
-            } else {
-                startButton.disabled = true;
-                startButton.classList.remove('stop-active');
-                startButton.innerText = "Start Recognition";
-
-                // Hide indicator
-                statusIndicator.classList.add('hidden');
-                statusMessage.innerText = "";
-                statusMessage.classList.remove('green-active'); // Reset color
-                statusMessage.classList.remove('start-speaking'); // Reset to normal style
-
-                requestAnimationFrame(() => {
-                    stopRecognition();
+                })
+                .catch(error => {
+                    if (error.name !== 'AbortError') {
+                        console.error('Fetch error:', error);
+                    }
                 });
-            }
-        });
+        }, 500);
+    }
 
-        window.addEventListener('beforeunload', function () {
-            if (isRecognitionRunning) {
-                const data = JSON.stringify({});
-                const blob = new Blob([data], { type: 'application/json' });
-                navigator.sendBeacon('/stop_recognition', blob);
-                stopTextUpdate();
-                isRecognitionRunning = false;
-            }
-        });
-    </script>
+    function stopTextUpdate() {
+        if (textUpdateInterval) {
+            clearInterval(textUpdateInterval);
+            textUpdateInterval = null;
+        }
+        if (textFetchController) {
+            textFetchController.abort();
+            textFetchController = null;
+        }
+    }
+
+    function stopRecognition() {
+        if (isRecognitionRunning) {
+            stopTextUpdate();
+            isRecognitionRunning = false;
+
+            fetch('/stop_recognition', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(() => {
+                document.getElementById('mic-select').value = "";
+                const btn = document.getElementById('start-btn');
+                btn.disabled = true;
+                btn.innerText = "Start Recognition";
+                btn.classList.remove('stop-active');
+                document.getElementById('transcription-output').innerHTML = "<p>Transcribed text will appear here...</p>";
+
+                const statusIndicator = document.getElementById('status-indicator');
+                const statusMessage = document.getElementById('status-message');
+                statusIndicator.classList.add('hidden');
+                statusIndicator.classList.remove('green-active');
+                statusMessage.innerText = "";
+            }).catch(error => console.error('Error stopping recognition:', error));
+        }
+    }
+
+    document.getElementById('start-btn').addEventListener('click', function () {
+        const micIndex = document.getElementById('mic-select').value;
+        const btn = document.getElementById('start-btn');
+        const statusIndicator = document.getElementById('status-indicator');
+        const statusMessage = document.getElementById('status-message');
+
+        if (!isRecognitionRunning) {
+            statusMessage.innerText = "Model Initializing...";
+            statusIndicator.classList.remove('hidden');
+            statusIndicator.classList.remove('green-active');
+
+            btn.innerText = "Stop Recognition";
+            btn.classList.add('stop-active');
+            isRecognitionRunning = true;
+            document.getElementById('transcription-output').innerHTML = "";
+
+            setTimeout(() => {
+                statusMessage.innerText = "Start Speaking...";
+                statusIndicator.classList.add('green-active');
+                statusMessage.classList.add('start-speaking');
+                startTextUpdate();
+            }, 10000);
+
+            fetch('/start_recognition', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mic_index: parseInt(micIndex) })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === 'started') {
+                      console.log('Recognition started');
+                  }
+              });
+
+        } else {
+            btn.disabled = true;
+            btn.classList.remove('stop-active');
+            btn.innerText = "Start Recognition";
+            statusIndicator.classList.add('hidden');
+            statusMessage.innerText = "";
+            statusMessage.classList.remove('green-active', 'start-speaking');
+            requestAnimationFrame(stopRecognition);
+        }
+    });
+
+    window.addEventListener('beforeunload', () => {
+        if (isRecognitionRunning) {
+            const blob = new Blob([JSON.stringify({})], { type: 'application/json' });
+            navigator.sendBeacon('/stop_recognition', blob);
+            stopTextUpdate();
+            isRecognitionRunning = false;
+        }
+    });
+</script>
 {% endblock %}
 

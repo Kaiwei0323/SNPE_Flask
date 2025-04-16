@@ -425,6 +425,7 @@ def get_last_text():
     global asr
     if asr:
         text, inference_time = asr.get_last_text()  # Get the most recent transcription
+        print(f"Inference Time: {inference_time:.4f} seconds, text: {text}")
         return jsonify({'text': text, 'inference_time': inference_time})
     return jsonify({'text': '', 'inference_time': 0})
 
