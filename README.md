@@ -118,8 +118,8 @@ export XDG_RUNTIME_DIR=/run/user/0
 
 6. Install wav2vec2 ONNX Model
 ```
-wget "https://huggingface.co/datasets/kaiwei0323/wav2vec-onnx/resolve/main/wav2vec2-large-xlsr-53-english.onnx?download=true" -O wav2vec2-large-xlsr-53-english.onnx
-wget "https://huggingface.co/datasets/kaiwei0323/wav2vec-onnx/resolve/main/wav2vec2-large-xlsr-53-english_quant.onnx?download=true" -O wav2vec2-large-xlsr-53-english_quant.onnx
+wget "https://huggingface.co/datasets/kaiwei0323/wav2vec2-onnx/resolve/main/wav2vec2-large-xlsr-53-english.onnx?download=true" -O wav2vec2-large-xlsr-53-english.onnx
+wget "https://huggingface.co/datasets/kaiwei0323/wav2vec2-onnx/resolve/main/wav2vec2-large-xlsr-53-english.quant.onnx?download=true" -O wav2vec2-large-xlsr-53-english.quant.onnx
 ```
 
 7. Kubernetes Sensor Setup
