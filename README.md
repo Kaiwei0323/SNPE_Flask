@@ -109,47 +109,30 @@ python3.10 app.py
 
 ---
 
-## 8. MQTT Setup (Optional)
+### 8. MQTT Setup (Optional)
 
-### Enable Mosquitto Service
+#### Enable Mosquitto Service
 ```bash
 systemctl enable mosquitto
 systemctl status mosquitto
 ```
 
-### Subscribe to Topics
+#### Subscribe to Topics
 
-#### 🕒 Detection Time
+##### 🕒 Detection Time
 ```bash
 mosquitto_sub -h localhost -t detection_time -v
 ```
 
-#### 📦 YOLOv8 Detection
+##### 📦 YOLOv8 Detection
 ```bash
 mosquitto_sub -h localhost -t yolov8/detections -v
 ```
 
-#### 🧠 DETR Detection
+##### 🧠 DETR Detection
 ```bash
 mosquitto_sub -h localhost -t detr/detections -v
 ```
-
----
-
-## 🧰 Troubleshooting
-
-- ❌ **Mosquitto not starting?**  
-  Ensure the service is enabled and properly installed.  
-  Try:  
-  ```bash
-  systemctl restart mosquitto
-  ```
-
-- ❌ **Python dependency issues?**  
-  Try:  
-  ```bash
-  python3.10 -m pip install -r requirements.txt
-  ```
 
 ---
 
