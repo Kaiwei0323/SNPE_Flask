@@ -34,23 +34,6 @@
 
 ---
 
-## 📦 Dependencies
-
-Install the following system and Python dependencies:
-
-- `pybind11`
-- `cmake`
-- `opencv`
-- `torch`, `torchvision`, `torchaudio`
-- `Pillow`
-- `matplotlib`
-- `Flask`
-- `paho-mqtt`
-- `mosquitto`, `mosquitto-clients`
-- `pygobject`
-
----
-
 ## 📁 Directory Structure
 
 ```bash
