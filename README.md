@@ -81,7 +81,6 @@ cd SNPE_Flask/Tutorials
 ```bash
 chmod +x setup.sh
 ./setup.sh
-source ~/.bashrc
 ```
 
 > 🔍 `setup.sh` installs dependencies, sets up SNPE paths, and configures the environment for Flask + SNPE.
