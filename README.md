@@ -130,6 +130,7 @@ kubectl apply -f 'https://cloud.shifu.dev/manifests/1fc51d1d-fa77-4721-9765-f2e0
 
 kubectl apply -f 'https://cloud.shifu.dev/manifests/cdfc4158-ee27-4816-bdae-6c7467eb0999.yaml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=root%2F20250414%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250414T200340Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=a34e8ada0d469b7ce4620ad1dfd08c97c6c82d0cbd169e80e2890bf0518b97fa'
 ```
+https://cloud.shifu.dev/#/user/login
 
 8. Run Application
 ```

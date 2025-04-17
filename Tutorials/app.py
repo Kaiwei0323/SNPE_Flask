@@ -168,64 +168,67 @@ def cropresult(res1, res2):
 @app.route('/croprecommendation', methods=['GET', 'POST'])
 def cr():
     if request.method == 'POST':
-        # Get the user's input for sensor IP, port, and protocol
+        # Get sensor IP and port from the form
         sensor_ip = request.form.get('sensor_ip')
         sensor_port = request.form.get('sensor_port')
 
-        # Validate the input (simple check)
         if not sensor_ip or not sensor_port:
             return "Invalid input! Please provide sensor IP and port."
 
-        # Define the list of sensor names
+        # List of sensors to fetch
         sensor_names = ['nitrogen', 'phosphorous', 'potassium', 'temperature', 'humidity', 'ph', 'rainfall']
-        
-        # Initialize an empty list to hold the sensor values
         sensor_values = []
 
-        # Fetch data for each sensor using the IP and port from user input
         for sensor in sensor_names:
             try:
-                # Construct the API URL dynamically using the user input
                 url = f'http://{sensor_ip}:{sensor_port}/{sensor}'
-                
-                # Make the GET request to fetch the sensor value
                 response = requests.get(url)
-                response.raise_for_status()  # Raise an exception if the request fails
+                response.raise_for_status()
 
-                # Assuming the response is a JSON object containing the sensor value in 'mqtt_message'
-                response_json = response.json()
-                
-                if isinstance(response_json, int):
+                try:
+                    response_json = response.json()
+                except json.JSONDecodeError:
+                    print(f"Invalid JSON from {url}")
+                    sensor_values.append(0)
+                    continue
+
+                sensor_value = 0  # default fallback
+
+                # Case 1: Plain value (OPC UA style)
+                if isinstance(response_json, (int, float)):
                     sensor_value = response_json
-                else:
 
-                    # Extract the actual sensor value from the 'mqtt_message' field
-                    sensor_data = response_json.get("mqtt_message", "{}")
-                    sensor_json = json.loads(sensor_data)  # Parse the inner JSON
-                    sensor_value = sensor_json.get(sensor, 0)  # Default to 0 if the value is missing
+                # Case 2: Dictionary response (MQTT style or JSON object)
+                elif isinstance(response_json, dict):
+                    if sensor in response_json:
+                        sensor_value = response_json[sensor]
+                    elif "mqtt_message" in response_json:
+                        mqtt_data = response_json.get("mqtt_message", "{}")
+                        try:
+                            mqtt_json = json.loads(mqtt_data)
+                            sensor_value = mqtt_json.get(sensor, 0)
+                        except json.JSONDecodeError as e:
+                            print(f"Failed to decode mqtt_message for {sensor}: {e}")
+                            sensor_value = 0
+                    else:
+                        print(f"{sensor} not found in response from {url}")
+                        sensor_value = 0
 
-                sensor_values.append(float(sensor_value))  # Assuming the value is numeric
+                sensor_values.append(float(sensor_value))
 
             except requests.exceptions.RequestException as e:
-                # Handle the error and append a default value if there's an issue fetching the sensor data
-                print(f"Error fetching {sensor}: {e}")
-                sensor_values.append(0)  # Default value in case of error
+                print(f"Error fetching {sensor} from {url}: {e}")
+                sensor_values.append(0)
 
-        # Crop prediction - use all 7 sensor values for crop prediction
-        crop_input = np.array(sensor_values)  # Use all 7 features for crop prediction
-        crop_input = crop_input.reshape(1, -1)
+        # Convert values to numpy array for prediction
+        crop_input = np.array(sensor_values).reshape(1, -1)
+        fertilizer_input = np.array(sensor_values[:3]).reshape(1, -1)
 
-        # Crop prediction using the REC_MODEL
-        res1 = REC_MODEL.predict(crop_input)[0]  # Crop prediction result
+        # Make predictions
+        res1 = REC_MODEL.predict(crop_input)[0]
+        res2 = FERT_MODEL.predict(fertilizer_input)[0]
 
-        # Fertilizer prediction - use only the first 3 features (nitrogen, phosphorous, potassium)
-        fertilizer_input = np.array(sensor_values[:3])  # Only take the first 3 values for fertilizer prediction
-        fertilizer_input = fertilizer_input.reshape(1, -1)
-
-        # Fertilizer prediction using the FERT_MODEL
-        res2 = FERT_MODEL.predict(fertilizer_input)[0]  # Fertilizer prediction result
-
-        # Crop and Fertilizer dictionaries
+        # Mapping IDs to names
         crop_dict = {1: "Rice", 2: "Maize", 3: "Jute", 4: "Cotton", 5: "Coconut", 6: "Papaya", 7: "Orange",
                      8: "Apple", 9: "Muskmelon", 10: "Watermelon", 11: "Grapes", 12: "Mango", 13: "Banana",
                      14: "Pomegranate", 15: "Lentil", 16: "Blackgram", 17: "Mungbean", 18: "Mothbeans",
@@ -241,11 +244,9 @@ def cr():
             6: 'Ten-Twenty Six-Twenty Six'
         }
 
-        # Map results to human-readable names
         crop = crop_dict.get(res1, "Unknown Crop")
         fert = fertilizer_dict.get(res2, "Unknown Fertilizer")
 
-        # Redirect to the `cropresult` route and pass results and sensor values as URL parameters
         return redirect(url_for('cropresult', res1=crop, res2=fert, sensor_values=sensor_values))
 
     return render_template('croprec.html')
