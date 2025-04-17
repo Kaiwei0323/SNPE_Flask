@@ -67,6 +67,7 @@ source ~/.bashrc
 
 5. Kubernetes Sensor Setup
 * Log into [Shifu Cloud](https://cloud.shifu.dev/#/user/login) and setup sensors.
+
 Reference: https://github.com/Kaiwei0323/Kubernetes-Shifu-Installation-Guide
 
 6. Run Application
