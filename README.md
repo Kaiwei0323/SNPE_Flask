@@ -1,100 +1,181 @@
-# SNPE FLASK Setup Guide
+# 🚀 SNPE Flask Setup Guide
 
-## Prerequisites
+> Vision solution using SNPE SDK for real-time inference, Kubernetes-wrapped sensors for smart farming, and Wav2Vec2 for voice recognition.
 
-### Hardware Requirements
-- Platform: **QCS6490**
-  - CPU: Octa-Core Kryo 670 
-  - GPU: Qualcomm Adreno 643
+![Ubuntu](https://img.shields.io/badge/OS-Ubuntu%2020.04-blue?logo=ubuntu)
+![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python)
+![SNPE](https://img.shields.io/badge/SNPE-v2.26.0.240828-red?logo=qualcomm)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-### Software Requirements
-- Operating System: **Ubuntu 20.04 (arm64)**
-- SNPE SDK Version: **v2.26.0.240828**
-- Supported Models: DETR_Resnet101, YOLOv8, YOLOv11
-
-### Dependencies:
-- Python3.10
-- pybind11
-- cmake
-- OpenCV
-- Torch, Torchvision, Torchaudio
-- Pillow
-- matplotlib
-- Flask
-- paho-mqtt
-- mosquitto mosquitto-clients
-- pygobject
 ---
 
-## Directory Structure
-```
-Documents
-└── SNPE_Flask
-└── v2.26.0.240828
-Videos
-└── freeway.mp4
-└── ppe.mp4
-└── fall.mp4
-└── brain_tumor.mp4
+## 🧠 Supported Models
+- ✅ YOLOv8  
+- ✅ YOLOv11  
+- ✅ DETR_Resnet101  
+
+---
+
+## 🖥️ Hardware Requirements
+
+| Component | Specification |
+|----------|----------------|
+| Platform | **QCS6490** |
+| CPU      | Octa-Core Kryo 670 |
+| GPU      | Qualcomm Adreno 643 |
+
+---
+
+## ⚙️ Software Requirements
+
+- OS: Ubuntu 20.04 (arm64)
+- SNPE SDK Version: **v2.26.0.240828**
+- Python 3.10
+
+---
+
+## 📦 Dependencies
+
+Install the following system and Python dependencies:
+
+- `pybind11`
+- `cmake`
+- `opencv`
+- `torch`, `torchvision`, `torchaudio`
+- `Pillow`
+- `matplotlib`
+- `Flask`
+- `paho-mqtt`
+- `mosquitto`, `mosquitto-clients`
+- `pygobject`
+
+---
+
+## 📁 Directory Structure
+
+```bash
+Documents/
+├── SNPE_Flask/
+│   └── v2.26.0.240828/
+Videos/
+├── freeway.mp4
+├── ppe.mp4
+├── fall.mp4
+├── brain_tumor.mp4
 └── med_ppe.mp4
 ```
 
-## Setup Steps
-1. Switch to Admin Mode
-```
+---
+
+## 🛠️ Setup Steps
+
+### 1. 🔐 Switch to Admin Mode
+```bash
 su
 Password: oelinux123
 ```
 
-2. Clone and Install SNPE_Flask Project
-```
+---
+
+### 2. 📥 Clone the Project
+```bash
 apt install git
 git clone https://github.com/Kaiwei0323/SNPE_Flask.git -b demo
 chmod +777 -R SNPE_Flask
 ```
 
-3. Navigate to Project Directory
-```
+---
+
+### 3. 📂 Navigate to the Project Directory
+```bash
 cd SNPE_Flask/Tutorials
 ```
 
-4. Environment Setup (Take approximate 10 mins)
-```
+---
+
+### 4. ⚙️ Environment Setup (Takes ~10 minutes)
+```bash
 chmod +x setup.sh
 ./setup.sh
 source ~/.bashrc
 ```
 
-5. Kubernetes Sensor Setup
-* Log into [Shifu Cloud](https://cloud.shifu.dev/#/user/login) and setup sensors.
+> 🔍 `setup.sh` installs dependencies, sets up SNPE paths, and configures the environment for Flask + SNPE.
 
-Reference: https://github.com/Kaiwei0323/Kubernetes-Shifu-Installation-Guide
+---
 
-6. Run Application
-```
+### 5. ☁️ Setup Kubernetes Sensors
+
+Log in to [Shifu Cloud](https://cloud.shifu.dev/#/user/login) and configure sensor devices.
+
+📘 [Kubernetes-Shifu-Installation-Guide](https://github.com/Kaiwei0323/Kubernetes-Shifu-Installation-Guide)
+
+---
+
+### 6. 🚀 Run the Application
+```bash
 python3.10 app.py
 ```
 
-7. Demo Output
+---
+
+### 7. 🖼️ Demo Output
 
 ![Screenshot from 2025-02-07 22-34-21](https://github.com/user-attachments/assets/4b77b4ee-b454-4324-86ec-5f2ef95e984e)
 
-8. MQTT Setup (Optional)
-Enable and check the Mosquitto service
-```
+---
+
+## 📡 MQTT Setup (Optional)
+
+### Enable Mosquitto Service
+```bash
 systemctl enable mosquitto
 systemctl status mosquitto
 ```
-Subscribe to detection topics:
-* For detection time
-```
+
+### Subscribe to Topics
+
+#### 🕒 Detection Time
+```bash
 mosquitto_sub -h localhost -t detection_time -v
 ```
-* For YOLOv8 detection:
-```
+
+#### 📦 YOLOv8 Detection
+```bash
 mosquitto_sub -h localhost -t yolov8/detections -v
 ```
-* For DETR detection:
-```
+
+#### 🧠 DETR Detection
+```bash
 mosquitto_sub -h localhost -t detr/detections -v
 ```
+
+---
+
+## 🧰 Troubleshooting
+
+- ❌ **Mosquitto not starting?**  
+  Ensure the service is enabled and properly installed.  
+  Try:  
+  ```bash
+  systemctl restart mosquitto
+  ```
+
+- ❌ **Python dependency issues?**  
+  Try:  
+  ```bash
+  python3.10 -m pip install -r requirements.txt
+  ```
+
+---
+
+## 👨‍💻 Author
+
+**Kaiwei @ Inventec**  
+Software Engineer | Edge AI & Computer Vision
+
+---
+
+## 📝 License
+
+This project is licensed under the **MIT License**.
