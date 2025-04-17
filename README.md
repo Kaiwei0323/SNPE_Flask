@@ -52,7 +52,7 @@ Videos/
 
 ## 🛠️ Setup Steps
 
-### 1. 🔐 Switch to Admin Mode
+### 1. Switch to Admin Mode
 ```bash
 su
 Password: oelinux123
@@ -60,7 +60,7 @@ Password: oelinux123
 
 ---
 
-### 2. 📥 Clone the Project
+### 2. Clone the Project
 ```bash
 apt install git
 git clone https://github.com/Kaiwei0323/SNPE_Flask.git -b demo
@@ -69,14 +69,14 @@ chmod +777 -R SNPE_Flask
 
 ---
 
-### 3. 📂 Navigate to the Project Directory
+### 3. Navigate to the Project Directory
 ```bash
 cd SNPE_Flask/Tutorials
 ```
 
 ---
 
-### 4. ⚙️ Environment Setup (Takes ~10 minutes)
+### 4. Environment Setup (Takes ~10 minutes)
 ```bash
 chmod +x setup.sh
 ./setup.sh
@@ -87,7 +87,7 @@ source ~/.bashrc
 
 ---
 
-### 5. ☁️ Setup Kubernetes Sensors (Optional)
+### 5. Setup Kubernetes Sensors (Optional)
 
 Log in to [Shifu Cloud](https://cloud.shifu.dev/#/user/login) and configure sensor devices.
 
@@ -95,20 +95,20 @@ Log in to [Shifu Cloud](https://cloud.shifu.dev/#/user/login) and configure sens
 
 ---
 
-### 6. 🚀 Run the Application
+### 6. Run the Application
 ```bash
 python3.10 app.py
 ```
 
 ---
 
-### 7. 🖼️ Demo Output
+### 7. Demo Output
 
 ![Screenshot from 2025-02-07 22-34-21](https://github.com/user-attachments/assets/4b77b4ee-b454-4324-86ec-5f2ef95e984e)
 
 ---
 
-## 📡 MQTT Setup (Optional)
+## 8. MQTT Setup (Optional)
 
 ### Enable Mosquitto Service
 ```bash
