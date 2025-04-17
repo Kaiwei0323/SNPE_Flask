@@ -194,11 +194,31 @@
     }
 </style>
 
+<script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
 <script>
-    let textUpdateInterval = null;
+    let socket = io(); // WebSocket connection
     let isRecognitionRunning = false;
-    let textFetchController = null;
 
+    // Connect to WebSocket and listen for transcription updates
+    socket.on('connect', () => {
+        console.log('Connected to WebSocket server');
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Disconnected from WebSocket server');
+    });
+
+    socket.on('transcription', function (data) {
+        if (data && data.text) {
+            const outputDiv = document.getElementById('transcription-output');
+            const fullText = data.text.trim();
+            const sentences = fullText.split(/[\n\.!?]+/).filter(s => s.trim());
+            const lastLine = sentences.pop() || '';
+            outputDiv.innerHTML = `<p>${lastLine.trim()}</p>`;
+        }
+    });
+
+    // Fetch the available microphones on page load
     document.addEventListener("DOMContentLoaded", function () {
         fetch('/get_microphones')
             .then(response => response.json())
@@ -217,84 +237,7 @@
         document.getElementById('start-btn').disabled = !this.value;
     });
 
-    function startTextUpdate() {
-        stopTextUpdate();
-        textFetchController = new AbortController();
-
-        textUpdateInterval = setInterval(() => {
-            fetch('/get_last_text', { signal: textFetchController.signal })
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.text) {
-                        const outputDiv = document.getElementById('transcription-output');
-                        const fullText = data.text.trim();
-                        const sentences = fullText.split(/[\n\.!?]+/).filter(s => s.trim());
-                        const lastLine = sentences.pop() || '';
-                        outputDiv.innerHTML = `<p>${lastLine.trim()}</p>`;
-                    }
-                })
-                .catch(error => {
-                    if (error.name !== 'AbortError') {
-                        console.error('Fetch error:', error);
-                    }
-                });
-        }, 500);
-    }
-
-    function stopTextUpdate() {
-        if (textUpdateInterval) {
-            clearInterval(textUpdateInterval);
-            textUpdateInterval = null;
-        }
-        if (textFetchController) {
-            textFetchController.abort();
-            textFetchController = null;
-        }
-    }
-
-    function stopRecognition() {
-        if (isRecognitionRunning) {
-            stopTextUpdate();
-            isRecognitionRunning = false;
-
-            fetch('/stop_recognition', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            }).then(() => {
-                document.getElementById('mic-select').value = "";
-                const btn = document.getElementById('start-btn');
-                btn.disabled = true;
-                btn.innerText = "Start Recognition";
-                btn.classList.remove('stop-active');
-                document.getElementById('transcription-output').innerHTML = "<p>Transcribed text will appear here...</p>";
-
-                const statusIndicator = document.getElementById('status-indicator');
-                const statusMessage = document.getElementById('status-message');
-                statusIndicator.classList.add('hidden');
-                statusIndicator.classList.remove('green-active');
-                statusMessage.innerText = "";
-            }).catch(error => console.error('Error stopping recognition:', error));
-        }
-    }
-
-    function waitForFirstInference() {
-        return new Promise((resolve) => {
-            const checkInterval = setInterval(() => {
-                fetch('/get_last_text')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.inference_time && data.inference_time > 0) {
-                            clearInterval(checkInterval);
-                            resolve();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error checking inference:', error);
-                    });
-            }, 500);
-        });
-    }
-
+    // Start or stop recognition
     document.getElementById('start-btn').addEventListener('click', function () {
         const micIndex = document.getElementById('mic-select').value;
         const btn = document.getElementById('start-btn');
@@ -312,6 +255,7 @@
             isRecognitionRunning = true;
             document.getElementById('transcription-output').innerHTML = "";
 
+            // Start recognition on the server
             fetch('/start_recognition', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -320,13 +264,10 @@
               .then(data => {
                   if (data.status === 'started') {
                       console.log('Recognition started');
-                      waitForFirstInference().then(() => {
-                          statusMessage.innerText = "Start Speaking...";
-                          btn.disabled = false;
-                          statusIndicator.classList.add('green-active');
-                          statusMessage.classList.add('start-speaking');
-                          startTextUpdate();
-                      });
+                      statusMessage.innerText = "Start Speaking...";
+                      btn.disabled = false;
+                      statusIndicator.classList.add('green-active');
+                      statusMessage.classList.add('start-speaking');
                   }
               });
 
@@ -337,19 +278,30 @@
             statusIndicator.classList.add('hidden');
             statusMessage.innerText = "";
             statusMessage.classList.remove('green-active', 'start-speaking');
-            requestAnimationFrame(stopRecognition);
+            document.getElementById('transcription-output').innerHTML = "Transcribed text will appear here...";
+            
+            // Stop recognition on the server
+            fetch('/stop_recognition', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(() => {
+                document.getElementById('mic-select').value = "";
+                const statusIndicator = document.getElementById('status-indicator');
+                statusIndicator.classList.add('hidden');
+                statusMessage.innerText = "";
+            }).catch(error => console.error('Error stopping recognition:', error));
+
+            isRecognitionRunning = false;
         }
     });
 
+    // Clean up WebSocket when the user leaves the page
     window.addEventListener('beforeunload', () => {
         if (isRecognitionRunning) {
-            const blob = new Blob([JSON.stringify({})], { type: 'application/json' });
-            navigator.sendBeacon('/stop_recognition', blob);
-            stopTextUpdate();
+            socket.emit('stop_recognition');
             isRecognitionRunning = false;
         }
     });
 </script>
 
 {% endblock %}
-

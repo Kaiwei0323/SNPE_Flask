@@ -12,15 +12,18 @@ import pickle
 
 import sys
 
-
+from flask_socketio import SocketIO, emit
 
 from camera import model_map
 
 import threading
+from threading import Thread
 import pyaudio
 import webrtcvad
 from queue import Queue
 from wav2vec2_onnx_mic_inference import Wave2Vec2ONNXInference
+
+import time
 
 from flask_cors import CORS
 
@@ -36,6 +39,7 @@ else:
 CAMERA_SOURCES = {}
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 CORS(app)
 
 @app.route('/')
@@ -360,12 +364,14 @@ def handle_stop_port_forward():
         
         
         
-# Global variables for the ASR process
+# Global variables
 asr = None
 mic_devices = []
 mic_index = 0
+is_recognizing = False
 
-# Function to get list of available microphone devices
+
+# Get mic devices
 def get_microphone_devices():
     audio = pyaudio.PyAudio()
     devices = []
@@ -375,60 +381,65 @@ def get_microphone_devices():
             devices.append({'index': i, 'name': device_info['name']})
     return devices
 
-# Route to show the voice recognition page
+
 @app.route('/voice_recognition')
 def voice_recognition():
     return render_template('voice_recognition.html')
 
-# Route to get available microphone devices
+
 @app.route('/get_microphones', methods=['GET'])
 def get_microphones():
     global mic_devices
-    mic_devices = get_microphone_devices()  # Get all microphone devices
+    mic_devices = get_microphone_devices()
     return jsonify(mic_devices)
-    
-@app.route('/stop_recognition', methods=['POST'])
-def stop_recognition():
-    global asr
-    if asr:
-        asr.stop()  # Stop any previous ASR session
-        asr = None  # Reset ASR object to None
-        print("Stopped ASR Service")
-    return jsonify({'status': 'stopped'})
+
 
 @app.route('/start_recognition', methods=['POST'])
 def start_recognition():
-    global asr, mic_index
-    mic_index = request.json['mic_index']  # Get selected microphone index
-    
-    # Ensure the ASR object is not already running
-    if asr is not None:
-        asr.stop()  # Stop any previous ASR session
+    global asr, mic_index, is_recognizing
 
-    print(f"You selected mic index: {mic_index}")
-    print("Initializing ASR config")
+    mic_index = request.json['mic_index']
+    is_recognizing = True
 
-    # Start a new ASR session
+    if asr:
+        asr.stop()
+
     asr = Wave2Vec2ONNXInference(
         model_name="jonatasgrosman/wav2vec2-large-xlsr-53-english",
         onnx_path="wav2vec2-large-xlsr-53-english.quant.onnx",
         device_name="mic",
         device_index=mic_index
     )
-    print("ASR service started!")
-    asr.start()  # Start the new ASR service
-    
+
+    def recognition_thread():
+        global is_recognizing
+        asr.start()
+        while is_recognizing:
+            text, inference_time = asr.get_last_text()
+            print(f"Inference Time: {inference_time:.4f} seconds, text: {text}")
+            if text:
+                socketio.emit('transcription', {
+                    'text': text,
+                    'inference_time': inference_time
+                })
+            time.sleep(0.5)
+
+    thread = Thread(target=recognition_thread)
+    thread.daemon = True
+    thread.start()
+
     return jsonify({'status': 'started'})
 
-# Route to get last transcribed text
-@app.route('/get_last_text', methods=['GET'])
-def get_last_text():
-    global asr
+
+@app.route('/stop_recognition', methods=['POST'])
+def stop_recognition():
+    global asr, is_recognizing
+    is_recognizing = False
     if asr:
-        text, inference_time = asr.get_last_text()  # Get the most recent transcription
-        print(f"Inference Time: {inference_time:.4f} seconds, text: {text}")
-        return jsonify({'text': text, 'inference_time': inference_time})
-    return jsonify({'text': '', 'inference_time': 0})
+        asr.stop()
+        asr = None
+        print("Stopped ASR Service")
+    return jsonify({'status': 'stopped'})
 
 
 if __name__ == "__main__":
