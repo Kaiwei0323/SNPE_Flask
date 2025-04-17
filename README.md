@@ -87,7 +87,7 @@ source ~/.bashrc
 
 ---
 
-### 5. ☁️ Setup Kubernetes Sensors
+### 5. ☁️ Setup Kubernetes Sensors (Optional)
 
 Log in to [Shifu Cloud](https://cloud.shifu.dev/#/user/login) and configure sensor devices.
 
