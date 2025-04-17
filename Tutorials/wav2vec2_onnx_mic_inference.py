@@ -29,8 +29,8 @@ class Wave2Vec2ONNXInference:
         
         self.device_name = device_name
         self.device_index = device_index
-        self.asr_input_queue = Queue(maxsize=120)
-        self.asr_output_queue = Queue(maxsize=120)
+        self.asr_input_queue = Queue(maxsize=60)
+        self.asr_output_queue = Queue(maxsize=60)
         self.stop_event = threading.Event()
         self.asr_process = None
         self.vad_process = None

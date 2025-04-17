@@ -295,13 +295,15 @@
         }
     });
 
-    // Clean up WebSocket when the user leaves the page
+    // Clean up WebSocket and stop recognition when the user leaves the page or refreshes
     window.addEventListener('beforeunload', () => {
         if (isRecognitionRunning) {
-            socket.emit('stop_recognition');
+            const blob = new Blob([JSON.stringify({})], { type: 'application/json' });
+            navigator.sendBeacon('/stop_recognition', blob);
             isRecognitionRunning = false;
         }
     });
 </script>
 
 {% endblock %}
+
