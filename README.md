@@ -26,32 +26,6 @@
 - pygobject
 ---
 
-## SNPE SDK Installation
-* v2.26.0.240828
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/my-sdk/resolve/main/v2.26.0.240828.zip"
-```
-Download the Neural Processing SDK from [Qualcomm SNPE SDK](https://www.qualcomm.com/developer/software/neural-processing-sdk-for-ai).
-
-## Download Pre-recorded Videos
-* Download Link
-
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/brain_tumor.mp4"
-```
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/fall.mp4"
-```
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/freeway.mp4"
-```
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/med_ppe.mp4"
-```
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/ppe.mp4"
-```
-
 ## Directory Structure
 ```
 Documents
@@ -76,6 +50,7 @@ Password: oelinux123
 ```
 apt install git
 git clone https://github.com/Kaiwei0323/SNPE_Flask.git -b demo
+chmod +777 -R SNPE_Flask
 ```
 
 3. Navigate to Project Directory
