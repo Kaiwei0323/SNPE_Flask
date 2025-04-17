@@ -63,6 +63,7 @@ Password: oelinux123
 ### 2. Clone the Project
 ```bash
 apt install git
+cd /home/aim/Documents
 git clone https://github.com/Kaiwei0323/SNPE_Flask.git -b demo
 chmod +777 -R SNPE_Flask
 ```
