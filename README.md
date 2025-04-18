@@ -39,7 +39,7 @@
 ```bash
 Documents/
 ├── SNPE_Flask/
-│   └── v2.26.0.240828/
+├── v2.26.0.240828/
 Videos/
 ├── freeway.mp4
 ├── ppe.mp4
