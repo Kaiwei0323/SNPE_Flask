@@ -1,121 +1,98 @@
-# SNPE FLASK Setup Guide
+# 🚀 SNPE Flask Setup Guide
 
-## Prerequisites
+> Vision solution using SNPE SDK for real-time inference.
 
-### Hardware Requirements
-- Platform: **QCS6490**
-  - CPU: Octa-Core Kryo 670 
-  - GPU: Qualcomm Adreno 643
+![Ubuntu](https://img.shields.io/badge/OS-Ubuntu%2020.04-blue?logo=ubuntu)
+![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python)
+![SNPE](https://img.shields.io/badge/SNPE-v2.26.0.240828-red?logo=qualcomm)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-### Software Requirements
-- Operating System: **Ubuntu 20.04 (arm64)**
-- SNPE SDK Version: **v2.26.0.240828**
-- Supported Models: **DETR**, **YOLOv8**, **YOLOv11**, **YOLOv12**
-
-### Dependencies:
-- Python3.10
-- pybind11
-- cmake
-- OpenCV
-- Torch, Torchvision, Torchaudio
-- Pillow
-- matplotlib
-- Flask
-- paho-mqtt
-- mosquitto mosquitto-clients
-- pygobject
 ---
 
-## SNPE SDK Installation
-* v2.26.0.240828
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/my-sdk/resolve/main/v2.26.0.240828.zip"
-```
-> **Extract the file and place it in the `Documents` folder.**
+## Supported Models
+- ✅ YOLOv8  
+- ✅ YOLOv11  
+- ✅ DETR  
 
+---
 
-Reference: [Qualcomm SNPE SDK](https://www.qualcomm.com/developer/software/neural-processing-sdk-for-ai).
+## Hardware Requirements
 
-## Download Pre-recorded Videos
-* Download Link
+| Component | Specification |
+|----------|----------------|
+| Platform | **QCS6490** |
+| CPU      | Octa-Core Kryo 670 |
+| GPU      | Qualcomm Adreno 643 |
 
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/brain_tumor.mp4"
-```
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/fall.mp4"
-```
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/freeway.mp4"
-```
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/med_ppe.mp4"
-```
-```
-curl -L -O "https://huggingface.co/datasets/kaiwei0323/demo-video/resolve/main/ppe.mp4"
-```
-> **Place the video files in the `Videos` folder.**
+---
 
+## Software Requirements
+
+- OS: Ubuntu 20.04 (arm64)
+- SNPE SDK Version: **v2.26.0.240828**
+- Python 3.10
+
+---
 
 ## Directory Structure
-```
-Documents
-└── SNPE_Flask
-└── v2.26.0.240828
-Videos
-└── freeway.mp4
-└── ppe.mp4
-└── fall.mp4
-└── brain_tumor.mp4
+
+```bash
+Documents/
+├── SNPE_Flask/
+├── v2.26.0.240828/
+Videos/
+├── freeway.mp4
+├── ppe.mp4
+├── fall.mp4
+├── brain_tumor.mp4
 └── med_ppe.mp4
 ```
 
+---
+
 ## Setup Steps
+
 ### 1. Switch to Admin Mode
-```
+```bash
 su
 Password: oelinux123
 ```
 
-### 2. Clone and Install SNPE_Flask Project
-```
+---
+
+### 2. Clone the Project
+```bash
 apt install git
+cd /home/aim/Documents
 git clone https://github.com/Kaiwei0323/SNPE_Flask.git
+chmod +777 -R SNPE_Flask
 ```
 
-### 3. Navigate to Project Directory
-```
+---
+
+### 3. Navigate to the Project Directory
+```bash
 cd SNPE_Flask/Tutorials
 ```
 
-### 4. Environment Setup
+---
+
+### 4. Environment Setup (Takes ~10 minutes)
+```bash
+chmod +x setup.sh
+./setup.sh
 ```
-apt update
-apt install software-properties-common -y
-add-apt-repository ppa:deadsnakes/ppa
-apt update
-apt install python3.10 python3.10-venv python3.10-dev
-python3.10 get-pip.py
-python3.10 -m pip install pybind11
-apt install cmake
-python3.10 -m pip install opencv-python
-pip install tqdm
-python3.10 -m pip install torch torchvision torchaudio
-python3.10 -m pip install Pillow
-python3.10 -m pip install matplotlib
-python3.10 -m pip install Flask --ignore-installed blinker
-python3.10 -m pip install paho-mqtt
-apt install mosquitto mosquitto-clients
-apt-get install libcairo2-dev
-apt-get install libgirepository1.0-dev
-python3.10 -m pip install pygobject==3.50.0
-```
-> **Note:** Please enter the commands above one by one, as executing them all at once may cause the process to stop.
+
+> 🔍 `setup.sh` installs dependencies, sets up SNPE paths, and configures the environment for Flask + SNPE.
+
+---
 
 ### 5. Run Application
-```
+```bash
 python3.10 app.py
 ```
+
+---
 
 ### 6. Demo Output
 
@@ -132,27 +109,34 @@ python3.10 app.py
 * Models with the suffix "_DSP" are designed to run exclusively on the DSP runtime.
 * Models with the suffix "_GPU" can run on both CPU and GPU.
 
+---
 
 ### 8. MQTT Setup (Optional)
 
-Enable and check the Mosquitto service
-```
+#### Enable Mosquitto Service
+```bash
 systemctl enable mosquitto
 systemctl status mosquitto
 ```
-Subscribe to detection topics:
-* For detection time
-```
+
+#### Subscribe to Topics
+
+##### Detection Time
+```bash
 mosquitto_sub -h localhost -t detection_time -v
 ```
-* For YOLOv8 detection:
-```
+
+##### YOLOv8 Detection
+```bash
 mosquitto_sub -h localhost -t yolov8/detections -v
 ```
-* For DETR detection:
-```
+
+##### DETR Detection
+```bash
 mosquitto_sub -h localhost -t detr/detections -v
 ```
+
+---
 
 ## Deploy your own model
 ### 1. Convert Your Model to .dlc Format
@@ -179,3 +163,16 @@ mosquitto_sub -h localhost -t detr/detections -v
 
 ### 5. Run the Application
 * After completing the above steps, rerun the application. Your model will now be available for selection and use within the app.
+
+---
+
+## 👨‍💻 Author
+
+**Kaiwei @ Inventec**  
+Software Engineer | Edge AI & Computer Vision
+
+---
+
+## 📝 License
+
+This project is licensed under the **MIT License**.
