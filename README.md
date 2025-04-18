@@ -9,14 +9,14 @@
 
 ---
 
-## 🧠 Supported Models
+## Supported Models
 - ✅ YOLOv8  
 - ✅ YOLOv11  
-- ✅ DETR_Resnet101  
+- ✅ DETR  
 
 ---
 
-## 🖥️ Hardware Requirements
+## Hardware Requirements
 
 | Component | Specification |
 |----------|----------------|
@@ -26,7 +26,7 @@
 
 ---
 
-## ⚙️ Software Requirements
+## Software Requirements
 
 - OS: Ubuntu 20.04 (arm64)
 - SNPE SDK Version: **v2.26.0.240828**
@@ -34,7 +34,7 @@
 
 ---
 
-## 📁 Directory Structure
+## Directory Structure
 
 ```bash
 Documents/
@@ -50,7 +50,7 @@ Videos/
 
 ---
 
-## 🛠️ Setup Steps
+## Setup Steps
 
 ### 1. Switch to Admin Mode
 ```bash
@@ -118,17 +118,17 @@ systemctl status mosquitto
 
 #### Subscribe to Topics
 
-##### 🕒 Detection Time
+##### Detection Time
 ```bash
 mosquitto_sub -h localhost -t detection_time -v
 ```
 
-##### 📦 YOLOv8 Detection
+##### YOLOv8 Detection
 ```bash
 mosquitto_sub -h localhost -t yolov8/detections -v
 ```
 
-##### 🧠 DETR Detection
+##### DETR Detection
 ```bash
 mosquitto_sub -h localhost -t detr/detections -v
 ```
