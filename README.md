@@ -135,7 +135,7 @@ mosquitto_sub -h localhost -t detr/detections -v
 
 ---
 
-## Deploy your own model
+## Deploy Your Own Model
 ### 1. Convert Your Model to .dlc Format
 * Visit our Model Conversion website: [Model Conversion Website](http://99.64.152.69:5000/). 
 * Go to **Model Conversion** Tab.
