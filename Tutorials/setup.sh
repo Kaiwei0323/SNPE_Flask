@@ -4,6 +4,7 @@
 DOWNLOAD_DIR="/home/aim/Documents"
 VIDEO_DIR="/home/aim/Videos"
 ZIP_FILE="v2.26.0.240828.zip"
+APP_DIR="/home/aim/Documents/SNPE_Flask/Tutorials"
 
 # Create the necessary directories if they do not exist
 mkdir -p "$DOWNLOAD_DIR"
@@ -18,6 +19,11 @@ if [ -f "$DOWNLOAD_DIR/$ZIP_FILE" ]; then
   echo "Extracting zip file..."
   unzip "$DOWNLOAD_DIR/$ZIP_FILE" -d "$DOWNLOAD_DIR"
   echo "SDK extracted successfully."
+
+  # Remove the zip file after extraction
+  echo "Cleaning up..."
+  rm "$DOWNLOAD_DIR/$ZIP_FILE"
+  echo "ZIP file removed."
 else
   echo "Error: ZIP file not found at $DOWNLOAD_DIR/$ZIP_FILE. Skipping extraction."
 fi
@@ -61,11 +67,11 @@ apt install portaudio19-dev -y
 
 # Install pip for Python 3.10
 echo "Installing pip for Python 3.10..."
-python3.10 get-pip.py
+python3.10 "$APP_DIR/get-pip.py"
 
 # Install dependencies from requirements.txt
 echo "Installing Python dependencies from requirements.txt..."
-python3.10 -m pip install -r requirements.txt
+python3.10 -m pip install -r "$APP_DIR/requirements.txt"
 
 # Install k3s (lightweight Kubernetes)
 echo "Installing k3s..."
@@ -79,8 +85,8 @@ source ~/.bashrc
 
 # Download the .onnx files
 echo "Downloading ONNX models..."
-wget "https://huggingface.co/datasets/kaiwei0323/wav2vec2-onnx/resolve/main/wav2vec2-large-xlsr-53-english.onnx?download=true" -O wav2vec2-large-xlsr-53-english.onnx
-wget "https://huggingface.co/datasets/kaiwei0323/wav2vec2-onnx/resolve/main/wav2vec2-large-xlsr-53-english.quant.onnx?download=true" -O wav2vec2-large-xlsr-53-english.quant.onnx
+curl -L -o "$APP_DIR/wav2vec2-large-xlsr-53-english.onnx" "https://huggingface.co/datasets/kaiwei0323/wav2vec2-onnx/resolve/main/wav2vec2-large-xlsr-53-english.onnx?download=true"
+curl -L -o "$APP_DIR/wav2vec2-large-xlsr-53-english.quant.onnx" "https://huggingface.co/datasets/kaiwei0323/wav2vec2-onnx/resolve/main/wav2vec2-large-xlsr-53-english.quant.onnx?download=true" 
 
 # Apply Kubernetes manifests with validation disabled
 echo "Applying Kubernetes manifests..."
