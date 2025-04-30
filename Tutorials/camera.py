@@ -32,6 +32,7 @@ model_map = {
     "YOLOV8S_BRAIN_TUMOR_DSP": ("models/yolov8s_brain_tumor_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], BRAIN_TUMOR_CLASSES),
     "YOLOV8S_PPE_DSP": ("models/ppe_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], PPE_CLASSES),
     "YOLOV8S_MED_PPE_DSP": ("models/yolov8s_med_ppe_int8.dlc", ["images"], ["/model.22/Concat_5"], ["output0"], MED_PPE_CLASSES),
+    "YOLOV11S_DSP": ("models/yolo11s_encode_int8.dlc", ["images"], ["/model.23/Concat_5"], ["output0"], COCO80_CLASSES),
 }
 
 class Camera():
