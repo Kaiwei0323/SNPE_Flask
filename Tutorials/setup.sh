@@ -38,6 +38,8 @@ curl -L -o "$VIDEO_DIR/ppe.mp4" "https://huggingface.co/datasets/kaiwei0323/demo
 
 echo "Video files downloaded successfully to $VIDEO_DIR"
 
+apt --fix-broken install -y
+
 # Update and install necessary system packages
 echo "Updating package list..."
 apt update -y
