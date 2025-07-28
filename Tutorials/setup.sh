@@ -67,5 +67,32 @@ python3.10 get-pip.py
 echo "Installing Python dependencies from requirements.txt..."
 python3.10 -m pip install -r requirements.txt
 
+# Set up DSP environment variables and add to .bashrc
+echo "Setting up DSP environment variables..."
+
+# Define SNPE paths
+SNPE_ROOT="/home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828"
+TUTORIALS_DIR="/home/aim/Documents/SNPE_Flask/Tutorials"
+
+# Create the DSP environment configuration
+cat >> ~/.bashrc << 'EOF'
+
+# SNPE DSP Environment Variables
+export SNPE_ROOT="/home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828"
+export ADSP_LIBRARY_PATH="$SNPE_ROOT/lib/hexagon-v68/unsigned"
+export HEXAGON_ARM_SYSROOT="$SNPE_ROOT/lib/hexagon-v68/unsigned"
+export SNPE_LIBRARY_PATH="$SNPE_ROOT/lib/aarch64-ubuntu-gcc9.4"
+export SNPE_HEXAGON_LIBRARY_PATH="$SNPE_ROOT/lib/hexagon-v68/unsigned"
+export SNPE_APP_DIR="/home/aim/Documents/SNPE_Flask/Tutorials"
+
+EOF
+
+# Source the updated .bashrc for current session
+source ~/.bashrc
+
+echo "DSP environment variables added to .bashrc"
+echo "SNPE_ROOT: $SNPE_ROOT"
+echo "ADSP_LIBRARY_PATH: $ADSP_LIBRARY_PATH"
+
 echo "Setup complete!"
 

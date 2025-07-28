@@ -14,7 +14,7 @@ import os
 #Copy paste all dlls and so files to this location
 #os.add_dll_directory(os.getcwd())
 import libsnpehelper as snpehelper #Make sure snpehelper.pyd or libsnpehelper.so(Python Extenson Module is in the same directory or in PYTHONPATH)
-
+# import libSnpeHtpV68Skel from lib  # Commented out due to syntax error
 '''
 Description:
         Python wrapper to measure a function E2E execution time
