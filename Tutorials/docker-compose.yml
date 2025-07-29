@@ -9,10 +9,10 @@ services:
     volumes:
       # Mount DSP libraries
       - /media/aim/dsp/adsp:/media/aim/dsp/adsp:ro
-      # Mount video files directory for easy access to demo videos
-      - /home/aim/Documents/SNPE_Flask/Tutorials/Videos:/home/aim/Videos:ro
       # Mount logs directory for persistent logging
       - /home/aim/Documents/SNPE_Flask/logs:/app/logs
+      # Mount video files directory (only if videos exist on host)
+      - /home/aim/Documents/SNPE_Flask/Tutorials/Videos:/home/aim/Videos:ro
     environment:
       - SNPE_ROOT=/home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828
       - ADSP_LIBRARY_PATH=/media/aim/dsp/adsp
