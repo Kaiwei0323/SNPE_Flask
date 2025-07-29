@@ -17,11 +17,33 @@ CAMERA_SOURCES = {}
 
 app = Flask(__name__)
 
+def get_available_videos():
+    """Scan for available video files in the Videos directory."""
+    video_dir = "/home/aim/Videos"
+    available_videos = []
+    
+    if os.path.exists(video_dir):
+        for file in os.listdir(video_dir):
+            if file.lower().endswith(('.mp4', '.avi', '.mov', '.mkv')):
+                video_name = os.path.splitext(file)[0].replace('_', ' ').title()
+                video_path = f"file://{video_dir}/{file}"
+                available_videos.append({
+                    'name': video_name,
+                    'path': video_path,
+                    'filename': file
+                })
+    
+    return available_videos
+
 @app.route('/')
 def index():
     """Video streaming home page."""
     model_options = [model for model in model_map.keys()]
-    return render_template('index.html', camera_sources=CAMERA_SOURCES, model_options=model_options)
+    available_videos = get_available_videos()
+    return render_template('index.html', 
+                         camera_sources=CAMERA_SOURCES, 
+                         model_options=model_options,
+                         available_videos=available_videos)
 
 @app.route('/add_camera', methods=['POST'])
 def add_camera():

@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  snpe-flask-app:
+    build: .
+    privileged: true
+    ports:
+      - "5001:5001"
+    volumes:
+      # Mount DSP libraries
+      - /media/aim/dsp/adsp:/media/aim/dsp/adsp:ro
+      # Mount video files directory for easy access to demo videos
+      - /home/aim/Documents/SNPE_Flask/Tutorials/Videos:/home/aim/Videos:ro
+      # Mount logs directory for persistent logging
+      - /home/aim/Documents/SNPE_Flask/logs:/app/logs
+    environment:
+      - SNPE_ROOT=/home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828
+      - ADSP_LIBRARY_PATH=/media/aim/dsp/adsp
+      - HEXAGON_ARM_SYSROOT=/media/aim/dsp/adsp
+      - SNPE_HEXAGON_LIBRARY_PATH=/media/aim/dsp/adsp
+      - SNPE_LIBRARY_PATH=/home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828/lib/aarch64-ubuntu-gcc9.4
+      - SNPE_APP_DIR=/app
+      - SNPE_DEFAULT_RUNTIME=DSP
+    devices:
+      # Allow access to video devices
+      - /dev/video0:/dev/video0
+      - /dev/video1:/dev/video1
+      - /dev/video2:/dev/video2
+      - /dev/video3:/dev/video3
+      - /dev/video32:/dev/video32
+      - /dev/video33:/dev/video33
+      # Allow access to DSP devices
+      - /dev/adsprpc-smd:/dev/adsprpc-smd
+      - /dev/adsprpc-smd-secure:/dev/adsprpc-smd-secure
+      - /dev/subsys_adsp:/dev/subsys_adsp
+      - /dev/subsys_cdsp:/dev/subsys_cdsp
+    restart: unless-stopped
+    container_name: snpe-flask-app
+    # Automatically remove container when stopped
+    labels:
+      - "com.docker.compose.project=tutorials" 

@@ -139,17 +139,37 @@
 <body>
     <div class="form-container">
         <h1>Add Camera</h1>
+        
+        <!-- Available Video Sources Info -->
+        <div style="background: #444; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            <h3 style="margin: 0 0 10px 0; color: #fff;">Available Video Sources:</h3>
+            <ul style="margin: 0; padding-left: 20px; font-size: 12px;">
+                {% for video in available_videos %}
+                    <li style="margin-bottom: 5px;">
+                        <strong>{{ video.name }}</strong> 
+                        <br><span style="color: #aaa;">{{ video.filename }}</span>
+                    </li>
+                {% endfor %}
+                <li style="margin-bottom: 5px;">
+                    <strong>WEBCAM</strong> - USB camera devices
+                </li>
+                <li style="margin-bottom: 5px;">
+                    <strong>RTSP</strong> - Network video streams
+                </li>
+            </ul>
+        </div>
         <form action="/add_camera" method="post">
             <label for="camera_name">Camera Name:</label>
             <input type="text" id="camera_name" name="camera_name" required>
             
             <label for="video_source">Video Source:</label>
             <select id="video_source" name="video_source" onchange="toggleInputFields()" required>
-                <option value="file:///home/aim/Videos/fall.mp4">FALL</option>
-                <option value="file:///home/aim/Videos/ppe.mp4">PPE</option>
-                <option value="file:///home/aim/Videos/med_ppe.mp4">MED_PPE</option>
-                <option value="file:///home/aim/Videos/brain_tumor.mp4">BRAIN_TUMOR</option>
-                <option value="file:///home/aim/Videos/freeway.mp4">FREEWAY</option>
+                <!-- Available video files -->
+                {% for video in available_videos %}
+                    <option value="{{ video.path }}">{{ video.name }}</option>
+                {% endfor %}
+                
+                <!-- Webcam and RTSP options -->
                 <option value='/dev/video'>WEBCAM</option>
                 <option value="RTSP">RTSP</option>
             </select>

@@ -17,7 +17,10 @@ class VideoPipeline:
         # Create GStreamer elements and assign them to instance variables
         self.uridecodebin = Gst.ElementFactory.make("uridecodebin", "uridecodebin")
         self.queue = Gst.ElementFactory.make("queue", "queue")
+        # Try qtivtransform first, fallback to videoconvert if not available
         self.videoconvert = Gst.ElementFactory.make("qtivtransform", "qtivtransform")
+        if self.videoconvert is None:
+            self.videoconvert = Gst.ElementFactory.make("videoconvert", "videoconvert")
         self.videoscale = Gst.ElementFactory.make("videoscale", "videoscale")
         self.capsfilter = Gst.ElementFactory.make("capsfilter", "capsfilter")
         self.videorate = Gst.ElementFactory.make("videorate", "videorate")

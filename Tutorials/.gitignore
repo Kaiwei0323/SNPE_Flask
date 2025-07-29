@@ -1,0 +1,42 @@
+# Video files (large binary files)
+Videos/
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.wmv
+*.flv
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Logs
+logs/
+*.log
+
+# Docker
+.dockerignore
+
+# Environment files
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp 
