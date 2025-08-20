@@ -18,6 +18,9 @@ if [ -f "$DOWNLOAD_DIR/$ZIP_FILE" ]; then
   echo "Extracting zip file..."
   unzip "$DOWNLOAD_DIR/$ZIP_FILE" -d "$DOWNLOAD_DIR"
   echo "SDK extracted successfully."
+  # Delete the zip file after extraction
+  rm "$DOWNLOAD_DIR/$ZIP_FILE"
+  echo "ZIP file deleted."
 else
   echo "Error: ZIP file not found at $DOWNLOAD_DIR/$ZIP_FILE. Skipping extraction."
 fi
