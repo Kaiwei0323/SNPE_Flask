@@ -18,6 +18,8 @@ class VideoPipeline:
         self.uridecodebin = Gst.ElementFactory.make("uridecodebin", "uridecodebin")
         self.queue = Gst.ElementFactory.make("queue", "queue")
         self.videoconvert = Gst.ElementFactory.make("qtivtransform", "qtivtransform")
+        
+        #self.videoconvert = Gst.ElementFactory.make("videoconvert", "videoconvert")
         self.videoscale = Gst.ElementFactory.make("videoscale", "videoscale")
         self.capsfilter = Gst.ElementFactory.make("capsfilter", "capsfilter")
         self.videorate = Gst.ElementFactory.make("videorate", "videorate")
@@ -110,13 +112,28 @@ class VideoPipeline:
             print("Pipeline set to NULL (stopped)")
 
     def on_pad_added(self, uridecodebin, pad, queue):
-        # Link the dynamic pad of uridecodebin to the queue
-        pad.link(queue.get_static_pad("sink"))
-        print("Pad added and linked successfully")
+        # Get the pad's capabilities (caps)
+        caps = pad.query_caps(None)
+        structure = caps.get_structure(0)
+        media_type = structure.get_name()
+
+        # Only link video pads
+        if media_type.startswith('video'):
+            if not pad.is_linked():
+                link_result = pad.link(queue.get_static_pad("sink"))
+                if link_result == Gst.PadLinkReturn.OK:
+                    print(f"Pad added and linked successfully for {media_type}")
+                else:
+                    print(f"Failed to link pad: {link_result}")
+            else:
+                print(f"Pad already linked for {media_type}")
+        else:
+            print(f"Skipping non-video pad: {media_type}")
 
     def on_new_sample(self, appsink, data=None):
         # Callback when a new sample (frame) is available from appsink
-        sample = self.appsink.emit("pull-sample")
+        #sample = self.appsink.emit("pull-sample")
+        sample = self.appsink.pull_sample()
         if isinstance(sample, Gst.Sample):
             buffer = sample.get_buffer()  # Get the buffer from the sample
             caps = sample.get_caps()

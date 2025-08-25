@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define directories
-DOWNLOAD_DIR="/home/aim/Documents"
-VIDEO_DIR="/home/aim/Videos"
+DOWNLOAD_DIR="/home/ubuntu/Documents"
+VIDEO_DIR="/home/ubuntu/Videos"
 ZIP_FILE="v2.26.0.240828.zip"
 
 # Create the necessary directories if they do not exist
@@ -35,58 +35,23 @@ curl -L -o "$VIDEO_DIR/ppe.mp4" "https://huggingface.co/datasets/kaiwei0323/demo
 
 echo "Video files downloaded successfully to $VIDEO_DIR"
 
-# Update and install necessary system packages
-echo "Updating package list..."
-apt update -y
-
-echo "Installing software-properties-common..."
-apt install software-properties-common -y
-
-echo "Adding the deadsnakes PPA for Python 3.10..."
-add-apt-repository ppa:deadsnakes/ppa -y
-apt update -y
-
-echo "Installing Python 3.10 and other dependencies..."
-apt install python3.10 python3.10-venv python3.10-dev -y
-
-echo "Installing CMake..."
-apt install cmake -y
-
-echo "Installing Mosquitto and Mosquitto clients..."
-apt install mosquitto mosquitto-clients -y
-
-echo "Installing libcairo2-dev and libgirepository1.0-dev..."
-apt-get install libcairo2-dev -y
-apt-get install libgirepository1.0-dev -y
-
-echo "Installing portaudio19-dev..."
-apt install portaudio19-dev -y
-
-# Install pip for Python 3.10
-echo "Installing pip for Python 3.10..."
-python3.10 get-pip.py
-
-# Install dependencies from requirements.txt
-echo "Installing Python dependencies from requirements.txt..."
-python3.10 -m pip install -r requirements.txt
-
 # Set up DSP environment variables and add to .bashrc
 echo "Setting up DSP environment variables..."
 
 # Define SNPE paths
-SNPE_ROOT="/home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828"
-TUTORIALS_DIR="/home/aim/Documents/SNPE_Flask/Tutorials"
+SNPE_ROOT="/home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828"
+TUTORIALS_DIR="/home/ubuntu/Documents/SNPE_Flask/Tutorials"
 
 # Create the DSP environment configuration
 cat >> ~/.bashrc << 'EOF'
 
 # SNPE DSP Environment Variables
-export SNPE_ROOT="/home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828"
+export SNPE_ROOT="/home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828"
 export ADSP_LIBRARY_PATH="$SNPE_ROOT/lib/hexagon-v68/unsigned"
 export HEXAGON_ARM_SYSROOT="$SNPE_ROOT/lib/hexagon-v68/unsigned"
 export SNPE_LIBRARY_PATH="$SNPE_ROOT/lib/aarch64-ubuntu-gcc9.4"
 export SNPE_HEXAGON_LIBRARY_PATH="$SNPE_ROOT/lib/hexagon-v68/unsigned"
-export SNPE_APP_DIR="/home/aim/Documents/SNPE_Flask/Tutorials"
+export SNPE_APP_DIR="/home/ubuntu/Documents/SNPE_Flask/Tutorials"
 
 EOF
 
@@ -96,6 +61,40 @@ source ~/.bashrc
 echo "DSP environment variables added to .bashrc"
 echo "SNPE_ROOT: $SNPE_ROOT"
 echo "ADSP_LIBRARY_PATH: $ADSP_LIBRARY_PATH"
+
+echo "Setting up dependencies..."
+
+# Add the repository for Qualcomm IoT apps
+sudo add-apt-repository -y ppa:ubuntu-qcom-iot/qcom-ppa
+
+# Update package lists
+sudo apt update -y
+
+# Install necessary packages
+sudo apt install -y \
+    gstreamer1.0-qcom-sample-apps \
+    python3-pip \
+    python3-pybind11 \
+    cmake \
+    python3-flask \
+    python3-opencv \
+    python3-paho-mqtt \
+    python3-gi \
+    python3-gst-1.0 \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-libav \
+    mosquitto \
+    mosquitto-clients
+
+# Start and enable mosquitto service
+sudo systemctl start mosquitto
+sudo systemctl enable mosquitto
+
+# Install Python packages
+sudo python3 -m pip install --break-system-packages torch
+sudo python3 -m pip install --break-system-packages torchvision
 
 echo "Setup complete!"
 

@@ -1,7 +1,10 @@
 file(REMOVE_RECURSE
   "CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o"
+  "CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o.d"
   "CMakeFiles/snpehelper.dir/dllmain.cpp.o"
+  "CMakeFiles/snpehelper.dir/dllmain.cpp.o.d"
   "CMakeFiles/snpehelper.dir/snpehelper.cpp.o"
+  "CMakeFiles/snpehelper.dir/snpehelper.cpp.o.d"
   "libsnpehelper.pdb"
   "libsnpehelper.so"
 )

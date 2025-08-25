@@ -9,14 +9,14 @@ set( APP_SOURCES
 )
 
 set (CHIPSET "QCS6490")
-set (SNPE_ROOT "/home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828")
+set (SNPE_ROOT "/home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828")
 set (SNPE_INCLUDE_DIR "${SNPE_ROOT}/include/SNPE")
 set (SNPE_LIB_PREFIX "${SNPE_ROOT}/lib")
 set (_dtuple_POSTFIX "ubuntu-gcc9.4")
 set (PYTHON_BASE_DIR "/usr/")
-set (PYTHON_INCLUDE_DIR "${PYTHON_BASE_DIR}/include/python3.10")
-set (PYTHON_LIB_DIR "${PYTHON_BASE_DIR}/lib/python3.10")
-set (PYBIND11_INCLUDE_DIR "${PYTHON_BASE_DIR}/local/lib/python3.10/dist-packages/pybind11/include")
+set (PYTHON_INCLUDE_DIR "${PYTHON_BASE_DIR}/include/python3.12")
+set (PYTHON_LIB_DIR "${PYTHON_BASE_DIR}/lib/python3.12")
+set (PYBIND11_INCLUDE_DIR "${PYTHON_BASE_DIR}/lib/python3/dist-packages/pybind11/include")
 
 #set(RELEASE "Release/")
 set(CMAKE_CXX_STANDARD 17)
