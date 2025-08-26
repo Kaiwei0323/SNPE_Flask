@@ -20,9 +20,9 @@ class VideoPipeline:
         self.uridecodebin = Gst.ElementFactory.make("uridecodebin", "uridecodebin")
         self.uridecodebin.set_property("use-buffering", True)
         self.queue = Gst.ElementFactory.make("queue", "queue")
-        self.videoconvert = Gst.ElementFactory.make("qtivtransform", "qtivtransform")
+        #self.videoconvert = Gst.ElementFactory.make("qtivtransform", "qtivtransform")
         
-        #self.videoconvert = Gst.ElementFactory.make("videoconvert", "videoconvert")
+        self.videoconvert = Gst.ElementFactory.make("videoconvert", "videoconvert")
         self.videoscale = Gst.ElementFactory.make("videoscale", "videoscale")
         self.capsfilter = Gst.ElementFactory.make("capsfilter", "capsfilter")
         self.videorate = Gst.ElementFactory.make("videorate", "videorate")
