@@ -4,6 +4,8 @@ from gi.repository import Gst, GstApp, GLib
 import numpy as np
 import cv2
 import time
+import os
+os.environ["GST_PLUGIN_FEATURE_RANK"] = "v4l2h264dec:0"
 
 class VideoPipeline:
     def __init__(self, uri, image_queue, capture_lock):
@@ -16,6 +18,7 @@ class VideoPipeline:
         
         # Create GStreamer elements and assign them to instance variables
         self.uridecodebin = Gst.ElementFactory.make("uridecodebin", "uridecodebin")
+        self.uridecodebin.set_property("use-buffering", True)
         self.queue = Gst.ElementFactory.make("queue", "queue")
         self.videoconvert = Gst.ElementFactory.make("qtivtransform", "qtivtransform")
         
@@ -48,6 +51,14 @@ class VideoPipeline:
         elif t == Gst.MessageType.WARNING:
             warn, debug = message.parse_warning()
             print(f"Warning: {warn}, {debug}")
+        elif t == Gst.MessageType.BUFFERING:
+            percent = message.parse_buffering()
+            print(f"Buffering: {percent}%")
+            # Pause if buffering < 100% and resume when ready
+            if percent < 100:
+                self.pipeline.set_state(Gst.State.PAUSED)
+            else:
+                self.pipeline.set_state(Gst.State.PLAYING)
 
     def reconnect(self):
         print("Reconnecting pipeline...")
