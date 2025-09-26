@@ -165,24 +165,24 @@ CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o: \
  /usr/include/aarch64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/13/bits/charconv.h \
  /usr/include/c++/13/bits/basic_string.tcc \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPE.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/Wrapper.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPE.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/Wrapper.hpp \
  /usr/include/c++/13/utility /usr/include/c++/13/bits/stl_relops.h \
  /usr/include/c++/13/set /usr/include/c++/13/bits/stl_set.h \
  /usr/include/c++/13/bits/stl_multiset.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlError.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlError.h \
  /usr/include/c++/13/cstdint \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/SnpeApiExportDefine.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/StringList.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlError.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlError.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/StringList.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/SnpeApiExportDefine.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorMap.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/ITensor.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorShape.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorShape.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/ITensorItr.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/SnpeApiExportDefine.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/StringList.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlError.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlError.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/StringList.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/SnpeApiExportDefine.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorMap.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/ITensor.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorShape.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorShape.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/ITensorItr.hpp \
  /usr/include/c++/13/algorithm /usr/include/c++/13/bits/stl_algo.h \
  /usr/include/c++/13/bits/algorithmfwd.h \
  /usr/include/c++/13/bits/stl_heap.h \
@@ -196,33 +196,33 @@ CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o: \
  /usr/include/c++/13/system_error \
  /usr/include/aarch64-linux-gnu/c++/13/bits/error_constants.h \
  /usr/include/c++/13/stdexcept /usr/include/c++/13/bits/streambuf.tcc \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/ITensorItrImpl.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/ITensor.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorMap.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/UserBufferMap.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IUserBuffer.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IUserBuffer.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/UserBufferMap.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/UserMemoryMap.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/UserMemoryMap.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IBufferAttributes.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IBufferAttributes.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DiagLog/IDiagLog.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DiagLog/Options.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DiagLog/IDiagLog.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DiagLog/Options.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/String.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/SNPEPerfProfile.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlEnums.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlEnums.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/SNPEPerfProfile.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlOptional.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPE.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPEFactory.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlVersion.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlVersion.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPEUtil.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/ITensorFactory.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/ITensorItrImpl.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/ITensor.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorMap.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/UserBufferMap.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IUserBuffer.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IUserBuffer.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/UserBufferMap.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/UserMemoryMap.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/UserMemoryMap.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IBufferAttributes.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IBufferAttributes.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DiagLog/IDiagLog.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DiagLog/Options.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DiagLog/IDiagLog.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DiagLog/Options.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/String.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/SNPEPerfProfile.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlEnums.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlEnums.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/SNPEPerfProfile.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlOptional.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPE.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPEFactory.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlVersion.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/DlVersion.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPEUtil.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/ITensorFactory.hpp \
  /usr/include/c++/13/istream /usr/include/c++/13/ios \
  /usr/include/c++/13/bits/basic_ios.h \
  /usr/include/c++/13/bits/locale_facets.h /usr/include/c++/13/cwctype \
@@ -233,20 +233,20 @@ CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o: \
  /usr/include/c++/13/bits/basic_ios.tcc /usr/include/c++/13/ostream \
  /usr/include/c++/13/bits/ostream.tcc \
  /usr/include/c++/13/bits/istream.tcc \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IUserBufferFactory.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPEBuilder.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/RuntimeList.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/RuntimeList.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/StringList.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlContainer/IDlContainer.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlContainer/DlContainer.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/PlatformConfig.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/PlatformConfig.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorShapeMap.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorShapeMap.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IOBufferDataTypeMap.hpp \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IOBufferDataTypeMap.h \
- /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPEBuilder.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IUserBufferFactory.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPEBuilder.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/RuntimeList.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/RuntimeList.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/StringList.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlContainer/IDlContainer.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlContainer/DlContainer.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/PlatformConfig.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/PlatformConfig.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorShapeMap.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/TensorShapeMap.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IOBufferDataTypeMap.hpp \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/DlSystem/IOBufferDataTypeMap.h \
+ /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE/SNPE/SNPEBuilder.h \
  /home/ubuntu/Documents/SNPE_Flask/snpehelper/Utils.h \
  /usr/include/c++/13/fstream /usr/include/c++/13/bits/codecvt.h \
  /usr/include/aarch64-linux-gnu/c++/13/bits/basic_file.h \

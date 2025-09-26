@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -Dsnpehelper_EXPORTS
 
-CXX_INCLUDES = -I/usr/include/python3.12 -I/usr/lib/python3/dist-packages/pybind11/include -isystem /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE
+CXX_INCLUDES = -I/usr/include/python3.12 -I/usr/lib/python3/dist-packages/pybind11/include -isystem /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE
 
 CXX_FLAGS = -std=gnu++17 -fPIC
 

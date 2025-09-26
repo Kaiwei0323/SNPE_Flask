@@ -124,7 +124,7 @@ libsnpehelper.so: CMakeFiles/snpehelper.dir/dllmain.cpp.o
 libsnpehelper.so: CMakeFiles/snpehelper.dir/snpehelper.cpp.o
 libsnpehelper.so: CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o
 libsnpehelper.so: CMakeFiles/snpehelper.dir/build.make
-libsnpehelper.so: /home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828/lib/aarch64-ubuntu-gcc9.4/libSNPE.so
+libsnpehelper.so: /data/sdk/v2.26.0.240828/qairt/2.26.0.240828/lib/aarch64-ubuntu-gcc9.4/libSNPE.so
 libsnpehelper.so: CMakeFiles/snpehelper.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/ubuntu/Documents/SNPE_Flask/snpehelper/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX shared module libsnpehelper.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/snpehelper.dir/link.txt --verbose=$(VERBOSE)

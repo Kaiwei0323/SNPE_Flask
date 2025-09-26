@@ -1,28 +1,29 @@
 #!/bin/bash
 
 # Define directories
+SDK_DIR="/data/sdk"
 DOWNLOAD_DIR="/home/ubuntu/Documents"
-VIDEO_DIR="/home/ubuntu/Videos"
+VIDEO_DIR="/data/video"
 ZIP_FILE="v2.26.0.240828.zip"
 
 # Create the necessary directories if they do not exist
-mkdir -p "$DOWNLOAD_DIR"
-mkdir -p "$VIDEO_DIR"
+sudo mkdir -p "$SDK_DIR"
+sudo mkdir -p "$VIDEO_DIR"
 
 # Download the zip file
 echo "Downloading SDK zip file..."
-curl -L -o "$DOWNLOAD_DIR/$ZIP_FILE" "https://huggingface.co/datasets/kaiwei0323/my-sdk/resolve/main/v2.26.0.240828.zip"
+curl -L -o "$SDK_DIR/$ZIP_FILE" "https://huggingface.co/datasets/kaiwei0323/my-sdk/resolve/main/v2.26.0.240828.zip"
 
 # Check if the zip file exists before attempting to unzip
-if [ -f "$DOWNLOAD_DIR/$ZIP_FILE" ]; then
+if [ -f "$SDK_DIR/$ZIP_FILE" ]; then
   echo "Extracting zip file..."
-  unzip "$DOWNLOAD_DIR/$ZIP_FILE" -d "$DOWNLOAD_DIR"
+  unzip "$SDK_DIR/$ZIP_FILE" -d "$SDK_DIR"
   echo "SDK extracted successfully."
   # Delete the zip file after extraction
-  rm "$DOWNLOAD_DIR/$ZIP_FILE"
+  rm "$SDK_DIR/$ZIP_FILE"
   echo "ZIP file deleted."
 else
-  echo "Error: ZIP file not found at $DOWNLOAD_DIR/$ZIP_FILE. Skipping extraction."
+  echo "Error: ZIP file not found at $SDK_DIR/$ZIP_FILE. Skipping extraction."
 fi
 
 # Download the video files into the correct directory
@@ -39,19 +40,19 @@ echo "Video files downloaded successfully to $VIDEO_DIR"
 echo "Setting up DSP environment variables..."
 
 # Define SNPE paths
-SNPE_ROOT="/home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828"
-TUTORIALS_DIR="/home/ubuntu/Documents/SNPE_Flask/Tutorials"
+SNPE_ROOT="$SDK_DIR/v2.26.0.240828/qairt/2.26.0.240828"
+TUTORIALS_DIR="$DOWNLOAD_DIR/SNPE_Flask/Tutorials"
 
 # Create the DSP environment configuration
 cat >> ~/.bashrc << 'EOF'
 
 # SNPE DSP Environment Variables
-export SNPE_ROOT="/home/ubuntu/Documents/v2.26.0.240828/qairt/2.26.0.240828"
+export SNPE_ROOT="/data/sdk/v2.26.0.240828/qairt/2.26.0.240828"
 export ADSP_LIBRARY_PATH="$SNPE_ROOT/lib/hexagon-v68/unsigned"
 export HEXAGON_ARM_SYSROOT="$SNPE_ROOT/lib/hexagon-v68/unsigned"
 export SNPE_LIBRARY_PATH="$SNPE_ROOT/lib/aarch64-ubuntu-gcc9.4"
 export SNPE_HEXAGON_LIBRARY_PATH="$SNPE_ROOT/lib/hexagon-v68/unsigned"
-export SNPE_APP_DIR="/home/ubuntu/Documents/SNPE_Flask/Tutorials"
+export SNPE_APP_DIR="$TUTORIALS_DIR"
 
 EOF
 
