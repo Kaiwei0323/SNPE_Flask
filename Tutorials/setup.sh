@@ -82,7 +82,7 @@ TUTORIALS_DIR="/home/$USER/Documents/SNPE_Flask/Tutorials"
 cat >> ~/.bashrc << 'EOF'
 
 # SNPE DSP Environment Variables
-export SNPE_ROOT="$SNPE_ROOT"
+export SNPE_ROOT="/data/sdk/v2.26.0.240828/qairt/2.26.0.240828"
 export ADSP_LIBRARY_PATH="$SNPE_ROOT/lib/hexagon-v68/unsigned"
 export HEXAGON_ARM_SYSROOT="$SNPE_ROOT/lib/hexagon-v68/unsigned"
 export SNPE_LIBRARY_PATH="$SNPE_ROOT/lib/aarch64-ubuntu-gcc9.4"
