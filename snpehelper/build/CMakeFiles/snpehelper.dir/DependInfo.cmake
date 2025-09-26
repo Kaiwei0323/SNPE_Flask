@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/aim/Documents/SNPE_Flask/snpehelper/SNPERuntime.cpp" "/home/aim/Documents/SNPE_Flask/snpehelper/build/CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o"
-  "/home/aim/Documents/SNPE_Flask/snpehelper/dllmain.cpp" "/home/aim/Documents/SNPE_Flask/snpehelper/build/CMakeFiles/snpehelper.dir/dllmain.cpp.o"
-  "/home/aim/Documents/SNPE_Flask/snpehelper/snpehelper.cpp" "/home/aim/Documents/SNPE_Flask/snpehelper/build/CMakeFiles/snpehelper.dir/snpehelper.cpp.o"
+  "/home/onlogic/Documents/SNPE_Flask/snpehelper/SNPERuntime.cpp" "/home/onlogic/Documents/SNPE_Flask/snpehelper/build/CMakeFiles/snpehelper.dir/SNPERuntime.cpp.o"
+  "/home/onlogic/Documents/SNPE_Flask/snpehelper/dllmain.cpp" "/home/onlogic/Documents/SNPE_Flask/snpehelper/build/CMakeFiles/snpehelper.dir/dllmain.cpp.o"
+  "/home/onlogic/Documents/SNPE_Flask/snpehelper/snpehelper.cpp" "/home/onlogic/Documents/SNPE_Flask/snpehelper/build/CMakeFiles/snpehelper.dir/snpehelper.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -19,7 +19,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/include/python3.10"
   "/usr/local/lib/python3.10/dist-packages/pybind11/include"
-  "/home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE"
+  "/data/sdk/v2.26.0.240828/qairt/2.26.0.240828/include/SNPE"
   )
 
 # Targets to which this target links.

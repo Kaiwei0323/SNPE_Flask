@@ -20,8 +20,9 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     """Video streaming home page."""
+    user = os.environ.get("USER", "default_user") 
     model_options = [model for model in model_map.keys()]
-    return render_template('index.html', camera_sources=CAMERA_SOURCES, model_options=model_options)
+    return render_template('index.html', user=user, camera_sources=CAMERA_SOURCES, model_options=model_options)
 
 @app.route('/add_camera', methods=['POST'])
 def add_camera():

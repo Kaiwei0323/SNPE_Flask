@@ -1,4 +1,4 @@
-# Install script for directory: /home/aim/Documents/SNPE_Flask/snpehelper
+# Install script for directory: /home/onlogic/Documents/SNPE_Flask/snpehelper
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/aim/Documents/SNPE_Flask/snpehelper/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/onlogic/Documents/SNPE_Flask/snpehelper/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

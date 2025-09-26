@@ -9,7 +9,7 @@ set( APP_SOURCES
 )
 
 set (CHIPSET "QCS6490")
-set (SNPE_ROOT "/home/aim/Documents/v2.26.0.240828/qairt/2.26.0.240828")
+set (SNPE_ROOT "/data/sdk/v2.26.0.240828/qairt/2.26.0.240828")
 set (SNPE_INCLUDE_DIR "${SNPE_ROOT}/include/SNPE")
 set (SNPE_LIB_PREFIX "${SNPE_ROOT}/lib")
 set (_dtuple_POSTFIX "ubuntu-gcc9.4")
