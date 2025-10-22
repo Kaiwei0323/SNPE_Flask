@@ -10,6 +10,8 @@ from snpehelper_manager import PerfProfile, Runtime
 from myclasses import *
 
 from VideoPipeline import VideoPipeline
+from FilePipeline import FilePipeline
+from RtspPipeline import RtspPipeline
 from WebcamPipeline import WebcamPipeline
 
 import gi
@@ -67,10 +69,12 @@ class Camera():
         if self.video_source.startswith("/dev/video"):
             self.vp = WebcamPipeline(video_source, self.capture_frame_queue, self.capture_lock)
             self.infer_every_n_frames = 5
-        else:
-            self.vp = VideoPipeline(video_source, self.capture_frame_queue, self.capture_lock)
-            if self.video_source.startswith("file://"):
-                self.vp.set_rate(0.1)
+        elif self.video_source.startswith("file://"):
+            self.vp = FilePipeline(video_source, self.capture_frame_queue, self.capture_lock)
+            self.vp.set_rate(0.5)
+            self.infer_every_n_frames = 5
+        elif self.video_source.startswith("rtsp://"):
+            self.vp = RtspPipeline(video_source, self.capture_frame_queue, self.capture_lock)
             self.infer_every_n_frames = 5
         
         self.stop_event = threading.Event()
