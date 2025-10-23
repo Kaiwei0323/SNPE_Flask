@@ -67,11 +67,11 @@ class Camera():
         
         if self.video_source.startswith("/dev/video"):
             self.vp = WebcamPipeline(video_source, self.capture_frame_queue, self.capture_lock)
-        elif self.video_source.startswith("file://"):
-            self.vp = FilePipeline(video_source, self.capture_frame_queue, self.capture_lock)
-            self.vp.set_rate(1)
         elif self.video_source.startswith("rtsp://"):
             self.vp = RtspPipeline(video_source, self.capture_frame_queue, self.capture_lock)
+        else:
+            self.vp = FilePipeline(video_source, self.capture_frame_queue, self.capture_lock)
+            self.vp.set_rate(1)
         
         self.stop_event = threading.Event()
 
