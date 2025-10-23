@@ -11,7 +11,8 @@
 
 ## Supported Models
 - ✅ YOLOv8  
-- ✅ YOLOv11  
+- ✅ YOLOv11
+- ✅ YOLOv12  
 - ✅ DETR  
 
 ---
@@ -28,7 +29,7 @@
 
 ## Software Requirements
 
-- OS: Ubuntu 20.04 (arm64)
+- OS: Ubuntu 24.04 (arm64)
 - SNPE SDK Version: **v2.26.0.240828**
 - Python 3.10
 
@@ -39,33 +40,25 @@
 ```bash
 Documents/
 ├── SNPE_Flask/
-├── v2.26.0.240828/
-Videos/
-├── freeway.mp4
-├── ppe.mp4
-├── fall.mp4
-├── brain_tumor.mp4
-└── med_ppe.mp4
+/data
+├── sdk
+  ├── v2.26.0.240828/
+├── video
+  ├── freeway.mp4
+  ├── ppe.mp4
+  ├── fall.mp4
+  ├── brain_tumor.mp4
+  └── med_ppe.mp4
 ```
 
 ---
 
 ## Setup Steps
 
-### 1. Switch to Admin Mode
+### 1. Clone the Project
 ```bash
-su
-Password: oelinux123
-```
-
----
-
-### 2. Clone the Project
-```bash
-apt install git
 cd /home/aim/Documents
-git clone https://github.com/Kaiwei0323/SNPE_Flask.git
-chmod +777 -R SNPE_Flask
+git clone https://github.com/Kaiwei0323/SNPE_Flask.git -b 24.04
 ```
 
 ---
@@ -79,17 +72,17 @@ cd SNPE_Flask/Tutorials
 
 ### 4. Environment Setup (Takes ~10 minutes)
 ```bash
-chmod +x setup.sh
-./setup.sh
+sudo ./setup.sh
 ```
 
 > 🔍 `setup.sh` installs dependencies, sets up SNPE paths, and configures the environment for Flask + SNPE.
+> Restart the terminal
 
 ---
 
 ### 5. Run Application
 ```bash
-python3.10 app.py
+python3 app.py
 ```
 
 ---
