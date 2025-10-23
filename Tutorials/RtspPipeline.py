@@ -64,9 +64,10 @@ class RtspPipeline:
 
     def reconnect(self):
         print("Reconnecting pipeline...")
-        self.pipeline.set_state(Gst.State.NULL)  # Stop the pipeline
-        self.pipeline.set_state(Gst.State.READY)  # Prepare the pipeline for restart
-        self.pipeline.set_state(Gst.State.PLAYING)        
+        if self.pipeline:
+            self.pipeline.set_state(Gst.State.READY)  # Prepare the pipeline for restart
+            time.sleep(1)
+            self.pipeline.set_state(Gst.State.PLAYING)        
             
     def create(self):
     
@@ -147,6 +148,8 @@ class RtspPipeline:
         # Get the pad's capabilities (caps)
         caps = pad.query_caps(None)
         structure = caps.get_structure(0)
+        encoding = structure.get_string("encoding-name")
+        print(f"RTSP stream encoding: {encoding}")
         media_type = structure.get_name()
 
         # Only link video pads

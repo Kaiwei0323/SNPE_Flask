@@ -1,48 +1,179 @@
 import gi
 import queue as Q
-from gi.repository import Gst, GstApp
+from gi.repository import Gst, GstApp, GLib
 import numpy as np
 import cv2
 import time
+import os
+# os.environ["GST_PLUGIN_FEATURE_RANK"] = "v4l2h264dec:0"
 
 class WebcamPipeline:
     def __init__(self, uri, image_queue, capture_lock):
-        self.uri = uri  # Set URI for the video stream
+        self.uri = uri
         self.pipeline = None  # Will hold the pipeline reference
+        self.bus = None
+        self.loop = None
         self.image_queue = image_queue  # Queue to store image frames
         self.capture_lock = capture_lock
+        
+        self.v4l2src = Gst.ElementFactory.make("v4l2src", "v4l2src")
+        self.capsfilter_h264 = Gst.ElementFactory.make("capsfilter", "capsfilter_h264")
+        self.h264parse = Gst.ElementFactory.make("h264parse", "h264parse")
+        self.decoder = Gst.ElementFactory.make("v4l2h264dec", "decoder")
+        
+        self.queue = Gst.ElementFactory.make("queue", "queue")
+        self.capsfilter_nv12 = Gst.ElementFactory.make("capsfilter", "capsfilter_nv12")
+        self.videoconvert = Gst.ElementFactory.make("qtivtransform", "qtivtransform")
+        
+        self.videoscale = Gst.ElementFactory.make("videoscale", "videoscale")
+        self.capsfilter_rgb = Gst.ElementFactory.make("capsfilter", "capsfilter_rgb")
+        self.videorate = Gst.ElementFactory.make("videorate", "videorate")
+        self.appsink = Gst.ElementFactory.make("appsink", "appsink")
+        
+        self.rate = 1
+
+        # Check if elements were created successfully
+        if not all([self.v4l2src, self.capsfilter_h264, self.h264parse, self.decoder, self.queue, self.capsfilter_nv12, self.videoconvert, self.videoscale, self.capsfilter_rgb, self.videorate, self.appsink]):
+            print("Not all elements could be created")
+            return
 
         print("Created all elements successfully")
-
-    def create(self):
-        self.pipeline = cv2.VideoCapture(self.uri)
-        if not self.pipeline.isOpened():
-            print(f"Cannot open video source: {self.uri}")
-        print(f"Successfully connect webcam: {self.uri}")
         
+    def set_rate(self, rate):
+        self.rate = rate
+        
+    def on_message(self, bus, message):
+        t = message.type
+        if t == Gst.MessageType.EOS:
+            print("------------EOS--------------------------")
+            self.reconnect()
+        elif t == Gst.MessageType.ERROR:
+            err, debug = message.parse_error()
+            print(f"Error: {err}, {debug}")
+        elif t == Gst.MessageType.WARNING:
+            warn, debug = message.parse_warning()
+            print(f"Warning: {warn}, {debug}")
+        elif t == Gst.MessageType.BUFFERING:
+            percent = message.parse_buffering()
+            print(f"Buffering: {percent}%")
+            # Pause if buffering < 100% and resume when ready
+            if percent < 100:
+                self.pipeline.set_state(Gst.State.PAUSED)
+            else:
+                self.pipeline.set_state(Gst.State.PLAYING)
+
     def reconnect(self):
-        self.pipeline = cv2.VideoCapture(self.uri)
-        if not self.pipeline.isOpened():
-            print(f"Cannot open video source: {self.uri}")
-        print(f"Successfully reconnect webcam: {self.uri}")
+        print("Reconnecting pipeline...")
+        if self.pipeline:
+            self.pipeline.set_state(Gst.State.READY)  # Prepare the pipeline for restart
+            time.sleep(1)
+            self.pipeline.set_state(Gst.State.PLAYING)        
+            
+    def create(self):
+    
+        # Set properties
+        self.v4l2src.set_property("device", self.uri)
+        
+        self.h264parse.set_property("disable-passthrough", True)
+        self.h264parse.set_property("config-interval", 1)
+        
+        self.capsfilter_h264.set_property("caps", Gst.Caps.from_string("video/x-h264, format=NV12"))
+
+        self.capsfilter_nv12.set_property("caps", Gst.Caps.from_string("video/x-raw, format=NV12"))
+        
+        self.videoconvert.set_property("engine", "fcv")
+        
+        self.capsfilter_rgb.set_property("caps", Gst.Caps.from_string("video/x-raw,format=RGB,width=1280,height=720"))
+        
+        # Set the framerate property for the videorate element
+        self.videorate.set_property("rate", self.rate) 
+
+        # Configure appsink properties
+        self.appsink.set_property("emit-signals", True)
+        self.appsink.set_property("sync", False)
+        self.appsink.connect("new-sample", self.on_new_sample)
+
+        # Create the pipeline
+        self.pipeline = Gst.Pipeline.new(self.uri)
+        
+
+        # Add elements to the pipeline
+        elements = [
+            self.v4l2src, self.capsfilter_h264, self.h264parse, self.decoder, self.queue, self.capsfilter_nv12, self.videoconvert,
+            self.capsfilter_rgb, self.videoscale, self.videorate, self.appsink
+        ]
+        
+        # Link the elements together
+        for element in elements:
+            self.pipeline.add(element)
+        
+        # Static links
+        self.v4l2src.link(self.capsfilter_h264)
+        self.capsfilter_h264.link(self.h264parse)
+        self.h264parse.link(self.decoder)
+        self.decoder.link(self.queue)
+        self.queue.link(self.capsfilter_nv12)
+        self.capsfilter_nv12.link(self.videoconvert)
+        self.videoconvert.link(self.capsfilter_rgb)
+        self.capsfilter_rgb.link(self.videoscale)
+        self.videoscale.link(self.videorate)
+        self.videorate.link(self.appsink)
+
+        # Setup bus
+        self.bus = self.pipeline.get_bus()
+        self.bus.add_signal_watch()
+        self.bus.connect("message", self.on_message)
+
+        print("Elements linked successfully")
+
     def start(self):
         # Start playing the pipeline
-        if self.pipeline.isOpened():
-            capture_start_time = time.time()
-            ret, img = self.pipeline.read()
-            if not ret or img is None:
-                print("Fail to grab a valid frame")
-            else:
-                with self.capture_lock:
-                    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                    if self.image_queue.full():
-                        drop_frame = self.image_queue.get()
-                    self.image_queue.put(img)
-            # print(f"Capture Time: {time.time() - capture_start_time:.4f}s")
-            
-                
-    def destroy(self):
-        # Clean up and release the video capture object
         if self.pipeline is not None:
-            self.pipeline.release()  # Release the webcam
-            print("Webcam capture released")
+            self.pipeline.set_state(Gst.State.PLAYING)
+            self.loop = GLib.MainLoop()
+            try:
+                self.loop.run()
+            except Exception as e:
+                print(f"Main loop exited: {e}")
+                self.destroy()
+
+    def destroy(self):
+        # Clean up
+        if self.pipeline is not None:
+            self.pipeline.set_state(Gst.State.NULL)
+            print("Pipeline set to NULL (stopped)")
+
+    def on_new_sample(self, appsink, data=None):
+        # Callback when a new sample (frame) is available from appsink
+        #sample = self.appsink.emit("pull-sample")
+        sample = self.appsink.pull_sample()
+        if isinstance(sample, Gst.Sample):
+            buffer = sample.get_buffer()  # Get the buffer from the sample
+            caps = sample.get_caps()
+            # Extract the width, height, and number of channels
+            width = caps.get_structure(0).get_value("width")
+            height = caps.get_structure(0).get_value("height")
+            channels = 3  # RGB format has 3 channels
+
+            # Extract the buffer data into a numpy array
+            buffer_size = buffer.get_size()
+            np_array = np.ndarray(shape=(height, width, channels),
+                                  dtype=np.uint8,
+                                  buffer=buffer.extract_dup(0, buffer_size))
+
+            np_array = np.copy(np_array)
+            
+            with self.capture_lock:
+                # Handle queue overflow by dropping the oldest frame
+                if self.image_queue.full():
+                    drop_frame = self.image_queue.get()
+                    # print("Queue full, dropping oldest frame")
+
+                # Add the new frame to the queue
+                self.image_queue.put(np_array)
+                # print(f"Frame added to queue. Current queue size: {self.image_queue.qsize()}")
+
+            return Gst.FlowReturn.OK
+        else:
+            print("Failed to get sample")
+            return Gst.FlowReturn.ERROR

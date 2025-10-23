@@ -66,9 +66,10 @@ class FilePipeline:
 
     def reconnect(self):
         print("Reconnecting pipeline...")
-        self.pipeline.set_state(Gst.State.NULL)  # Stop the pipeline
-        self.pipeline.set_state(Gst.State.READY)  # Prepare the pipeline for restart
-        self.pipeline.set_state(Gst.State.PLAYING)        
+        if self.pipeline:
+            self.pipeline.set_state(Gst.State.READY)  # Prepare the pipeline for restart
+            time.sleep(1)
+            self.pipeline.set_state(Gst.State.PLAYING)         
             
     def create(self):
     
