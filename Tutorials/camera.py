@@ -43,7 +43,7 @@ class Camera():
         Gst.init(None)
         
         # Add a parameter to control how often inference happens (e.g., every 5th frame)
-        self.infer_every_n_frames = 5
+        self.infer_every_n_frames = 3
         self.frame_counter = 0  # Initialize the frame counter
         
         self.video_source = video_source
@@ -67,14 +67,11 @@ class Camera():
         
         if self.video_source.startswith("/dev/video"):
             self.vp = WebcamPipeline(video_source, self.capture_frame_queue, self.capture_lock)
-            self.infer_every_n_frames = 3
         elif self.video_source.startswith("file://"):
             self.vp = FilePipeline(video_source, self.capture_frame_queue, self.capture_lock)
-            self.vp.set_rate(0.5)
-            self.infer_every_n_frames = 5
+            self.vp.set_rate(1)
         elif self.video_source.startswith("rtsp://"):
             self.vp = RtspPipeline(video_source, self.capture_frame_queue, self.capture_lock)
-            self.infer_every_n_frames = 3
         
         self.stop_event = threading.Event()
 
