@@ -72,7 +72,7 @@ cd SNPE_Flask/Tutorials
 
 ### 4. Environment Setup (Takes ~10 minutes)
 ```bash
-sudo ./setup.sh
+./setup.sh
 ```
 
 > 🔍 `setup.sh` installs dependencies, sets up SNPE paths, and configures the environment for Flask + SNPE.
@@ -83,6 +83,13 @@ sudo ./setup.sh
 ### 5. Run Application
 ```bash
 python3 app.py
+```
+
+### Debug (DSP Runtime not Available)
+```
+sudo mv /etc/kernel/postinst.d/zz-qcom-dtb /etc/kernel/postinst.d/zz-qcom-dtb.disabled
+
+sudo dpkg --configure -a
 ```
 
 ---
