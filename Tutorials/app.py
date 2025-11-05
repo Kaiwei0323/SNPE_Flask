@@ -88,7 +88,7 @@ def video_feed(camera_name):
 if __name__ == "__main__":
     # Default values
     host = "0.0.0.0"
-    port = 5001
+    port = 5002
     
     # Check for command-line arguments
     if len(sys.argv) > 1:

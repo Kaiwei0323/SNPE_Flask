@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  snpe-flask:
+    build:
+      context: ..
+      dockerfile: Tutorials/Dockerfile
+    container_name: snpe-flask-app
+    ports:
+      - "5001:5001"
+    volumes:
+      # Mount SNPE SDK directory (required for runtime)
+      - /data/sdk:/data/sdk:ro
+      # Mount video directory (optional, for video files)
+      - /data/video:/data/video:ro
+      # Mount QMMF libraries (required for GStreamer qtiqmmfsrc plugin)
+      - /usr/lib/qcm6490:/usr/lib/qcm6490:ro
+      # Mount models directory (optional, for hot-reloading models)
+      # - ./models:/app/models:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SNPE_ROOT=/data/sdk/v2.26.0.240828/qairt/2.26.0.240828
+      - ADSP_LIBRARY_PATH=/data/sdk/v2.26.0.240828/qairt/2.26.0.240828/lib/hexagon-v68/unsigned
+      - HEXAGON_ARM_SYSROOT=/data/sdk/v2.26.0.240828/qairt/2.26.0.240828/lib/hexagon-v68/unsigned
+      - SNPE_LIBRARY_PATH=/data/sdk/v2.26.0.240828/qairt/2.26.0.240828/lib/aarch64-ubuntu-gcc9.4
+      - SNPE_HEXAGON_LIBRARY_PATH=/data/sdk/v2.26.0.240828/qairt/2.26.0.240828/lib/hexagon-v68/unsigned
+      - SNPE_APP_DIR=/app
+      # Set LD_LIBRARY_PATH with SNPE libraries FIRST (critical for DSP runtime)
+      # Include QMMF library path for GStreamer qtiqmmfsrc plugin
+      - LD_LIBRARY_PATH=/data/sdk/v2.26.0.240828/qairt/2.26.0.240828/lib/aarch64-ubuntu-gcc9.4:/data/sdk/v2.26.0.240828/qairt/2.26.0.240828/lib/hexagon-v68/unsigned:/usr/lib/qcm6490:/usr/lib/aarch64-linux-gnu
+    devices:
+      # MSM VIDC H.264 hardware decoder
+      - /dev/video32:/dev/video32
+      - /dev/video33:/dev/video33
+      - /dev/media1:/dev/media1
+      - /dev/media2:/dev/media2
+      - /dev/media3:/dev/media3
+      # Optional: Logitech Webcam
+      - /dev/video0:/dev/video0
+      - /dev/video1:/dev/video1
+      # DSP Driver - CRITICAL for DSP runtime
+      - /dev/fastrpc-cdsp:/dev/fastrpc-cdsp
+      - /dev/fastrpc-adsp-secure:/dev/fastrpc-adsp-secure
+      - /dev/fastrpc-cdsp-secure:/dev/fastrpc-cdsp-secure
+      # DMA heap devices for DSP memory allocation
+      - /dev/dma_heap/qcom,audio-ml:/dev/dma_heap/qcom,audio-ml
+      - /dev/dma_heap/qcom,cma-secure-cdsp:/dev/dma_heap/qcom,cma-secure-cdsp
+      - /dev/dma_heap/qcom,qseecom:/dev/dma_heap/qcom,qseecom
+      - /dev/dma_heap/qcom,qseecom-ta:/dev/dma_heap/qcom,qseecom-ta
+      - /dev/dma_heap/qcom,secure-non-pixel:/dev/dma_heap/qcom,secure-non-pixel
+      - /dev/dma_heap/qcom,secure-pixel:/dev/dma_heap/qcom,secure-pixel
+      - /dev/dma_heap/reserved:/dev/dma_heap/reserved
+      - /dev/dma_heap/system:/dev/dma_heap/system
+      - /dev/dma_heap/qcom,system:/dev/dma_heap/qcom,system
+    privileged: true  # Required for DSP hardware access and V4L2
+    cap_add:
+      - SYS_ADMIN  # May be needed for DSP access
+      - SYS_PTRACE # May be needed for debugging
+    security_opt:
+      - apparmor:unconfined  # May be needed for DSP access
+    restart: unless-stopped
+    networks:
+      - snpe-network
+
+networks:
+  snpe-network:
+    driver: bridge
+

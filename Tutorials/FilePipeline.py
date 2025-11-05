@@ -41,7 +41,10 @@ class FilePipeline(BasePipeline):
         
         # Link the elements together
         for element in elements:
-            self.pipeline.add(element)
+            if element is None:
+                print(f"❌ Missing element: {element}")
+            else:
+                self.pipeline.add(element)
 
         # Connect dynamic pad to the queue
         self.qtdemux.connect("pad-added", self.on_pad_added, self.queue)  
