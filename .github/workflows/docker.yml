@@ -1,43 +1,28 @@
-name: Docker Build and Test
+name: CI - SNPE Flask App (Ubuntu 24.04)
 
 on:
   push:
-    branches: [ main, master ]
-    tags:
-      - 'v*'
+    branches: [ "24.04" ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ "24.04" ]
 
 jobs:
-  docker-build:
-    name: Build Docker Image
+  build-and-test:
     runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Set up QEMU for ARM64 emulation
-      uses: docker/setup-qemu-action@v3
-      with:
-        platforms: arm64
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    
-    - name: Build Docker image
-      working-directory: ./Tutorials
-      run: |
-        docker buildx build \
-          --platform linux/arm64 \
-          --tag snpe-flask:latest \
-          --file Dockerfile \
-          --load \
-          .. || echo "Docker build requires ARM64 environment or emulation"
-      continue-on-error: true
-    
-    - name: Test Docker image structure
-      run: |
-        docker images | grep snpe-flask || echo "Image not built (expected in CI without ARM64)"
-      continue-on-error: true
 
+    steps:
+      # 1. Checkout your code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3. Build Docker image using docker-compose
+      - name: Build Docker image
+        run: docker compose -f Tutorials/docker-compose.yml build snpe-flask
+
+      #4. Stop and remove containers
+      - name: Clean up
+        run: docker compose -f Tutorials/docker-compose.yml down
