@@ -25,4 +25,4 @@ jobs:
 
       #4. Stop and remove containers
       - name: Clean up
-        run: docker compose down
+        run: docker compose -f Tutorials/docker-compose.yml down
