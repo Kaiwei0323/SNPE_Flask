@@ -10,10 +10,20 @@
 import functools
 import time
 import os
+import sys
 
-#Copy paste all dlls and so files to this location
-#os.add_dll_directory(os.getcwd())
-import libsnpehelper as snpehelper #Make sure snpehelper.pyd or libsnpehelper.so(Python Extenson Module is in the same directory or in PYTHONPATH)
+# Add current directory to Python path to find libsnpehelper.so
+# libsnpehelper.so is in the same directory as this file
+_current_dir = os.path.dirname(os.path.abspath(__file__))
+if _current_dir not in sys.path:
+    sys.path.insert(0, _current_dir)
+
+# Add current directory to DLL path to find libsnpehelper.so (Windows only)
+# On Linux, libsnpehelper.so will be found via LD_LIBRARY_PATH or if in same directory
+if hasattr(os, 'add_dll_directory'):
+    os.add_dll_directory(_current_dir)
+
+import libsnpehelper as snpehelper # libsnpehelper.so is in the same directory
 # import libSnpeHtpV68Skel from lib  # Commented out due to syntax error
 '''
 Description:

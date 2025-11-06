@@ -8,3 +8,5 @@ Flask
 blinker==1.4 
 paho-mqtt
 pygobject==3.50.0
+pytest
+pytest-cov

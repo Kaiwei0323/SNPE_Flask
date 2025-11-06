@@ -5,13 +5,11 @@ from PIL import Image
 import cv2
 import time
 # from base_camera import BaseCamera
-from snpehelper_manager import PerfProfile, Runtime
+from snpe import PerfProfile, Runtime
 
 from myclasses import *
 
-from FilePipeline import FilePipeline
-from RtspPipeline import RtspPipeline
-from WebcamPipeline import WebcamPipeline
+from pipelines import FilePipeline, RtspPipeline, WebcamPipeline
 
 import gi
 from gi.repository import Gst, GstApp, GLib
@@ -130,8 +128,7 @@ class Camera():
 
     def _load_model(self, dlc_path, input_layers, output_layers, output_tensors, classes):
         """Load and initialize the model."""
-        from Detr_Object_Detection import DETR
-        from Yolov8 import YOLOV8
+        from model_handlers import DETR, YOLOV8
 
         if self.model.startswith("DETR"):
             model = DETR(

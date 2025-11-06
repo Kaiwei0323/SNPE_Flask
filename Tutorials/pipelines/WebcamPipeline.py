@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 import time
 import os
-from BasePipeline import BasePipeline
+from .BasePipeline import BasePipeline
 
 class WebcamPipeline(BasePipeline):
     def __init__(self, uri, image_queue, capture_lock):

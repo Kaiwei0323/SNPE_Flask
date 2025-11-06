@@ -5,13 +5,17 @@ from importlib import import_module
 import paho.mqtt.client as mqtt
 import sys
 
-from camera import model_map
+from camera import model_map, Camera
 
 # Import the camera driver
+# Note: If CAMERA environment variable is set, it will try to import camera_<CAMERA>
+# This is for custom camera drivers, but the default Camera from camera package is used
 if os.environ.get('CAMERA'):
-    Camera = import_module('camera_' + os.environ['CAMERA']).Camera
-else:
-    from camera import Camera
+    try:
+        Camera = import_module('camera_' + os.environ['CAMERA']).Camera
+    except ImportError:
+        # Fall back to default Camera if custom driver not found
+        pass
 
 CAMERA_SOURCES = {}
 

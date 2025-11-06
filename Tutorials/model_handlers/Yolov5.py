@@ -13,7 +13,7 @@ import numpy as np
 import torch
 import torchvision.transforms as T
 from PIL import Image
-from snpehelper_manager import PerfProfile, Runtime, SnpeContext
+from snpe import PerfProfile, Runtime, SnpeContext
 import time
 
 from myclasses import *

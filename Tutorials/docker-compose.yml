@@ -15,8 +15,24 @@ services:
       - /data/video:/data/video:ro
       # Mount QMMF libraries (required for GStreamer qtiqmmfsrc plugin)
       - /usr/lib/qcm6490:/usr/lib/qcm6490:ro
-      # Mount models directory (optional, for hot-reloading models)
-      # - ./models:/app/models:ro
+      # DSP + GPU runtime libraries
+      - /usr/lib/libCB.so:/usr/lib/libCB.so:ro
+      - /usr/lib/libOpenCL.so:/usr/lib/libOpenCL.so:ro
+      - /usr/lib/libOpenCL_adreno.so:/usr/lib/libOpenCL_adreno.so:ro
+      - /usr/lib/libbase.so.0:/usr/lib/libbase.so.0:ro
+      - /usr/lib/libcdsprpc.so:/usr/lib/libcdsprpc.so:ro
+      - /usr/lib/libcutils.so.0:/usr/lib/libcutils.so.0:ro
+      - /usr/lib/libdmabufheap.so.0:/usr/lib/libdmabufheap.so.0:ro
+      - /usr/lib/libglib-2.0.so.0:/usr/lib/libglib-2.0.so.0:ro
+      - /usr/lib/libgsl.so:/usr/lib/libgsl.so:ro
+      - /usr/lib/libgthread-2.0.so.0:/usr/lib/libgthread-2.0.so.0:ro
+      - /usr/lib/libion.so.0:/usr/lib/libion.so.0:ro
+      - /usr/lib/libllvm-qcom.so:/usr/lib/libllvm-qcom.so:ro
+      - /usr/lib/liblog.so.0:/usr/lib/liblog.so.0:ro
+      - /usr/lib/libpcre.so.1:/usr/lib/libpcre.so.1:ro
+      - /usr/lib/libsync.so.0:/usr/lib/libsync.so.0:ro
+      - /usr/lib/libvmmem.so.0:/usr/lib/libvmmem.so.0:ro
+      - /usr/lib/libatomic.so.1:/usr/lib/libatomic.so.1:ro
     environment:
       - PYTHONUNBUFFERED=1
       - SNPE_ROOT=/data/sdk/v2.26.0.240828/qairt/2.26.0.240828
