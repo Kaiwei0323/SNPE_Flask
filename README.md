@@ -2,8 +2,8 @@
 
 > Vision solution using SNPE SDK for real-time inference.
 
-![Ubuntu](https://img.shields.io/badge/OS-Ubuntu%2020.04-blue?logo=ubuntu)
-![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python)
+![Ubuntu](https://img.shields.io/badge/OS-Ubuntu%2024.04-blue?logo=ubuntu)
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
 ![SNPE](https://img.shields.io/badge/SNPE-v2.26.0.240828-red?logo=qualcomm)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
@@ -31,7 +31,7 @@
 
 - OS: Ubuntu 24.04 (arm64)
 - SNPE SDK Version: **v2.26.0.240828**
-- Python 3.10
+- Python 3.12
 
 ---
 
